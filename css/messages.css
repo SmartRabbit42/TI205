@@ -1,11 +1,71 @@
-#chat {
+#chat,
+#chat-count {
     overflow-y: auto;
-    background-color: #707F8C;
+    border: none;
+    background-color: #6D747E;
+}
+
+#chat-count {
+    background-size: 200% 200%;
+    background-image: linear-gradient(to top, #fff 50%, transparent 50%);
+    -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -ms-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -o-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
 }
 
 #file-input {
     display: none;
     height: 0;
+}
+
+.button {
+    border-radius: 40%;
+    vertical-align: middle;
+    height: auto;
+    width: 38px;
+    display: flex;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    background-color: #6D747E;
+}
+
+.button:hover {
+    border-radius: 40%;
+    vertical-align: middle;
+    height: auto;
+    width: 38px;
+    display: flex;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    background-color: #6D747E;
+}
+
+.form-control {
+    border-radius: .25rem;
+}
+
+.add-chat-box {
+    color: white;
+    background-image: linear-gradient(to top, #fff 50%, transparent 50%);
+    background-position: 0 100%;
+    -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -ms-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    -o-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+    transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
+}
+
+#search-chat,
+#message-input {
+    border-radius: .25rem;
+}
+
+.button:active {
+    background-color: #353B40;
 }
 
 .message {
@@ -22,8 +82,8 @@
 }
 
 .message.out {
-    color: #000;
-    background-color: #D1C7B8 !important;
+    color: #fff;
+    background-color: #353B40 !important;
 }
 
 .message.head {

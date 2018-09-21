@@ -1,5 +1,6 @@
 var me = true; //Variáveis usadas
 var lastme = false; //para testes;
+var add = false;
 
 $(document).ready(function() {
 
@@ -20,7 +21,26 @@ $(document).ready(function() {
         $(this).val("");
     })
 
+    $("#add-chat").click(showAdd);
 });
+
+function showAdd() {
+    add = !add;
+    if (add) {
+        $("#chat-count").addClass("add-chat-box");
+        $(this).css("background-color", "white");
+        $(this).css("border-color", "white");
+        $(this).removeClass("shadow");
+        $("#add-chat svg path").css("fill", "#6D747E");
+    } else {
+        $("#chat-count").removeClass("add-chat-box");
+        $(this).css("background-color", "#6D747E");
+        $(this).css("border-color", "#6D747E");
+        $(this).addClass("shadow");
+        $("#add-chat svg path").css("fill", "white");
+    }
+
+}
 
 jQuery.fn.extend({
     displayMessage: function(a, content) {
