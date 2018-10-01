@@ -6,35 +6,43 @@
 </head>
 
 <body class="bg-dark">
+
+
     <div class="container">
-        <div class="row h-100 align-items-center">
-            <div class="col-md-4">
-                <div id="chat-count" class="h-75 form-control shadow">
-                    <div id="chat-list"></div>
-                </div>
-                <div class="mt-2 input-group">
-                    <input id="search-chat" type="text" class="form-control mr-2" placeholder="Procurar conversa">
-                    <label class="btn btn-light align-middle button" id="add-chat">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12" width="24" height="24">
-                            <path style="fill:white" d="M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z" />
-                        </svg>
-                    </label>
-                </div>
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark main-nav justify-content-between">
+            <div class="nav-item btn btn-primary" data-toggle="modal" data-target="#popup-reg">Registrar-se</div>
+            <div class="navbar-brand">Chat</div>
+            <div class="nav-item btn btn-primary" data-toggle="modal" data-target="#popup-log">Entrar</div>
+        </nav>
+    </div>
+
+    <div class="row main-row align-items-center w-100" style="margin: 0;background-image: url('https://assets-cdn.github.com/images/modules/site/heroes/simple-codelines.svg')">
+        <div class="d-md-block offset-xl-2 col-xl-2 offset-lg-1 col-lg-3 offset-md-0 col-md-4 d-none">
+            <div id="chat-count" class="h-75 form-control bg-dark">
+                <div id="chat-list"></div>
             </div>
-            <div class="col-md-8">
-                <div id="chat" class="h-75 form-control shadow">
-                    <div id="message-flow"></div>
-                </div>
-                <div class="input-group mt-2">
-                    <input id="message-input" type="text" class="form-control" placeholder="Digite sua mensagem...">
-                    <label class="btn btn-light align-middle button mx-2" for="file-input">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3 3 10 10">
-                            <path style="fill:white" d="M11,4v8c0,1.5-1.5,3-3,3s-3-1.5-3-3V4V3c0-1,1-2,2-2s2,1,2,2v1v6v1c0,0.5-0.5,1-1,1s-1-0.5-1-1V4H6   v7c0,1,1,2,2,2s2-1,2-2v-1V3c0-1.5-1.5-3-3-3S4,1.5,4,3v1v8c0,2,2,4,4,4s4-2,4-4V4H11z" />
-                        </svg>
-                    </label>
-                    <input id="file-input" type="file" />
-                    <label class="btn btn-light align-middle button" id="me">a</label>
-                </div>
+            <div class="pt-2 input-group bg-dark">
+                <input id="search-chat" type="text" class="form-control mr-2" placeholder="Procurar conversa">
+                <label class="btn align-middle button" id="add-chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12" width="24" height="24">
+                        <path style="fill:white" d="M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z" />
+                    </svg>
+                </label>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-7 col-md-8 col-sm-12 px-sm-2">
+            <div id="chat" class="h-75 form-control bg-dark pr-3">
+                <div id="message-flow"></div>
+            </div>
+            <div class="input-group pt-2 bg-dark">
+                <input id="message-input" type="text" class="form-control" placeholder="Digite sua mensagem...">
+                <label class="btn align-middle button mx-2" for="file-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3 3 10 10">
+                        <path style="fill:white" d="M11,4v8c0,1.5-1.5,3-3,3s-3-1.5-3-3V4V3c0-1,1-2,2-2s2,1,2,2v1v6v1c0,0.5-0.5,1-1,1s-1-0.5-1-1V4H6   v7c0,1,1,2,2,2s2-1,2-2v-1V3c0-1.5-1.5-3-3-3S4,1.5,4,3v1v8c0,2,2,4,4,4s4-2,4-4V4H11z" />
+                    </svg>
+                </label>
+                <input id="file-input" type="file" />
+                <label class="btn btn-light align-middle button" id="me">a</label>
             </div>
         </div>
     </div>
@@ -43,5 +51,67 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script src="js/messages.js"></script>
+
+<div class="modal fade" id="popup-reg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Registrar-se</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="log-user">Nome de usuário</label>
+                        <input type="text" required class="form-control" id="log-user" placeholder="Escolha um nome de usuário">
+                    </div>
+                    <div class="form-group">
+                        <label for="log-email">Endereço de e-mail</label>
+                        <input type="email" required class="form-control" id="log-email" placeholder="Digite seu e-mail">
+                    </div>
+                    <div class="form-group">
+                        <label for="log-password">Senha</label>
+                        <input type="password" required class="form-control" id="log-password" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Registrar-se</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popup-log" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="log-email">Endereço de e-mail</label>
+                        <input type="email" required class="form-control" id="log-email" aria-describedby="emailHelp" placeholder="Digite seu e-mail">
+                    </div>
+                    <div class="form-group">
+                        <label for="log-password">Senha</label>
+                        <input type="password" required class="form-control" id="log-password" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 </html>

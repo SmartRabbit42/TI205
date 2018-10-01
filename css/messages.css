@@ -1,13 +1,48 @@
+body {
+    color: #dbdbdb
+}
+
+textarea:hover,
+input:hover,
+textarea:active,
+input:active,
+textarea:focus,
+input:focus,
+button:focus,
+button:active,
+button:hover,
+label:focus,
+.btn:active,
+.btn.active {
+    outline: 0px !important;
+    -webkit-appearance: none;
+    box-shadow: none !important;
+}
+
+:root {
+    --navbar-height: 4em;
+    --main-height: calc(100% - var(--navbar-height))
+}
+
 #chat,
 #chat-count {
     overflow-y: auto;
     border: none;
-    background-color: #6D747E;
+}
+
+#chat {
+    border-top: solid #24292e 4px;
+    border-bottom: solid #24292e 4px;
+}
+
+#chat::-webkit-scrollbar {
+    display: none;
 }
 
 #chat-count {
+    border-left: solid #24292e 4px;
     background-size: 200% 200%;
-    background-image: linear-gradient(to top, #fff 50%, transparent 50%);
+    background-image: linear-gradient(to top, #e6e6e6 50%, transparent 50%);
     -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
     -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
     -ms-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
@@ -15,12 +50,16 @@
     transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
 }
 
+#chat-count ol li {
+    border: none;
+}
+
 #file-input {
     display: none;
     height: 0;
 }
 
-.button {
+.button, .button:hover {
     border-radius: 40%;
     vertical-align: middle;
     height: auto;
@@ -29,28 +68,20 @@
     border: none;
     align-items: center;
     justify-content: center;
-    background-color: #6D747E;
+    background-color: #24292e;
 }
 
-.button:hover {
-    border-radius: 40%;
-    vertical-align: middle;
-    height: auto;
-    width: 38px;
-    display: flex;
-    border: none;
-    align-items: center;
-    justify-content: center;
-    background-color: #6D747E;
-}
-
-.form-control {
+.form-control, .input-group {
     border-radius: .25rem;
+}
+
+.input-group {
+    background-color: #24292e;
 }
 
 .add-chat-box {
     color: white;
-    background-image: linear-gradient(to top, #fff 50%, transparent 50%);
+    background-image: linear-gradient(to top, #e6e6e6 50%, transparent 50%);
     background-position: 0 100%;
     -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
     -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
@@ -62,10 +93,9 @@
 #search-chat,
 #message-input {
     border-radius: .25rem;
-}
-
-.button:active {
-    background-color: #353B40;
+    background-color: #24292e;
+    border: none;
+    color: #9d9d9d;
 }
 
 .message {
@@ -83,7 +113,7 @@
 
 .message.out {
     color: #fff;
-    background-color: #353B40 !important;
+    background-color: #24292e !important;
 }
 
 .message.head {
@@ -118,7 +148,16 @@
     font-size: 10px;
 }
 
-.img {
+.img, .vid {
     max-width: 100%;
     height: auto;
+}
+
+.navbar {
+    background-color: #24292e;
+    height: var(--navbar-height);
+}
+
+.main-row {
+    height: var(--main-height);
 }
