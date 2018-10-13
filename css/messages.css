@@ -41,7 +41,7 @@ label:focus,
 
 #chat-count {
     border-left: solid #24292e 4px;
-    background-size: 200% 200%;
+    background-size: 200% 201%;
     background-image: linear-gradient(to top, #e6e6e6 50%, transparent 50%);
     -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
     -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
@@ -95,7 +95,12 @@ label:focus,
     border-radius: .25rem;
     background-color: #24292e;
     border: none;
-    color: #9d9d9d;
+}
+
+#search-chat:focus,
+#message-input:focus {
+    background-color: #e6e6e6;
+    color: #24292e;
 }
 
 .message {

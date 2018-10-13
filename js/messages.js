@@ -1,5 +1,9 @@
 var add = true;
 
+var number = 1;
+
+var username = "Anônimo" + number;
+
 var isChatEmpty = true;
 var isMe = true;
 
@@ -27,6 +31,14 @@ $(document).ready(function() {
                 break;
             case "mp4":
                 $(this).message("v", file, extension);
+                break;
+            case "wmv":
+            	alert("Formato de vídeo não suportado.");
+            	break;
+            case "mp3":
+            case "ogg":
+                $(this).message("a", file, extension);
+                break;
         }
         $(this).val("");
     })
@@ -42,8 +54,7 @@ jQuery.fn.extend({
             $(this).off("click");
             $("#chat-count").one('transitionend', function() {
                 $("#chat-count").append("<ol class='list-group'>");
-                $("#chat-count ol").append("<li class='list-group-item'>");
-
+                $("#chat-count ol").append("<li class='list-group-item btn'>");
                 ////////////////////////////////////////////////////////
 
                 $("#chat-count ol li").first().css("background-color", "#38d159").append("<div class='d-flex flex-row justify-content-between'>");
@@ -85,6 +96,7 @@ jQuery.fn.extend({
                 $(".message").last().addClass("message head out tail");
                 isChatEmpty = false;
             }
+            $(".message").last().append("<small class='d-flex flex-row justify-content-end p-1'>");
         } else {
             $("#message-flow .flex-row").last().addClass("justify-content-start");
             if ($(".message").eq(-2).hasClass("out") || isChatEmpty) {
@@ -94,7 +106,9 @@ jQuery.fn.extend({
                 $(".message").eq(-2).removeClass("tail");
                 $(".message").last().addClass("message in tail");
             }
+            $(".message").last().append("<small class='d-flex flex-row justify-content-start p-1'>");
         }
+        $(".message small").last().append(username);
         switch (a) {
             case "t":
                 $(".message").last().addClass("text").append(content);
@@ -110,10 +124,17 @@ jQuery.fn.extend({
                 $(".message").last().append("<video class='vid' controls>");
                 $("video").last().append("<source class='vidsrc' src='' type='video/" + extension + "'>");
                 $(this).videoConversion(content);
-                $(".message .vid").on("load", function() {
+                $(".message video").on("load", function() {
                     $("#chat").scrollTop($("#message-flow").height());
                 });
                 break;
+            case "a":
+                $(".message").last().append("<audio class='.aud' controls>");
+                $("audio").last().append("<source class='audsrc' src='' type='audio/" + extension + "'>");
+                $(this).audioConversion(content);
+                $(".message audio").on("load", function() {
+                    $("#chat").scrollTop($("#message-flow").height());
+                });
         }
         $(".message").last().append("<small class='d-flex flex-row justify-content-end p-1'>");
         $(".message small").last().append($(this).getTime());
@@ -127,11 +148,8 @@ jQuery.fn.extend({
 
 jQuery.fn.extend({
     imageConversion: function(file) {
-        var reader = new FileReader();
-        reader.onloadend = function() {
-            $(".message .img").last().attr("src", reader.result);
-        }
-        reader.readAsDataURL(file);
+        $(".message .img").last().attr("src", URL.createObjectURL(file));
+
     }
 })
 
@@ -141,9 +159,20 @@ jQuery.fn.extend({
 
 jQuery.fn.extend({
     videoConversion: function(file) {
-        var $source = $('.vidsrc').last();
-        $source[0].src = URL.createObjectURL(file);
-        $source.parent()[0].load();
+        $('.vidsrc').last().attr("src", URL.createObjectURL(file)).parent()[0].load();
+    }
+})
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+jQuery.fn.extend({
+    audioConversion: function(file) {
+        $('.audsrc').last().attr("src", URL.createObjectURL(file)).onend = function(e) {
+            URL.revokeObjectURL(this.src);
+        }
     }
 })
 
