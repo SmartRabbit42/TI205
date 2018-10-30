@@ -104,53 +104,16 @@ label:focus,
 }
 
 .message {
+    color: #e6e6e6;
     margin: 1px;
     padding: 10px;
-    border-radius: 6px;
     max-width: 60%;
     word-wrap: break-word;
 }
 
-.message.in {
-    color: #000;
-    background-color: #fff !important;
-}
-
-.message.out {
-    color: #fff;
-    background-color: #24292e !important;
-}
-
-.message.head {
-    margin-top: 1em;
-}
-
-.message.in.head.text {
-    border-radius: 6px 20px 6px 6px;
-}
-
-.message.out.head.text {
-    border-radius: 20px 6px 6px 6px;
-}
-
-.message.tail {
-    margin-bottom: 1em;
-}
-
-.message.tail.text {
-    border-radius: 6px 6px 20px 20px;
-}
-
-.message.out.head.tail.text {
-    border-radius: 20px 6px 20px 20px;
-}
-
-.message.in.head.tail.text {
-    border-radius: 6px 20px 20px 20px;
-}
-
 .message small {
     font-size: 10px;
+    color: #9DA3B6;
 }
 
 .img, .vid {

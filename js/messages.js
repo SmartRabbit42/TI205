@@ -1,11 +1,12 @@
 var add = true;
 
-var number = 1;
+var chatEmpty = true;
 
-var username = "Anônimo" + number;
+var ID = function() {
+    return '_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+};
 
-var isChatEmpty = true;
-var isMe = true;
+var username = "ANOM" + ID();
 
 $(document).ready(function() {
 
@@ -13,11 +14,8 @@ $(document).ready(function() {
     $("#message-input").keypress(function(e) {
         if ((e.which == 13 || e.keycode == 13) && $("#message-input").val() != "") {
             $(this).message("t", $("#message-input").val());
+            $(this).val("");
         }
-    });
-
-    $("#me").click(function() {
-        isMe = !isMe;
     });
 
     $("input[type=file]").change(function() {
@@ -27,14 +25,15 @@ $(document).ready(function() {
             case "png":
             case "jpg":
             case "jpeg":
+            case "gif":
                 $(this).message("i", file);
                 break;
             case "mp4":
                 $(this).message("v", file, extension);
                 break;
             case "wmv":
-            	alert("Formato de vídeo não suportado.");
-            	break;
+                alert("Formato de vídeo não suportado.");
+                break;
             case "mp3":
             case "ogg":
                 $(this).message("a", file, extension);
@@ -79,39 +78,16 @@ jQuery.fn.extend({
     }
 })
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 jQuery.fn.extend({
     message: function(a, content, extension = null) {
-        $("#message-flow").append("<div class='d-flex flex-row'>");
-        $("#message-flow .flex-row").last().append("<div class='message '>");
-        if (isMe) {
-            $("#message-flow .flex-row").last().addClass("justify-content-end");
-            if ($(".message").eq(-2).hasClass("out")) {
-                $(".message").eq(-2).removeClass("tail");
-                $(".message").last().addClass("message out tail text");
-            } else if ($(".message").eq(-2).hasClass("in") || isChatEmpty) {
-                $(".message").last().addClass("message head out tail");
-                isChatEmpty = false;
-            }
-            $(".message").last().append("<small class='d-flex flex-row justify-content-end p-1'>");
-        } else {
-            $("#message-flow .flex-row").last().addClass("justify-content-start");
-            if ($(".message").eq(-2).hasClass("out") || isChatEmpty) {
-                $(".message").last().addClass("message in head tail");
-                isChatEmpty = false;
-            } else if ($(".message").eq(-2).hasClass("in")) {
-                $(".message").eq(-2).removeClass("tail");
-                $(".message").last().addClass("message in tail");
-            }
-            $(".message").last().append("<small class='d-flex flex-row justify-content-start p-1'>");
-        }
-        $(".message small").last().append(username);
+        $("#message-flow").append("<div class='d-flex flex-row' style='border-color:#24292e !important'>");
+        $("#message-flow .flex-row").eq(-3).addClass("border-bottom");
+        $("#message-flow .flex-row").last().append("<div class='justify-content-start message'>");
+        $(".message").last().append("<small class='d-flex flex-row justify-content-start p-1'>");
+        $(".message small").last().append(username + "&nbsp•&nbsp" + $(this).getTime().bold());
         switch (a) {
             case "t":
-                $(".message").last().addClass("text").append(content);
+                $(".message").last().append(content);
                 break;
             case "i":
                 $(".message").last().append("<img class='img' src=''>");
@@ -136,15 +112,10 @@ jQuery.fn.extend({
                     $("#chat").scrollTop($("#message-flow").height());
                 });
         }
-        $(".message").last().append("<small class='d-flex flex-row justify-content-end p-1'>");
-        $(".message small").last().append($(this).getTime());
         $("#chat").scrollTop($("#message-flow").height());
+        chatEmpty = false;
     }
 });
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 jQuery.fn.extend({
     imageConversion: function(file) {
@@ -153,20 +124,11 @@ jQuery.fn.extend({
     }
 })
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 jQuery.fn.extend({
     videoConversion: function(file) {
         $('.vidsrc').last().attr("src", URL.createObjectURL(file)).parent()[0].load();
     }
 })
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 
 jQuery.fn.extend({
     audioConversion: function(file) {
@@ -175,10 +137,6 @@ jQuery.fn.extend({
         }
     }
 })
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
 jQuery.fn.extend({
     getTime: function() {
@@ -194,7 +152,3 @@ jQuery.fn.extend({
         return h + ":" + m;
     }
 });
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
