@@ -32,7 +32,9 @@ function Register() {
     $.post("http://localhost:3000/register", $('#signup-form').serialize(), (data) => {
         if (data.signup) {
             $("#popup-reg .modal-footer").prepend("<div class='h-3 text-success'>Registrado!")
-            setTimeout(function() { $("#popup-reg").modal('hide') }, 2500);
+            setTimeout(function() {
+                $("#popup-reg").modal('hide')
+            }, 2500);
             $('#signup-form').trigger("reset");
         } else {
             $(".r-n").append("<small class='text-danger'>Nome de usuário já em uso.");
@@ -43,23 +45,23 @@ function Register() {
 function Login() {
     $.post("http://localhost:3000/login", $('#login-form').serialize(), (data) => {
         if (data.login) {
-        	username = $("#log-user").val();
+            username = $("#log-user").val();
             Logado(username);
             $("#popup-log .modal-footer .h-3").remove();
             $('#login-form').trigger("reset");
             $("#popup-log").modal('hide');
         } else {
-        	$("#popup-log .modal-footer").prepend("<div class='h-3 text-danger'>Nome de usuário ou senha incorreta.")
+            $("#popup-log .modal-footer").prepend("<div class='h-3 text-danger'>Nome de usuário ou senha incorreta.")
             $("#log-password").val("");
         }
     });
 }
 
 function Logado(username) {
-	$(".navbar-brand").html("Seja bem-vindo, " + username.bold());
-	$("#btn-reg").addClass("d-none");
-	$("#btn-log").addClass("d-none");
-	$("#btn-ext").removeClass("d-none");
+    $(".navbar-brand").html("Seja bem-vindo, " + username.bold());
+    $("#btn-reg").addClass("d-none");
+    $("#btn-log").addClass("d-none");
+    $("#btn-ext").removeClass("d-none");
 }
 
 $(document).ready(function() {
