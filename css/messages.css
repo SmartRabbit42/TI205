@@ -41,7 +41,7 @@ label:focus,
 
 #chat-count {
     border-left: solid #24292e 4px;
-    background-size: 200% 200%;
+    background-size: 200% 201%;
     background-image: linear-gradient(to top, #e6e6e6 50%, transparent 50%);
     -webkit-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
     -moz-transition: background-position 700ms, color 700ms ease, border-color 700ms ease;
@@ -95,57 +95,25 @@ label:focus,
     border-radius: .25rem;
     background-color: #24292e;
     border: none;
-    color: #9d9d9d;
+}
+
+#search-chat:focus,
+#message-input:focus {
+    background-color: #e6e6e6;
+    color: #24292e;
 }
 
 .message {
+    color: #e6e6e6;
     margin: 1px;
     padding: 10px;
-    border-radius: 6px;
     max-width: 60%;
     word-wrap: break-word;
 }
 
-.message.in {
-    color: #000;
-    background-color: #fff !important;
-}
-
-.message.out {
-    color: #fff;
-    background-color: #24292e !important;
-}
-
-.message.head {
-    margin-top: 1em;
-}
-
-.message.in.head.text {
-    border-radius: 6px 20px 6px 6px;
-}
-
-.message.out.head.text {
-    border-radius: 20px 6px 6px 6px;
-}
-
-.message.tail {
-    margin-bottom: 1em;
-}
-
-.message.tail.text {
-    border-radius: 6px 6px 20px 20px;
-}
-
-.message.out.head.tail.text {
-    border-radius: 20px 6px 20px 20px;
-}
-
-.message.in.head.tail.text {
-    border-radius: 6px 20px 20px 20px;
-}
-
 .message small {
-    font-size: 10px;
+    font-size: 13px;
+    color: #9DA3B6;
 }
 
 .img, .vid {
@@ -160,4 +128,8 @@ label:focus,
 
 .main-row {
     height: var(--main-height);
+}
+
+label {
+    color: #212529;
 }
