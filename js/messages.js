@@ -1,8 +1,11 @@
 "use strict";
 
+var ip = location.search.substr(4, location.search.indexOf("?port=") - 4);
+var port = location.search.substr(location.search.indexOf("?port=") + 6);
 
-var socket = io.connect("http://localhost:3000");
+var socket = io.connect("http://" + ip + ":" + port);
 var add = true;
+var logado = false;
 var rooms = [];
 var currentRoom = -1;
 
@@ -19,15 +22,13 @@ function roomExists(room) {
 }
 
 function botoes(id) {
-  for (var i = 0; i < rooms.length; i++) {
+  for (var i = 0; i < rooms.length; i++)
     $(".list-group-item")[i].style.backgroundColor = "#374557";
-    $(".list-group-item")[id].style.backgroundColor = "#0099cc";
-  }
+  $(".list-group-item")[id].style.backgroundColor = "#0099cc";
 }
-//Login
+
 function enterRoom(e) {
   var id = roomExists(e.currentTarget.getAttribute('id'));
-  console.log(id);
   if (id != -1) {
     $(".message-flow")[currentRoom].hidden = true;
     botoes(id);
@@ -40,7 +41,8 @@ function createRoom(e) {
   if ($("#create-room-name").val() != "") {
     socket.emit("create", {
       name: $("#create-room-name").val(),
-      pass: $("#create-room-pass").val()
+      pass: $("#create-room-pass").val(),
+      status: logado
     });
   } else {
     $(".c-n").append("<small class='text-danger'>Dê um nome à sua sala.");
@@ -53,13 +55,15 @@ function joinRoom(a) {
     if (pass != "") {
       socket.emit("join", {
         name: $("#enter-room .modal-title").html(),
-        pass: pass
+        pass: pass,
+        status: logado
       });
     }
   } else {
     socket.emit("join", {
       name: a.currentTarget.id,
-      pass: ""
+      pass: "",
+      status: logado
     });
     a.currentTarget.remove();
     $(this).addChat();
@@ -113,25 +117,35 @@ function Logado(username) {
   $("#btn-reg").addClass("d-none");
   $("#btn-log").addClass("d-none");
   $("#btn-ext").removeClass("d-none");
+  console.log($('#saveChats')[0].checked)
+  if ($('#saveChats')[0].checked) {
+    for (var i = 1; i < rooms.length; i++) {
+      socket.emit("cadastro", rooms[i]);
+    }
+  }
 }
+
 //Socket
+
 socket.on("joined", function(data) {
-  $($(".message-flow")[roomExists(data.room)]).append("<div style='color: red'>" + data.msg + "</div>");
+  $($(".message-flow")[roomExists(data.room)]).append("<div class='d-flex flex-row'><div class='justify-content-center message text-danger'>" + data.msg + "</div></div>");
 });
+
 socket.on("join", function(room) {
   if (currentRoom != -1)
     $(".message-flow")[currentRoom].hidden = true;
   currentRoom = rooms.length;
   rooms[currentRoom] = room;
   $("#chat").append("<div class='message-flow' id='message-flow'></div>");
-  $("#room-joined .list-group").append("<li  class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-center'>" + room + "</div></li>");
+  $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-center'>" + room + "</div></li>");
   botoes(currentRoom);
 });
+
 socket.on("msg", function(data) {
   $(".message-flow")[findRoom(data.room)].innerHTML += data.msg;
 });
+
 socket.on("correctPass", function(data) {
-  console.log(data);
   if (data.response) {
     $("#enter-room").modal('hide');
     $("#room-created #" + data.id).remove();
@@ -142,13 +156,35 @@ socket.on("correctPass", function(data) {
     $("#enter-room .modal-footer").prepend("<div class='h-3 text-danger'>Senha incorreta.")
   }
 });
-socket.on("login", function(response) {
-  if (response) {
+socket.on("logar", function(room) {
+  rooms[rooms.length] = room;
+  $("#chat").append("<div class='message-flow' id='message-flow'></div>");
+  $(".message-flow")[roomExists(room)].hidden = true;
+  $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-center'>" + room + "</div></li>");
+  $($(".message-flow")[roomExists(room)]).append("<div class='d-flex flex-row'><div class='justify-content-center message text-danger'>Você entrou na sala " + room + "</div></div>");
+  socket.emit("load", room);
+  $("#room-created #" + room).remove();
+  currentRoom = 0;
+})
+socket.on("load", function(data) {
+  for (var i = 0; i < data.msgs.length; i++) {
+    $($(".message-flow")[roomExists(data.room)]).prepend(data.msgs[i]);
+  }
+});
+socket.on("fim", function(a) {
+  botoes(currentRoom);
+})
+
+socket.on("login", function(data) {
+  if (data.status) {
     username = $("#log-user").val();
-    Logado(username);
     $("#popup-log .modal-footer .h-3").remove();
-    $('#login-form').trigger("reset");
     $("#popup-log").modal('hide');
+    socket.emit("login", username);
+    logado = true;
+    Logado(username);
+    $('#login-form').trigger("reset");
+
   } else {
     $("#popup-log .modal-footer .text-danger").remove();
     $("#popup-log .modal-footer").prepend("<div class='h-3 text-danger'>Nome de usuário ou senha incorreta.");
@@ -181,34 +217,20 @@ $(document).ready(function() {
   socket.emit("login", username);
   socket.emit("join", {
     name: "global",
-    pass: ""
+    pass: "",
+    status: logado
   });
 
   $("#enter-room").on("show.bs.modal", function(e) {
-    console.log(e.relatedTarget.id);
     $("#enter-room .modal-title").html(e.relatedTarget.id);
   })
 
-  $("#create-room").submit(function(e) {
-    var roominfo = {
-      name: $("#room-name").val(),
-      pass: $("#room-pass").val()
-    };
-    socket.emit("create", roominfo);
-    e.preventDefault();
-  });
   $("#room").click(function() {
     $(".message-flow")[currentRoom].hidden = true;
     currentRoom = this.id;
     $(".message-flow")[currentRoom].hidden = false;
   });
-  $("#join-room").submit(function() {
-    var roominfo = {
-      name: $("#room-name").val(),
-      pass: $("#room-pass").val()
-    };
-    socket.emit("join", roominfo);
-  });
+
   $("#message-input").keypress(function(e) {
     if ((e.which == 13 || e.keycode == 13) && $("#message-input").val() != "") {
       $(this).message("t", $("#message-input").val());
@@ -248,6 +270,19 @@ $(document).ready(function() {
   })
 
 });
+
+$("#search-chat").keyup(function(e) {
+  if ($("#search-chat").val() != "")
+    for (var i = 0; i < $("#room-created .list-group")[0].children.length; i++) {
+      if (!$("#room-created .list-group")[0].children[i].innerHTML.includes($("#search-chat").val()))
+        $("#room-created .list-group")[0].children[i].hidden = true;
+      else
+        $("#room-created .list-group")[0].children[i].hidden = false;
+    }
+  else
+    for (var i = 0; i < $("#room-created .list-group")[0].children.length; i++)
+      $("#room-created .list-group")[0].children[i].hidden = false;
+})
 
 jQuery.fn.extend({
   addChat: function() {
