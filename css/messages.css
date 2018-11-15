@@ -2,6 +2,12 @@ body {
     color: #dbdbdb
 }
 
+
+/* não precisava mexer no arquivo não, pode ser definido no style do botão mesmo
+  foda bixo
+  foda.... :((
+ */
+
 textarea:hover,
 input:hover,
 textarea:active,
@@ -25,7 +31,8 @@ label:focus,
 }
 
 #chat,
-#chat-count {
+#chat-count,
+#message-flow {
     overflow-y: auto;
     border: none;
 }

@@ -1,67 +1,68 @@
 <html>
 
 <head dir="ltr">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/messages.css">
-  <title>Chat/mensagens</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/messages.css">
+    <title>Chat/mensagens</title>
 </head>
 
 <body class="bg-dark">
-  <div class="container">
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark main-nav justify-content-between">
-      <div class="nav-item btn btn-primary" id="btn-reg" data-toggle="modal" data-target="#popup-reg">Registrar-se</div>
-      <div class="navbar-brand">Chat</div>
-      <div class="nav-item btn btn-primary" id="btn-log" data-toggle="modal" data-target="#popup-log">Entrar</div>
-      <div class="nav-item btn btn-danger d-none" id="btn-ext" onclick="location.reload()">Sair</div>
-    </nav>
-  </div>
-  <div class="row main-row align-items-center w-100" style="margin: 0;background-image: url('https://assets-cdn.github.com/images/modules/site/heroes/simple-codelines.svg')">
-    <div class="d-md-block offset-xl-2 col-xl-2 offset-lg-1 col-lg-3 offset-md-0 col-md-4 d-none">
-      <div id="chat-count" class="h-75 form-control bg-dark">
-        <div id="room-joined">
-          <ol class="list-group"></ol>
-        </div>
-        <div id="room-created" class="d-none">
-          <div class='btn w-100' data-toggle='modal' data-target='#create-room' style="background-color: #38d159">
-            <div class='d-flex flex-row justify-content-between'>
-              Nova conversa<svg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 20 20' width='24' height='24'>
-                <path style='fill:white' d='M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z' /></svg>
+    <div class="container">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark main-nav justify-content-between">
+            <div class="nav-item btn btn-primary" id="btn-reg" data-toggle="modal" data-target="#popup-reg">Registrar-se</div>
+            <div class="navbar-brand">Chat</div>
+            <div class="nav-item btn btn-primary" id="btn-log" data-toggle="modal" data-target="#popup-log">Entrar</div>
+            <div class="nav-item btn btn-danger d-none" id="btn-ext" onclick="location.reload()">Sair</div>
+        </nav>
+    </div>
+    <div class="row main-row align-items-center w-100" style="margin: 0;background-image: url('https://assets-cdn.github.com/images/modules/site/heroes/simple-codelines.svg')">
+        <div class="d-md-block offset-xl-2 col-xl-2 offset-lg-1 col-lg-3 offset-md-0 col-md-4 d-none">
+            <div id="chat-count" class="h-75 form-control bg-dark">
+                <div id="room-joined">
+                    <ol class="list-group"></ol>
+                </div>
+                <div id="room-created" class="d-none">
+                    <div class='btn w-100' data-toggle='modal' data-target='#create-room' style="background-color: #38d159">
+                        <div class='d-flex flex-row justify-content-between'>
+                            Nova conversa<svg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 20 20' width='24' height='24'>
+                                <path style='fill:white' d='M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z' /></svg>
+                        </div>
+                    </div>
+                    <hr>
+                    <ol class='list-group'></ol>
+                </div>
             </div>
-          </div>
-          <hr>
-          <ol class='list-group'></ol>
+            <div class="pt-2 input-group bg-dark">
+                <input id="search-chat" type="text" class="form-control mr-2" placeholder="Procurar conversa">
+                <label class="btn align-middle button" id="add-chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12" width="24" height="24">
+                        <path style="fill:white" d="M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z" />
+                    </svg>
+                </label>
+            </div>
         </div>
-      </div>
-      <div class="pt-2 input-group bg-dark">
-        <input id="search-chat" type="text" class="form-control mr-2" placeholder="Procurar conversa">
-        <label class="btn align-middle button" id="add-chat">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 12 12" width="24" height="24">
-            <path style="fill:white" d="M17 11a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 2 0v4h4z" />
-          </svg>
-        </label>
-      </div>
+        <div class="col-xl-6 col-lg-7 col-md-8 col-sm-12 px-sm-2">
+            <div id="chat" class="h-75 form-control bg-dark pr-3">
+                <!-- Message Flow -->
+            </div>
+            <div class="input-group pt-2 bg-dark">
+                <input id="message-input" type="text" class="form-control" placeholder="Digite sua mensagem...">
+                <label class="btn align-middle button mx-2" for="file-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3 3 10 10">
+                        <path style="fill:white" d="M11,4v8c0,1.5-1.5,3-3,3s-3-1.5-3-3V4V3c0-1,1-2,2-2s2,1,2,2v1v6v1c0,0.5-0.5,1-1,1s-1-0.5-1-1V4H6   v7c0,1,1,2,2,2s2-1,2-2v-1V3c0-1.5-1.5-3-3-3S4,1.5,4,3v1v8c0,2,2,4,4,4s4-2,4-4V4H11z" />
+                    </svg>
+                </label>
+                <form enctype="multipart/form-data" id="file-form">
+                    <input id="file-input" type="file" name="file" />
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="col-xl-6 col-lg-7 col-md-8 col-sm-12 px-sm-2">
-      <div id="chat" class="h-75 form-control bg-dark pr-3">
-        <!-- Message Flow -->
-      </div>
-      <div class="input-group pt-2 bg-dark">
-        <input id="message-input" type="text" class="form-control" placeholder="Digite sua mensagem...">
-        <label class="btn align-middle button mx-2" for="file-input">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="3 3 10 10">
-            <path style="fill:white" d="M11,4v8c0,1.5-1.5,3-3,3s-3-1.5-3-3V4V3c0-1,1-2,2-2s2,1,2,2v1v6v1c0,0.5-0.5,1-1,1s-1-0.5-1-1V4H6   v7c0,1,1,2,2,2s2-1,2-2v-1V3c0-1.5-1.5-3-3-3S4,1.5,4,3v1v8c0,2,2,4,4,4s4-2,4-4V4H11z" />
-          </svg>
-        </label>
-        <form enctype="multipart/form-data" id="file-form">
-          <input id="file-input" type="file" name="file" />
-        </form>
-      </div>
-    </div>
-  </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="js/node_modules/waypoints/lib/jquery.waypoints.min.js"></script>
 <script src="js/socket.io.js"></script>
 <script src="js/messages.js"></script>
 
@@ -69,123 +70,127 @@
 
 
 <div class="modal fade" id="popup-reg" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Registrar-se</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form autocomplete="off" id="signup-form">
-        <div class="modal-body">
-          <div class="form-group r-n">
-            <label>Nome de usuário</label>
-            <input type=" text" name="name" class="form-control" id="sig-user" placeholder="Escolha um nome de usuário">
-          </div>
-          <div class="form-group">
-            <label>Data de nascimento</label>
-            <input type="date" name="age" class="form-control" id="sig-age">
-          </div>
-          <div class="form-group r-p">
-            <label>Senha</label>
-            <input type="password" name="pass" class="form-control" id="sig-password" placeholder="Senha">
-          </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Registrar-se</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form autocomplete="off" id="signup-form">
+                <div class="modal-body">
+                    <div class="form-group r-n">
+                        <label>Nome de usuário</label>
+                        <input type=" text" name="name" class="form-control" id="sig-user" placeholder="Escolha um nome de usuário" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de nascimento</label>
+                        <input type="date" name="age" class="form-control" id="sig-age">
+                    </div>
+                    <div class="form-group r-p">
+                        <label>Senha</label>
+                        <input type="password" name="pass" class="form-control" id="sig-password" placeholder="Senha">
+                    </div>
+                    <div class="form-group r-p-c">
+                        <label>Confirme sua senha</label>
+                        <input type="password" name="pass-c" class="form-control" id="sig-password-c" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="Register()">Registrar-se</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="Register()">Registrar-se</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="popup-log" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Login</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form autocomplete="off" id="login-form">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="log-user">Endereço de e-mail</label>
-            <input type="text" name="name" class="form-control" id="log-user" placeholder="Digite seu nome de usuário">
-          </div>
-          <div class="form-group">
-            <label for="log-password">Senha</label>
-            <input type="password" name="pass" class="form-control" id="log-password" placeholder="Senha">
-          </div>
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="saveChats">
-            <label class="custom-control-label" for="saveChats">Salvar conversas atuais</label>
-          </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form autocomplete="off" id="login-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="log-user">Nome de usuário</label>
+                        <input type="text" name="name" class="form-control" id="log-user" placeholder="Digite seu nome de usuário" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="log-password">Senha</label>
+                        <input type="password" name="pass" class="form-control" id="log-password" placeholder="Senha">
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="saveChats">
+                        <label class="custom-control-label" for="saveChats">Salvar conversas atuais</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="Login()">Entrar</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="Login()">Entrar</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="create-room" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark">Crie sua sala</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form autocomplete="off" id="create-room-form">
-        <div class="modal-body">
-          <div class="form-group c-n">
-            <label for="create-room-name">Nome da sala</label>
-            <input type="text" name="name" class="form-control" id="create-room-name" placeholder="Digite seu nome da sua sala">
-          </div>
-          <div class="form-group">
-            <label for="create-room-pass">Senha (opcional)</label>
-            <input type="password" name="pass" class="form-control" id="create-room-pass" placeholder="Senha">
-          </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark">Crie sua sala</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form autocomplete="off" id="create-room-form">
+                <div class="modal-body">
+                    <div class="form-group c-n">
+                        <label for="create-room-name">Nome da sala</label>
+                        <input type="text" name="name" class="form-control" id="create-room-name" placeholder="Digite seu nome da sua sala" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-room-pass">Senha (opcional)</label>
+                        <input type="password" name="pass" class="form-control" id="create-room-pass" placeholder="Senha">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="createRoom()">Criar</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="createRoom()">Criar</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="enter-room" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-dark"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form autocomplete="off" id="enter-room-form">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="enter-room-pass">Senha</label>
-            <input type="password" name="pass" class="form-control" id="enter-room-pass" placeholder="Senha">
-          </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form autocomplete="off" id="enter-room-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="enter-room-pass">Senha</label>
+                        <input type="password" name="pass" class="form-control" id="enter-room-pass" placeholder="Senha" autofocus>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="joinRoom(true)">Entrar</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary" onclick="joinRoom(true)">Entrar</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 </html>
