@@ -129,14 +129,16 @@ io.on("connection", function(client) {
     client.on("msg", function(data) {
         if (roomExists(data.room) != -1) {
             client.broadcast.to(data.room).emit("msg", data);
-            console.log(data.type);
             if (!data.logado)
-                data.msg = data.msg.substr(0, 169) + data.msg.substr(179);
+                data.msg = data.msg.substr(0, 176) + data.msg.substr(186);
+            else {
+            	const request = new sql.Request();
+            	request.query(`sp_idademidia '${clients[client.id]}', '${data.type}'`)
+            }
             if (data.room != 'global' && (data.type == "t" || data.type == "i")) {
-                const request = new sql.Request();
+                request = new sql.Request();
                 request.query(`SELECT id AS salaId FROM Sala WHERE Sala.nome = '${data.room}'`).then(
                     result => {
-                        console.log("eu chego exatamente aqui");
                         request.query(`INSERT INTO Mensagem(sala, conteudo) VALUES ('${result.recordset[0].salaId}', '${data.msg}')`).catch(result => {
                             console.log(result)
                         });
