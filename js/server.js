@@ -1,4 +1,4 @@
-var express = require('express');
+﻿var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var cors = require('cors');
@@ -75,8 +75,6 @@ http.listen(3000, async function() {
 });
 
 io.on("connection", function(client) {
-
-    console.log('usuario conectado');
     for (var i = 0; i < rooms.length; i++)
         client.emit("created", {
             name: rooms[i].name,
@@ -208,6 +206,7 @@ io.on("connection", function(client) {
                     }
                     client.emit("fim", true);
                 } else {
+                    console.log("senha errada")
                     client.emit("login", {
                         status: false
                     });
@@ -233,7 +232,7 @@ io.on("connection", function(client) {
             const request = new sql.Request();
             request.query(`select id as id from sala where nome = '${data.room}' `).then(
                 result => {
-                    request.query(`select top 20 xx.conteudo as content from (select *, ROW_NUMBER() over (order by id desc) as r_n_n from mensagem) xx where r_n_n > ${data.times * 20} and sala = ${result.recordset[0].id}`).then(
+                    request.query(`select top 5 xx.conteudo as content from (select *, ROW_NUMBER() over (order by id desc) as r_n_n from mensagem where sala = ${result.recordset[0].id}) xx where r_n_n > ${data.times * 5}`).then(
                         result => {
                             client.emit("load", {
                                 room: data.room,
