@@ -122,10 +122,10 @@ function Register() {
     }
     $.post("http://" + ip + ":" + port + "/register", $('#signup-form').serialize(), (data) => {
         if (data.signup) {
-            $("#popup-reg .modal-body").html("<div class='h-2 text-success'>Registrado!");
-            setTimeout(function() {
-                $("#popup-reg").modal('hide');
-            }, 1500);
+            $("#popup-reg").modal('hide');
+            $("#log-user").val($('#sig-user').val());
+        	$("#log-password").val($('#sig-password').val());
+        	Login();
             $('#signup-form').trigger("reset");
         } else {
             $(".r-n small").remove();
