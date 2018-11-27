@@ -31,7 +31,7 @@ function enterRoom(e) {
     var id = roomExists(e.currentTarget.getAttribute('id'));
     if (id != -1) {
         $(".message-flow")[currentRoom].hidden = true;
-        $(".vizualizar")[currentRoom].innerHTML = $(".message-flow")[currentRoom].children[0].innerHTML;
+        $(".vizualizar")[currentRoom].innerHTML = $(".botao")[currentRoom].innerHTML;
         if ($(".vizualizar")[currentRoom].innerHTML == 0)
             $(".vizualizar")[currentRoom].hidden = true;
         else
@@ -122,10 +122,10 @@ function Register() {
     }
     $.post("http://" + ip + ":" + port + "/register", $('#signup-form').serialize(), (data) => {
         if (data.signup) {
-            $("#popup-reg .modal-body").html("<div class='h-2 text-success'>Registrado!");
-            setTimeout(function() {
-                $("#popup-reg").modal('hide');
-            }, 1500);
+            $("#popup-reg").modal('hide');
+            $("#log-user").val($('#sig-user').val());
+        	$("#log-password").val($('#sig-password').val());
+        	Login();
             $('#signup-form').trigger("reset");
         } else {
             $(".r-n small").remove();
@@ -145,7 +145,7 @@ function carregarMensagem() {
     var x = $(".message-flow")[currentRoom].children[1].name;
     console.log($(".message-flow")[currentRoom].children[1].name);
     $($(".message-flow")[currentRoom].children[1]).remove();
-    $($(".message-flow")[currentRoom]).prepend("<div class='progress mx-auto mt-1 w-50'><div class='progress-bar progress-bar-striped progress-bar-animated' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width: 100%'></div></div>");
+    $($(".message-flow")[currentRoom]).prepend("<center class='loading'><img src='http://superstorefinder.net/support/wp-content/uploads/2018/01/blue_loading.gif'/></center>");
     socket.emit("load", {
         room: rooms[currentRoom],
         times: x
@@ -187,11 +187,11 @@ socket.on("join", function(room) {
     }
     currentRoom = rooms.length;
     rooms[currentRoom] = room;
-    $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
+    $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='botao btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
     $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-between'>" + room + "<span class='vizualizar badge badge-danger shadow' hidden='true'>0</span></div></li>");
     botoes(currentRoom);
     if (currentRoom != 0) {
-        $($(".message-flow")[currentRoom]).prepend("<div class='progress mx-auto mt-1 w-50'><div class='progress-bar progress-bar-striped progress-bar-animated' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width: 100%'></div></div>");
+        $($(".message-flow")[currentRoom]).prepend("<center class='loading'><img class='loading' style='size:20px;'src='http://superstorefinder.net/support/wp-content/uploads/2018/01/blue_loading.gif'/></center>");
     }
     socket.emit("load", {
         room: room,
@@ -200,17 +200,18 @@ socket.on("join", function(room) {
 });
 
 socket.on("msg", function(data) {
-    var thisMessageFlow = $(".message-flow")[roomExists(data.room)];
+    var room = roomExists(data.room);
+    var thisMessageFlow = $(".message-flow")[room];
     thisMessageFlow.innerHTML += data.msg;
     var posInfoMessage = thisMessageFlow.lastChild.getBoundingClientRect();
     var posinfoChat = $("#chat")[0].getBoundingClientRect();
-    if (data.room == rooms[currentRoom]) {
+    if (room == currentRoom) {
         if (posInfoMessage.y + posInfoMessage.height >= posinfoChat.y + posinfoChat.height) {
             thisMessageFlow.children[0].hidden = false;
             thisMessageFlow.children[0].innerHTML = parseInt(thisMessageFlow.children[0].innerHTML) + 1;
         }
     } else {
-        thisMessageFlow.children[0].hidden = false;
+        $(".botao")[room].hidden = false;
         $(".vizualizar")[roomExists(data.room)].hidden = false;
         $(".vizualizar")[roomExists(data.room)].innerHTML = parseInt($(".vizualizar")[roomExists(data.room)].innerHTML) + 1;
     }
@@ -229,22 +230,23 @@ socket.on("correctPass", function(data) {
 });
 
 socket.on("logar", function(room) {
-    rooms[rooms.length] = room;
-    $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
-    $(".message-flow")[roomExists(room)].hidden = true;
-    $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-between'>" + room + "<span class='vizualizar badge badge-danger shadow' hidden='true'>0</span></div></li>");
-    $($(".message-flow")[roomExists(room)]).append("<div class='d-flex flex-row'><div class='justify-content-center message text-danger'>Você entrou na sala " + room + "</div></div>");
-    $("#room-created [id='" + room + "']").remove();
-    socket.emit("load", {
-        room: room,
-        times: 0
-    });
-    currentRoom = 0;
+    if(!roomExists(room)){
+        rooms[rooms.length] = room;
+        $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='botao btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
+        $(".message-flow")[roomExists(room)].hidden = true;
+        $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-between'>" + room + "<span class='vizualizar badge badge-danger shadow' hidden='true'>0</span></div></li>");
+        $($(".message-flow")[roomExists(room)]).append("<div class='d-flex flex-row'><div class='justify-content-center message text-danger'>Você entrou na sala " + room + "</div></div>");
+        $("#room-created [id='" + room + "']").remove();
+        socket.emit("load", {
+            room: room,
+            times: 0
+        });
+    }
 });
 
 socket.on("load", function(data) {
     var room = roomExists(data.room);
-    $($(".message-flow")[room].getElementsByClassName("progress")[0]).remove();
+    $($(".message-flow")[room].getElementsByClassName("loading")[0]).remove();
     var x = $(".message-flow")[room].children[0].outerHTML;
     $($(".message-flow")[room].children[0]).remove();
     var y;
@@ -294,7 +296,7 @@ socket.on("create", function(room) {
     }
     currentRoom = rooms.length;
     rooms[currentRoom] = room;
-    $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
+    $("#chat").append("<div class='message-flow' id='message-flow'><button style='bottom: 100px; right: 100px; border-radius: 50%' class='botao btn btn-danger shadow position-absolute' id='" + currentRoom + "' onclick='verMensagens()' hidden='true'>0</button></div>");
     $("#room-joined .list-group").append("<li class='list-group-item list-group-item-action' id='" + room + "' onclick='enterRoom(event)' style='background-color: #0099cc'><div class='d-flex flex-row justify-content-between'>" + room + "<span class='vizualizar badge badge-danger shadow' hidden='true'>0</span></div></li>");
     $($(".message-flow")[currentRoom]).append("<div class='d-flex flex-row'><div class='justify-content-center message text-danger'>Você criou a sala " + room + "</div></div>");
     $("#create-room").modal('hide');

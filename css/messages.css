@@ -8,6 +8,14 @@ body {
   foda.... :((
  */
 
+.loading img{
+    width: auto;
+    height: auto;
+    max-width: 20px;
+    max-height: 20px;
+    size: 20px;
+}
+
 textarea:hover,
 input:hover,
 textarea:active,

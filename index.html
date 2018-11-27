@@ -23,7 +23,9 @@
             </div>
         </div>
         <div class="card-footer bg-transparent"><button id="submit" class="btn btn-primary w-100">Conectar</button></div>
-        <div class="card-footer bg-transparent"><p class="text-muted">Aplicação desenvolvida por Gabriel Lui[s/z] Portel[l]a e <br>Luiz Augusto Santana</p></div>
+        <div class="card-footer bg-transparent">
+            <p class="text-muted">Aplicação desenvolvida por Gabriel Luiz e <br>Luiz Augusto Santana</p>
+        </div>
     </div>
 </body>
 
@@ -33,8 +35,17 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $("#submit").click(function() {
-    if ($("#ip").val() != "0" && $("#porta").val() != "0") {
-        window.location = "messages.html?ip=" + $("#ip").val() + "?port=" + $("#porta").val();
-    }
+    $.ajax({
+        url: "http://" + $("#ip").val() + ":" + $("#porta").val(),
+        cache: false,
+        async: false,
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            $(".card-body small").remove();
+            $(".card-body").append("<small class='text-danger'>IP ou porta incorretos.")
+        },
+        success: function(html) {
+            window.location = "messages.html?ip=" + $("#ip").val() + "?port=" + $("#porta").val();
+        }
+    });
 })
 </script>
