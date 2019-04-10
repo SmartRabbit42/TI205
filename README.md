@@ -1,13 +1,14 @@
 # dolphin
 Simple web chat
 
-1-Download
 
-2-Start node server
+1 - Download
 
-3-Open site
+2 - Start node server
 
-4-...
+3 - Open site
 
-5-profit
+4 - ...
+
+5 - profit
 
