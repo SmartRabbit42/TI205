@@ -13,6 +13,11 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class Client {
 
@@ -21,6 +26,7 @@ public class Client {
 	private JPanel activePanel;
 	
 	private final Dimension expectedDimension = new Dimension(500, 600);
+	private JTextField txtUsername;
 
 	/**
 	 * Launch the application.
@@ -79,6 +85,45 @@ public class Client {
 		
 		box.add(Box.createVerticalGlue());
 		box.add(panAuthentication);
+		panAuthentication.setLayout(null);
+		
+		JLabel lblAuthentication = new JLabel("Authentication");
+		lblAuthentication.setFont(new Font("Arial", Font.BOLD, 40));
+		lblAuthentication.setForeground(Color.WHITE);
+		lblAuthentication.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAuthentication.setBounds(0, 15, 500, 70);
+		panAuthentication.add(lblAuthentication);
+		
+		JLabel lblUsername = new JLabel("username");
+		lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUsername.setForeground(Color.WHITE);
+		lblUsername.setFont(new Font("Arial", Font.BOLD, 20));
+		lblUsername.setBounds(0, 120, 500, 30);
+		panAuthentication.add(lblUsername);
+		
+		txtUsername = new JTextField();
+		txtUsername.setBounds(100, 160, 300, 30);
+		panAuthentication.add(txtUsername);
+		txtUsername.setColumns(10);
+		
+		JLabel lblDataFile = new JLabel("data file");
+		lblDataFile.setForeground(Color.WHITE);
+		lblDataFile.setFont(new Font("Arial", Font.BOLD, 20));
+		lblDataFile.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDataFile.setBounds(0, 220, 500, 30);
+		panAuthentication.add(lblDataFile);
+		
+		JButton btnDataFile = new JButton("select data file");
+		btnDataFile.setForeground(Color.BLACK);
+		btnDataFile.setFont(new Font("Arial", Font.BOLD, 15));
+		btnDataFile.setBounds(150, 260, 200, 30);
+		panAuthentication.add(btnDataFile);
+		
+		JButton btnAuthentication = new JButton("authenticate");
+		btnAuthentication.setFont(new Font("Arial", Font.BOLD, 40));
+		btnAuthentication.setForeground(new Color(0, 0, 0));
+		btnAuthentication.setBounds(100, 400, 300, 100);
+		panAuthentication.add(btnAuthentication);
 		box.add(Box.createVerticalGlue());
 		
 		panEntry.add(box);
