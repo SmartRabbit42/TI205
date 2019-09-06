@@ -1,6 +1,5 @@
 package visual;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -20,17 +19,18 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import data.Data;
+import network.Network;
 
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 
 public class Client {
 
 	private JFrame frmDolphin;
 	
-	private boolean authenticated;
 	private File historyFile;
 	
 	private final Dimension expectedDimension = new Dimension(500, 600);
@@ -69,9 +69,6 @@ public class Client {
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		Container contentPane = frmDolphin.getContentPane();
-		contentPane.setLayout(new CardLayout(0, 0));
 		
 		
 		// Entry
@@ -140,7 +137,7 @@ public class Client {
 		
 		panEntry.add(box);
 		
-		contentPane.add(panEntry, "authentication");
+		frmDolphin.getContentPane().add(panEntry, "authentication");
 		
 		
 		// Master
@@ -152,7 +149,6 @@ public class Client {
 		
 		
 		// Start up
-		authenticated = false;
 		
 		
 		// Events
@@ -175,9 +171,20 @@ public class Client {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				Data.LoadHistory(historyFile, txtUsername.getText());
-				authenticated = true;
-				((CardLayout) contentPane.getLayout()).show(contentPane, "master");
+				
+				try {
+					Network.Connect();
+				} catch (IOException e) {
+					// TODO
+					e.printStackTrace();
+				}
+
+				changePanel("master");
 			}
 		});
+	}
+	
+	private void changePanel(String panel) {
+		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), panel);
 	}
 }

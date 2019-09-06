@@ -9,7 +9,10 @@ public class Data {
 	public static ArrayList<User> onlineUsers;
 	public static ArrayList<User> offlineUsers;
 	
-	public static void LoadHistory(File history, String username) {
+	public static void LoadHistory(File historyFile, String username) {
+		if (historyFile == null)
+			return;
+		
 		
 	}
 }

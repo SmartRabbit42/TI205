@@ -1,15 +1,22 @@
 package network;
 
-import data.User;
+import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Network {
-	public static User localUser;
+	public static boolean connected;
 	
 	public static String localIp;
 	public static int localPort;
 	
-	public static void Connect() {
+	private static ServerSocket serverSocket;
+	
+	public static void Connect() throws IOException {
+		serverSocket = new ServerSocket();
 		
+		UpdateMessagePump();
+		
+		connected = true;
 	}
 	
 	public static void Disconnect() {
