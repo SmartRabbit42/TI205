@@ -3,6 +3,7 @@ package data;
 import java.util.Date;
 
 public class Message {
+	
 	private User sender;
 	private String content;
 	private Date time;

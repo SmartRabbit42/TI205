@@ -69,6 +69,7 @@ public class Client {
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmDolphin.getContentPane().setLayout(new CardLayout());
 		
 		
 		// Entry

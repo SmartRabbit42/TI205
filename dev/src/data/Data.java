@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class Data {
+	
 	public static User localUser;
 	
 	public static ArrayList<User> onlineUsers;

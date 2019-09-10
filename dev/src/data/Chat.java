@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Chat {
+	
 	private String name;
 	private Date start;
 	
