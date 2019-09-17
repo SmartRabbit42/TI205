@@ -1,8 +1,15 @@
 package network;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import data.Data;
+import data.User; 
+import data.UserStatus;
+import network.netMsg.NetMsg;
 
 public class Network {
 	
@@ -11,29 +18,57 @@ public class Network {
 	
 	private static boolean updating;
 	
-	public static String localIp;
-	public static int localPort;
-	
 	private static ServerSocket serverSocket;
 	
-	public static void Connect() throws IOException {
-		serverSocket = new ServerSocket();
+	public static void start(String username) throws IOException {
+		if (connected)
+			return;
 		
-		UpdateMessagePump();
+		serverSocket = new ServerSocket(0);
+		
+		Data.localUser = new User(username);
+		Data.localUser.setAddress(Inet4Address.getLocalHost().getHostAddress());
+		Data.localUser.setPort(serverSocket.getLocalPort());
 		
 		listening = true;
 		connected = true;
-	}
-	
-	public static void Disconnect() {
 		
+		updateMessagePump();
 	}
 	
-	public static void SendMessage() {
+	public static void shut() {
+		try {
+			serverSocket.close();
+		} catch (IOException e) { }
 		
+		listening = false;
+		connected = false;
 	}
 	
-	public static void UpdateMessagePump() {
+	public static boolean sendMessage(User user, NetMsg msg) {
+		if (user.getStatus()  == UserStatus.offline)
+			return false;
+		
+		try {
+			Socket receiver = new Socket(user.getAddress(), user.getPort());
+			
+			msg.setUsername(Data.localUser.getUsername());
+			msg.setToken(user.getToken());
+			
+			ObjectOutputStream out = new ObjectOutputStream(receiver.getOutputStream());
+		    out.writeObject(msg);
+			out.close();
+			
+			receiver.close();
+		}
+		catch (Exception e) { 
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static void updateMessagePump() {
 		Runnable monitor = new Runnable() {
 			@Override
 			public void run() {

@@ -33,7 +33,7 @@ public class Client {
 	
 	private File historyFile;
 	
-	private final Dimension expectedDimension = new Dimension(500, 600);
+	private Dimension expectedDimension = ;
 
 	/**
 	 * Launch the application.
@@ -65,7 +65,7 @@ public class Client {
 		frmDolphin = new JFrame();
 		frmDolphin.setTitle("dolphin");
 		frmDolphin.setBounds(100, 100, 500, 600);
-		frmDolphin.setMinimumSize(expectedDimension);
+		frmDolphin.setMinimumSize(new Dimension(500, 600));
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,9 +81,9 @@ public class Client {
 		
 		JPanel panAuthentication = new JPanel();
 		panAuthentication.setBackground(new Color(10, 50, 75, 255));
-		panAuthentication.setPreferredSize(expectedDimension);
-		panAuthentication.setMaximumSize(expectedDimension);
-		panAuthentication.setMinimumSize(expectedDimension);
+		panAuthentication.setPreferredSize(new Dimension(500, 600));
+		panAuthentication.setMaximumSize(new Dimension(500, 600));
+		panAuthentication.setMinimumSize(new Dimension(500, 600));
 		panAuthentication.setLayout(null);
 		
 		JLabel lblAuthentication = new JLabel("Authentication");
@@ -144,9 +144,9 @@ public class Client {
 		// Master
 		JPanel panMaster = new JPanel();
 		panMaster.setBackground(new Color(15, 100, 150, 255));
-		panMaster.setLayout(new BorderLayout(0, 0));
 		
 		frmDolphin.getContentPane().add(panMaster, "master");
+		panMaster.setLayout(null);
 		
 		
 		// Start up
@@ -163,7 +163,7 @@ public class Client {
 		        int returnVal = fc.showOpenDialog(frmDolphin);
 
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		        	historyFile = fc.getSelectedFile();
+		        	Data.loadHistory(fc.getSelectedFile());
 		            lblSelectedFile.setText(historyFile.getName());
 		        }
 			}
@@ -171,21 +171,20 @@ public class Client {
 		btnAuthentication.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				Data.LoadHistory(historyFile, txtUsername.getText());
-				
 				try {
-					Network.Connect();
+					Network.start(txtUsername.getText());
 				} catch (IOException e) {
 					// TODO
 					e.printStackTrace();
 				}
 
-				changePanel("master");
+				changeToMainPanel();
 			}
 		});
 	}
 	
-	private void changePanel(String panel) {
-		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), panel);
+	private void changeToMainPanel() {
+		
+		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), "master");
 	}
 }

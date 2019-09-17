@@ -5,14 +5,24 @@ import java.util.ArrayList;
 public class User {
 	
 	private String username;
-	private String address;
+	private String token;
 	
-	private String status;
+	private String address;
+	private int port;
+	
+	private byte status;
 	private String profiePicUrl;
 
 	private ArrayList<Chat> chats;
 
-	public User() { }
+	public User () { 
+		setStatus(UserStatus.online);
+	}
+	
+	public User (String username) {
+		setUsername(username);
+		setStatus(UserStatus.online);
+	}
 	
 	public String getUsername() {
 		return username;
@@ -21,6 +31,13 @@ public class User {
 		this.username = username;
 	}
 	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public String getAddress() {
 		return address;
 	}
@@ -28,10 +45,17 @@ public class User {
 		this.address = address;
 	}
 	
-	public String getStatus() {
+	public int getPort() {
+		return port;
+	}
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public byte getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(byte status) {
 		this.status = status;
 	}
 	
