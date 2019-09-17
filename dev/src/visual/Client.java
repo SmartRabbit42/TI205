@@ -32,8 +32,6 @@ public class Client {
 	private JFrame frmDolphin;
 	
 	private File historyFile;
-	
-	private Dimension expectedDimension = ;
 
 	/**
 	 * Launch the application.
@@ -65,7 +63,6 @@ public class Client {
 		frmDolphin = new JFrame();
 		frmDolphin.setTitle("dolphin");
 		frmDolphin.setBounds(100, 100, 500, 600);
-		frmDolphin.setMinimumSize(new Dimension(500, 600));
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,7 +74,7 @@ public class Client {
 		panEntry.setBackground(new Color(15, 100, 150, 255));
 		panEntry.setLayout(new BorderLayout(0, 0));
 		
-		Box box = new Box(BoxLayout.Y_AXIS);
+		Box entryBox = new Box(BoxLayout.Y_AXIS);
 		
 		JPanel panAuthentication = new JPanel();
 		panAuthentication.setBackground(new Color(10, 50, 75, 255));
@@ -132,11 +129,11 @@ public class Client {
 		panAuthentication.add(lblSelectedFile);
 		panAuthentication.add(btnAuthentication);
 		
-		box.add(Box.createVerticalGlue());
-		box.add(panAuthentication);
-		box.add(Box.createVerticalGlue());
+		entryBox.add(Box.createVerticalGlue());
+		entryBox.add(panAuthentication);
+		entryBox.add(Box.createVerticalGlue());
 		
-		panEntry.add(box);
+		panEntry.add(entryBox);
 		
 		frmDolphin.getContentPane().add(panEntry, "authentication");
 		
@@ -144,13 +141,29 @@ public class Client {
 		// Master
 		JPanel panMaster = new JPanel();
 		panMaster.setBackground(new Color(15, 100, 150, 255));
+		panMaster.setLayout(new BorderLayout(0, 0));
+		
+		Box masterBox = new Box(BoxLayout.Y_AXIS);
+		
+		JPanel panMessages = new JPanel();
+		panMessages.setBackground(new Color(10, 50, 75, 255));
+		panMessages.setPreferredSize(new Dimension(800, 600));
+		panMessages.setMaximumSize(new Dimension(800, 600));
+		panMessages.setMinimumSize(new Dimension(800, 600));
+		panMessages.setLayout(null);
+		
+		masterBox.add(Box.createVerticalGlue());
+		masterBox.add(panMessages);
+		masterBox.add(Box.createVerticalGlue());
+		
+		panMaster.add(masterBox);
 		
 		frmDolphin.getContentPane().add(panMaster, "master");
-		panMaster.setLayout(null);
+		
 		
 		
 		// Start up
-		
+		frmDolphin.setMinimumSize(new Dimension(500, 600));
 		
 		// Events
 		btnDataFile.addMouseListener(new MouseAdapter() {
@@ -184,6 +197,7 @@ public class Client {
 	}
 	
 	private void changeToMainPanel() {
+		frmDolphin.setMinimumSize(new Dimension(800, 600));
 		
 		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), "master");
 	}
