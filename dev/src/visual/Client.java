@@ -63,21 +63,25 @@ public class Client {
 		frmDolphin = new JFrame();
 		frmDolphin.setTitle("dolphin");
 		frmDolphin.setBounds(100, 100, 500, 600);
+		frmDolphin.setMinimumSize(new Dimension(500, 600));
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmDolphin.getContentPane().setLayout(new CardLayout());
-		
-		
-		// Entry
+
+		initializeEntry();
+		initializeMaster();
+	}
+	
+	private void initializeEntry() {
 		JPanel panEntry = new JPanel();
-		panEntry.setBackground(new Color(15, 100, 150, 255));
+		panEntry.setBackground(new Color(20, 100, 152, 255));
 		panEntry.setLayout(new BorderLayout(0, 0));
 		
 		Box entryBox = new Box(BoxLayout.Y_AXIS);
 		
 		JPanel panAuthentication = new JPanel();
-		panAuthentication.setBackground(new Color(10, 50, 75, 255));
+		panAuthentication.setBackground(new Color(15, 75, 114, 255));
 		panAuthentication.setPreferredSize(new Dimension(500, 600));
 		panAuthentication.setMaximumSize(new Dimension(500, 600));
 		panAuthentication.setMinimumSize(new Dimension(500, 600));
@@ -137,73 +141,6 @@ public class Client {
 		
 		frmDolphin.getContentPane().add(panEntry, "entry");
 		
-		
-		// Master
-		JPanel panMaster = new JPanel();
-		panMaster.setBackground(new Color(15, 100, 150, 255));
-		panMaster.setLayout(new BorderLayout(0, 0));
-		
-		Box masterBox = new Box(BoxLayout.Y_AXIS);
-		
-		JPanel panMain = new JPanel();
-		panMain.setBackground(new Color(10, 50, 75, 255));
-		panMain.setPreferredSize(new Dimension(800, 600));
-		panMain.setMaximumSize(new Dimension(800, 600));
-		panMain.setMinimumSize(new Dimension(800, 600));
-		panMain.setLayout(null);
-		
-		JPanel panMessages = new JPanel();
-		panMessages.setBounds(250, 0, 550, 600);
-		panMessages.setBackground(new Color(0, 0, 0));
-		panMessages.setLayout(null);
-		
-		JPanel panMessageFlow = new JPanel();
-		panMessageFlow.setBounds(0, 0, 550, 500);
-		panMessageFlow.setBackground(new Color(255, 255, 255));
-		panMessageFlow.setLayout(null);
-		
-		JPanel panSendMessage = new JPanel();
-		panSendMessage.setBounds(0, 500, 550, 100);
-		panSendMessage.setBackground(new Color(120, 120, 120));
-		panSendMessage.setLayout(null);
-		
-		panMessages.add(panMessageFlow);
-		panMessages.add(panSendMessage);
-		
-		JPanel panAside = new JPanel();
-		panAside.setBounds(0, 0, 250, 600);
-		panAside.setBackground(new Color(255, 255, 255));
-		panAside.setLayout(null);
-		
-		JPanel panCommands = new JPanel();
-		panCommands.setBounds(0, 0, 250, 100);
-		panCommands.setBackground(new Color(1, 1, 1));
-		panCommands.setLayout(null);
-		
-		JPanel panChats = new JPanel();
-		panChats.setBounds(0, 100, 250, 500);
-		panChats.setBackground(new Color(120, 120, 120));
-		panChats.setLayout(null);
-		
-		panAside.add(panCommands);
-		panAside.add(panChats);
-		
-		panMain.add(panMessages);
-		panMain.add(panAside);
-		
-		masterBox.add(Box.createVerticalGlue());
-		masterBox.add(panMain);
-		masterBox.add(Box.createVerticalGlue());
-		
-		panMaster.add(masterBox);
-		
-		frmDolphin.getContentPane().add(panMaster, "master");
-		
-		
-		// Start up
-		frmDolphin.setMinimumSize(new Dimension(500, 600));
-		
-		
 		// Events
 		btnDataFile.addMouseListener(new MouseAdapter() {
 			@Override
@@ -235,6 +172,83 @@ public class Client {
 		});
 	}
 	
+	private void initializeMaster() {
+		JPanel panMaster = new JPanel();
+		panMaster.setBackground(new Color(20, 100, 152, 255));
+		panMaster.setLayout(new BorderLayout(0, 0));
+		
+		Box box = new Box(BoxLayout.Y_AXIS);
+		
+		JPanel panMain = new JPanel();
+		panMain.setPreferredSize(new Dimension(800, 600));
+		panMain.setMaximumSize(new Dimension(800, 600));
+		panMain.setMinimumSize(new Dimension(800, 600));
+		panMain.setLayout(null);
+		
+		JPanel panMessages = new JPanel();
+		panMessages.setBounds(250, 0, 550, 600);
+		panMessages.setLayout(null);
+		
+		JPanel panMessageFlow = new JPanel();
+		panMessageFlow.setBounds(0, 0, 550, 550);
+		panMessageFlow.setBackground(new Color(15, 75, 114, 255));
+		panMessageFlow.setLayout(null);
+		
+		JPanel panSendMessage = new JPanel();
+		panSendMessage.setBounds(0, 550, 550, 50);
+		panSendMessage.setBackground(new Color(10, 50, 76, 255));
+		panSendMessage.setLayout(null);
+		
+		JTextField txtMessage = new JTextField();
+		txtMessage.setBounds(10, 10, 490, 30);
+		
+		JButton btnMessage = new JButton();
+		btnMessage.setBounds(510, 10, 30, 30);
+		
+		panSendMessage.add(txtMessage);
+		panSendMessage.add(btnMessage);
+		
+		panMessages.add(panMessageFlow);
+		panMessages.add(panSendMessage);
+		
+		JPanel panAside = new JPanel();
+		panAside.setBounds(0, 0, 250, 600);
+		panAside.setLayout(null);
+		
+		JPanel panCommands = new JPanel();
+		panCommands.setBounds(0, 0, 250, 100);
+		panCommands.setBackground(new Color(5, 25, 38, 255));
+		panCommands.setLayout(null);
+		
+		JLabel lblUsername = new JLabel();
+		
+		JLabel lblAddress = new JLabel();
+		
+		JButton btnConfigurations = new JButton();
+		
+		JPanel panStatus = new JPanel();
+		
+		JPanel panChats = new JPanel();
+		panChats.setBounds(0, 100, 250, 500);
+		panChats.setBackground(new Color(10, 50, 76, 255));
+		panChats.setLayout(null);
+		
+		panAside.add(panCommands);
+		panAside.add(panChats);
+		
+		panMain.add(panMessages);
+		panMain.add(panAside);
+		
+		box.add(Box.createVerticalGlue());
+		box.add(panMain);
+		box.add(Box.createVerticalGlue());
+		
+		panMaster.add(box);
+		
+		frmDolphin.getContentPane().add(panMaster, "master");
+	}
+	
+	// REMOVE
 	private void changeToMainPanel() {
 		frmDolphin.setMinimumSize(new Dimension(800, 600));
 		
