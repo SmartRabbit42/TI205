@@ -63,7 +63,7 @@ public class Client {
 		frmDolphin = new JFrame();
 		frmDolphin.setTitle("dolphin");
 		frmDolphin.setBounds(100, 100, 500, 600);
-		frmDolphin.setMinimumSize(new Dimension(500, 600));
+		frmDolphin.setMinimumSize(new Dimension(516, 638));
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -250,7 +250,7 @@ public class Client {
 	
 	// REMOVE
 	private void changeToMainPanel() {
-		frmDolphin.setMinimumSize(new Dimension(800, 600));
+		frmDolphin.setMinimumSize(new Dimension(816, 638));
 		
 		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), "master");
 	}
