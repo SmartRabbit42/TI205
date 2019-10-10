@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -216,20 +217,35 @@ public class Client {
 		panAside.setLayout(null);
 		
 		JPanel panCommands = new JPanel();
-		panCommands.setBounds(0, 0, 250, 100);
+		panCommands.setBounds(0, 0, 250, 65);
 		panCommands.setBackground(new Color(5, 25, 38, 255));
 		panCommands.setLayout(null);
 		
 		JLabel lblUsername = new JLabel();
+		lblUsername.setBounds(10, 5, 200, 40);
+		lblUsername.setForeground(new Color(255, 255, 255));
+		lblUsername.setFont(new Font("Arial", Font.BOLD, 30));
+		lblUsername.setVerticalAlignment(SwingConstants.TOP);
+		lblUsername.setText("xxxxxxxxxxxxxxxxx");
 		
 		JLabel lblAddress = new JLabel();
+		lblAddress.setBounds(10, 40, 200, 20);
+		lblAddress.setForeground(new Color(20, 100, 152, 255));
+		lblAddress.setFont(new Font("Arial", Font.ITALIC, 15));
+		lblAddress.setVerticalAlignment(SwingConstants.TOP);
+		lblAddress.setText("xxx.xxx.xxx.xxx:xxxxx");
 		
-		JButton btnConfigurations = new JButton();
+		JButton btnConfigurations = new JButton("");
+		btnConfigurations.setBounds(212, 20, 25, 25);
 		
 		JPanel panStatus = new JPanel();
 		
+		panCommands.add(lblUsername);
+		panCommands.add(lblAddress);
+		panCommands.add(btnConfigurations);
+		
 		JPanel panChats = new JPanel();
-		panChats.setBounds(0, 100, 250, 500);
+		panChats.setBounds(0, 65, 250, 535);
 		panChats.setBackground(new Color(10, 50, 76, 255));
 		panChats.setLayout(null);
 		
