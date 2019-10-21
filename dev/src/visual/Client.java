@@ -11,7 +11,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -19,24 +18,28 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import data.Chat;
 import data.Data;
+import data.Message;
+import data.User;
+import data.Validate;
 import network.Network;
 
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
 public class Client {
 
 	private JFrame frmDolphin;
+	private CardLayout cardLayout;
 	
-	private File historyFile;
+	private File dataFile;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -50,17 +53,14 @@ public class Client {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
+	// Initialization
 	public Client() {
-		initialize();
+		initializeForm();
+		initializeEntry();
+		initializeMaster();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
+	private void initializeForm() {
 		frmDolphin = new JFrame();
 		frmDolphin.setTitle("dolphin");
 		frmDolphin.setBounds(100, 100, 500, 600);
@@ -69,9 +69,18 @@ public class Client {
 		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmDolphin.getContentPane().setLayout(new CardLayout());
-
-		initializeEntry();
-		initializeMaster();
+		
+		cardLayout = (CardLayout) frmDolphin.getContentPane().getLayout();
+		
+		frmDolphin.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+            	try {
+					Data.dump(dataFile);
+				} catch (IOException e1) { }
+            	System.exit(0);
+            }
+        });
 	}
 	
 	private void initializeEntry() {
@@ -147,28 +156,35 @@ public class Client {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				final JFileChooser fc = new JFileChooser();
+				
 				fc.setDialogTitle("select history file");
 				fc.setFileFilter(new FileNameExtensionFilter("dolphin files", "dolphin"));
 				
 		        int returnVal = fc.showOpenDialog(frmDolphin);
 
 		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		        	Data.loadHistory(fc.getSelectedFile());
-		            lblSelectedFile.setText(historyFile.getName());
+		        	dataFile = fc.getSelectedFile();
+		            lblSelectedFile.setText(dataFile.getName());
 		        }
 			}
 		});
 		btnAuthentication.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				if (!Validate.username(txtUsername.getText()))
+					// TODO
+					return;
+				
 				try {
 					Network.start(txtUsername.getText());
-				} catch (IOException e) {
+					Data.load(dataFile);
+				} catch (IOException | ClassNotFoundException e) {
 					// TODO
 					e.printStackTrace();
 				}
 
-				changeToMainPanel();
+				frmDolphin.setMinimumSize(new Dimension(816, 638));
+				cardLayout.show(frmDolphin.getContentPane(), "master");
 			}
 		});
 	}
@@ -238,8 +254,6 @@ public class Client {
 		JButton btnConfigurations = new JButton("");
 		btnConfigurations.setBounds(212, 20, 25, 25);
 		
-		JPanel panStatus = new JPanel();
-		
 		panCommands.add(lblUsername);
 		panCommands.add(lblAddress);
 		panCommands.add(btnConfigurations);
@@ -263,11 +277,21 @@ public class Client {
 		
 		frmDolphin.getContentPane().add(panMaster, "master");
 	}
-	
-	// REMOVE
-	private void changeToMainPanel() {
-		frmDolphin.setMinimumSize(new Dimension(816, 638));
+
+	// Events
+	public static void messageSent(Message msg, Chat chat) {
 		
-		((CardLayout) frmDolphin.getContentPane().getLayout()).show(frmDolphin.getContentPane(), "master");
+	}
+	
+	public static void messageReceived(Message msg, Chat chat) {
+		
+	}
+	
+	public static void loadChat(Chat chat) {
+		
+	}
+	
+	public static void updateUser(User user) {
+		
 	}
 }

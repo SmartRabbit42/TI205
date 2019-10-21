@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import data.Data;
 import data.User; 
@@ -36,36 +37,28 @@ public class Network {
 		updateMessagePump();
 	}
 	
-	public static void shut() {
-		try {
-			serverSocket.close();
-		} catch (IOException e) { }
+	public static void shut() throws IOException {
+		serverSocket.close();
 		
 		listening = false;
 		connected = false;
 	}
 	
-	public static boolean sendMessage(User user, NetMsg msg) {
-		if (user.getStatus()  == UserStatus.offline)
-			return false;
-		
-		try {
-			Socket receiver = new Socket(user.getAddress(), user.getPort());
-			
-			msg.setUsername(Data.localUser.getUsername());
-			msg.setToken(user.getToken());
-			
-			ObjectOutputStream out = new ObjectOutputStream(receiver.getOutputStream());
-		    out.writeObject(msg);
-			out.close();
-			
-			receiver.close();
-		}
-		catch (Exception e) { 
-			return false;
+	public static void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
+		if (user.getStatus() == UserStatus.offline) {
+			// TODO
 		}
 		
-		return true;
+		Socket receiver = new Socket(user.getAddress(), user.getPort());
+		
+		msg.setUsername(Data.localUser.getUsername());
+		msg.setToken(user.getToken());
+		
+		ObjectOutputStream out = new ObjectOutputStream(receiver.getOutputStream());
+	    out.writeObject(msg);
+		out.close();
+		
+		receiver.close();
 	}
 	
 	public static void updateMessagePump() {

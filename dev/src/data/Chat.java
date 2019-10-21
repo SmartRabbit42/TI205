@@ -1,15 +1,18 @@
 package data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Chat {
+public class Chat implements Serializable {
+	
+	private static final long serialVersionUID = -7541266357185083144L;
 	
 	private String name;
 	private Date start;
 	
 	private ArrayList<User> members;
-	private ArrayList<Message> messageFlow;
+	private ArrayList<Message> messages;
 	
 	public Chat() { }
 
@@ -27,11 +30,11 @@ public class Chat {
 		this.start = start;
 	}
 
-	public ArrayList<Message> getMessageFlow() {
-		return messageFlow;
+	public ArrayList<Message> getMessages() {
+		return messages;
 	}
-	public void setMessageFlow(ArrayList<Message> messageFlow) {
-		this.messageFlow = messageFlow;
+	public void setMessages(ArrayList<Message> messageFlow) {
+		this.messages = messageFlow;
 	}
 
 	public ArrayList<User> getMembers() {

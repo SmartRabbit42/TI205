@@ -1,8 +1,11 @@
 package data;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
+	
+	private static final long serialVersionUID = 3495882302934872561L;
 	
 	private User sender;
 	private String content;
