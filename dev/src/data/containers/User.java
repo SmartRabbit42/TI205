@@ -1,4 +1,4 @@
-package data;
+package data.containers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,17 +14,23 @@ public class User implements Serializable {
 	private int port;
 	
 	private byte status;
-	private String profiePicUrl;
+	
+	public static class Status {
+		public static final byte offline = 0;
+		public static final byte online = 1;
+		public static final byte busy = 2;
+		public static final byte occupied = 3;
+	}
 
 	private ArrayList<Chat> chats;
 
 	public User () { 
-		setStatus(UserStatus.online);
+		setStatus(Status.online);
 	}
 	
 	public User (String username) {
 		setUsername(username);
-		setStatus(UserStatus.online);
+		setStatus(Status.online);
 	}
 	
 	public String getUsername() {
@@ -60,13 +66,6 @@ public class User implements Serializable {
 	}
 	public void setStatus(byte status) {
 		this.status = status;
-	}
-	
-	public String getProfiePicUrl() {
-		return profiePicUrl;
-	}
-	public void setProfiePicUrl(String profiePicUrl) {
-		this.profiePicUrl = profiePicUrl;
 	}
 
 	public ArrayList<Chat> getChats() {

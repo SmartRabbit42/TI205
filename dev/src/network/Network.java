@@ -8,8 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import data.Data;
-import data.User; 
-import data.UserStatus;
+import data.containers.User;
 import network.netMsg.NetMsg;
 
 public class Network {
@@ -17,19 +16,21 @@ public class Network {
 	public static boolean connected;
 	public static boolean listening;
 	
+	public static String address;
+	public static int port;
+	
 	private static boolean updating;
 	
 	private static ServerSocket serverSocket;
 	
-	public static void start(String username) throws IOException {
+	public static void start() throws IOException {
 		if (connected)
 			return;
 		
 		serverSocket = new ServerSocket(0);
 		
-		Data.localUser = new User(username);
-		Data.localUser.setAddress(Inet4Address.getLocalHost().getHostAddress());
-		Data.localUser.setPort(serverSocket.getLocalPort());
+		address = Inet4Address.getLocalHost().getHostAddress();
+		port = serverSocket.getLocalPort();
 		
 		listening = true;
 		connected = true;
@@ -45,7 +46,7 @@ public class Network {
 	}
 	
 	public static void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
-		if (user.getStatus() == UserStatus.offline) {
+		if (user.getStatus() == User.Status.offline) {
 			// TODO
 		}
 		

@@ -1,37 +1,34 @@
 package visual;
 
+import java.io.File;
+import java.io.IOException;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-
-import java.awt.Color;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import data.Chat;
-import data.Data;
-import data.Message;
-import data.User;
-import data.Validate;
-import network.Network;
-
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import javax.swing.JPanel;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JFileChooser;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import data.Data;
+import data.Helper;
+import data.containers.Message;
+import data.containers.User;
+import data.containers.Chat;
+import network.Network;
 
 public class Client {
 
@@ -76,8 +73,13 @@ public class Client {
             @Override
             public void windowClosing(WindowEvent e) {
             	try {
-					Data.dump(dataFile);
-				} catch (IOException e1) { }
+            		if (Network.connected) {
+            			Data.dump(dataFile);
+            			Network.shut();
+            		}
+				} catch (IOException e1) { 
+					e1.printStackTrace();
+				}
             	System.exit(0);
             }
         });
@@ -157,7 +159,7 @@ public class Client {
 			public void mousePressed(MouseEvent arg0) {
 				final JFileChooser fc = new JFileChooser();
 				
-				fc.setDialogTitle("select history file");
+				fc.setDialogTitle("select data file");
 				fc.setFileFilter(new FileNameExtensionFilter("dolphin files", "dolphin"));
 				
 		        int returnVal = fc.showOpenDialog(frmDolphin);
@@ -170,21 +172,29 @@ public class Client {
 		});
 		btnAuthentication.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent arg0) {
-				if (!Validate.username(txtUsername.getText()))
-					// TODO
-					return;
-				
+			public void mousePressed(MouseEvent arg0) {	
 				try {
-					Network.start(txtUsername.getText());
-					Data.load(dataFile);
-				} catch (IOException | ClassNotFoundException e) {
+					Network.start();
+					
+					if (dataFile != null)
+						Data.load(dataFile);
+					else {
+						Helper.validateUsername(txtUsername.getText());
+						Data.init(txtUsername.getText());
+					}
+					
+					frmDolphin.setMinimumSize(new Dimension(816, 638));
+					cardLayout.show(frmDolphin.getContentPane(), "master");
+				} catch (IOException e) {
+					// TODO
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO
+					e.printStackTrace();
+				} catch (Exception e) {
 					// TODO
 					e.printStackTrace();
 				}
-
-				frmDolphin.setMinimumSize(new Dimension(816, 638));
-				cardLayout.show(frmDolphin.getContentPane(), "master");
 			}
 		});
 	}

@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.io.Serializable;
+
+import data.containers.User;
+import data.containers.Chat;
 
 import visual.Client;
 
@@ -20,38 +22,30 @@ public class Data {
 	
 	public static ArrayList<Chat> chats;
 	
-	private class auxData implements Serializable {
+	public static void init(String username) {
+		localUser = new User(username);
 		
-		private static final long serialVersionUID = -3728345190233194710L;
+		onlineUsers = new ArrayList<User>();
+		offlineUsers = new ArrayList<User>();
 		
-		private User localUser;
-		private ArrayList<User> onlineUsers;
-		private ArrayList<User> offlineUsers;
-		private ArrayList<Chat> chats;
-		
-		public void load() {
-			localUser = Data.localUser;
-			onlineUsers = Data.onlineUsers;
-			offlineUsers = Data.offlineUsers;
-			chats = Data.chats;
-		}
-		
-		public void dump() {
-			Data.localUser = localUser;
-			Data.onlineUsers = onlineUsers;
-			Data.offlineUsers = offlineUsers;
-			Data.chats = chats;
-		}
+		chats = new ArrayList<Chat>();
 	}
 	
 	public static void load(File dataFile) throws IOException, ClassNotFoundException {
+		init("anon");
+		
 		FileInputStream fis = new FileInputStream(dataFile);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		
-	    auxData aux = (auxData) ois.readObject();
-	    aux.dump();
-	    
-	    Client.updateUser(localUser);
+		Object obj = ois.readObject();
+		
+		if (obj != null) {
+			AuxData aux; 
+			aux = (AuxData) obj;
+		    aux.dump();
+		}
+		
+		Client.updateUser(localUser);
 	    
 	    for (Chat chat : chats)
 	    	Client.loadChat(chat);
@@ -60,11 +54,11 @@ public class Data {
 	    fis.close();
 	}
 	
-	public static void dump(File dataFile) throws IOException {
+	public static void dump(File dataFile) throws IOException {	
 		FileOutputStream fos = new FileOutputStream(dataFile);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
-		auxData aux = (new Data()).new auxData();
+		AuxData aux = new AuxData();
 		aux.load();
 		oos.writeObject(aux);
 		
