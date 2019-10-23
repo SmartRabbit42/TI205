@@ -33,4 +33,9 @@ public class MessageHandler implements Runnable {
 				break;
 		}
 	}
+	
+	// Handlers
+	private void OnConnectionMsg() {
+		
+	}
 }

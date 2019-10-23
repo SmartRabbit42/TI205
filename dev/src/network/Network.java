@@ -10,20 +10,29 @@ import java.net.UnknownHostException;
 import data.Data;
 import data.containers.User;
 import network.netMsg.NetMsg;
+import visual.Client;
 
 public class Network {
 	
-	public static boolean connected;
-	public static boolean listening;
+	private Client client;
+	private Data data;
 	
-	public static String address;
-	public static int port;
+	public boolean connected;
+	public boolean listening;
 	
-	private static boolean updating;
+	public String address;
+	public int port;
 	
-	private static ServerSocket serverSocket;
+	private boolean updating;
 	
-	public static void start() throws IOException {
+	private ServerSocket serverSocket;
+	
+	public Network(Client client, Data data) {
+		this.client = client;
+		this.data = data;
+	}
+	
+	public void start() throws IOException {
 		if (connected)
 			return;
 		
@@ -38,21 +47,21 @@ public class Network {
 		updateMessagePump();
 	}
 	
-	public static void shut() throws IOException {
+	public void shut() throws IOException {
 		serverSocket.close();
 		
 		listening = false;
 		connected = false;
 	}
 	
-	public static void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
+	public void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
 		if (user.getStatus() == User.Status.offline) {
 			// TODO
 		}
 		
 		Socket receiver = new Socket(user.getAddress(), user.getPort());
 		
-		msg.setUsername(Data.localUser.getUsername());
+		msg.setUsername(data.getLocalUser().getUsername());
 		msg.setToken(user.getToken());
 		
 		ObjectOutputStream out = new ObjectOutputStream(receiver.getOutputStream());
@@ -62,7 +71,7 @@ public class Network {
 		receiver.close();
 	}
 	
-	public static void updateMessagePump() {
+	public void updateMessagePump() {
 		Runnable monitor = new Runnable() {
 			@Override
 			public void run() {

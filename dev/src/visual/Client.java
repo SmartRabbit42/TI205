@@ -24,7 +24,6 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import data.Data;
-import data.Helper;
 import data.containers.Message;
 import data.containers.User;
 import data.containers.Chat;
@@ -32,10 +31,16 @@ import network.Network;
 
 public class Client {
 
+	private Data data;
+	private Network network;
+	
 	private JFrame frmDolphin;
 	private CardLayout cardLayout;
 	
 	private File dataFile;
+	
+	private JLabel lblUsername;
+	private JLabel lblAddress;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -52,6 +57,9 @@ public class Client {
 
 	// Initialization
 	public Client() {
+		data = new Data();
+		network = new Network(this, data);
+		
 		initializeForm();
 		initializeEntry();
 		initializeMaster();
@@ -73,9 +81,12 @@ public class Client {
             @Override
             public void windowClosing(WindowEvent e) {
             	try {
-            		if (Network.connected) {
-            			Data.dump(dataFile);
-            			Network.shut();
+            		if (dataFile == null)
+            			selectDataFile();
+          		
+            		if (network.connected) {
+            			data.dump(dataFile);
+            			network.shut();
             		}
 				} catch (IOException e1) { 
 					e1.printStackTrace();
@@ -157,31 +168,25 @@ public class Client {
 		btnDataFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				final JFileChooser fc = new JFileChooser();
-				
-				fc.setDialogTitle("select data file");
-				fc.setFileFilter(new FileNameExtensionFilter("dolphin files", "dolphin"));
-				
-		        int returnVal = fc.showOpenDialog(frmDolphin);
-
-		        if (returnVal == JFileChooser.APPROVE_OPTION) {
-		        	dataFile = fc.getSelectedFile();
-		            lblSelectedFile.setText(dataFile.getName());
-		        }
+				selectDataFile();
+				if (dataFile != null)
+					lblSelectedFile.setText(dataFile.getName());
 			}
 		});
 		btnAuthentication.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
 				try {
-					Network.start();
+					network.start();
 					
 					if (dataFile != null)
-						Data.load(dataFile);
+						data.load(dataFile);
 					else {
-						Helper.validateUsername(txtUsername.getText());
-						Data.init(txtUsername.getText());
+						data.init(txtUsername.getText());
 					}
+					
+					updateLocalUser();
+					loadChats();
 					
 					frmDolphin.setMinimumSize(new Dimension(816, 638));
 					cardLayout.show(frmDolphin.getContentPane(), "master");
@@ -192,9 +197,9 @@ public class Client {
 					// TODO
 					e.printStackTrace();
 				} catch (Exception e) {
-					// TODO
+					// TODO 
 					e.printStackTrace();
-				}
+				} 
 			}
 		});
 	}
@@ -247,14 +252,14 @@ public class Client {
 		panCommands.setBackground(new Color(5, 25, 38, 255));
 		panCommands.setLayout(null);
 		
-		JLabel lblUsername = new JLabel();
+		lblUsername = new JLabel();
 		lblUsername.setBounds(10, 5, 200, 40);
 		lblUsername.setForeground(new Color(255, 255, 255));
 		lblUsername.setFont(new Font("Arial", Font.BOLD, 30));
 		lblUsername.setVerticalAlignment(SwingConstants.TOP);
 		lblUsername.setText("xxxxxxxxxxxxxxxxx");
 		
-		JLabel lblAddress = new JLabel();
+		lblAddress = new JLabel();
 		lblAddress.setBounds(10, 40, 200, 20);
 		lblAddress.setForeground(new Color(20, 100, 152, 255));
 		lblAddress.setFont(new Font("Arial", Font.ITALIC, 15));
@@ -288,20 +293,37 @@ public class Client {
 		frmDolphin.getContentPane().add(panMaster, "master");
 	}
 
-	// Events
-	public static void messageSent(Message msg, Chat chat) {
+	// Methods
+	public void addMessage(Message msg, Chat chat) {
 		
 	}
 	
-	public static void messageReceived(Message msg, Chat chat) {
+	public void loadChats() {
+		for (Chat chat : data.getChats()) {
+			
+		}	
+	}
+	
+	public void updateLocalUser() {
+		User localUser = data.getLocalUser();
+		
+		lblUsername.setText(localUser.getUsername());
+		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
+	}
+	
+	public void addChat() {
 		
 	}
 	
-	public static void loadChat(Chat chat) {
+	private void selectDataFile() {
+		final JFileChooser fc = new JFileChooser();
 		
-	}
-	
-	public static void updateUser(User user) {
+		fc.setDialogTitle("select data file");
+		fc.setFileFilter(new FileNameExtensionFilter("dolphin files", "dolphin"));
 		
+        int returnVal = fc.showOpenDialog(frmDolphin);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        	dataFile = fc.getSelectedFile();
 	}
 }

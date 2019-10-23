@@ -3,6 +3,7 @@ package data;
 import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,58 +12,78 @@ import java.util.ArrayList;
 import data.containers.User;
 import data.containers.Chat;
 
-import visual.Client;
-
-public class Data {
+public class Data implements Serializable {
 	
-	public static User localUser;
+	private static final long serialVersionUID = -3185108578513027310L;
 	
-	public static ArrayList<User> onlineUsers;
-	public static ArrayList<User> offlineUsers;
+	private User localUser;
+	private ArrayList<User> onlineUsers;
+	private ArrayList<User> offlineUsers;
+	private ArrayList<Chat> chats;
 	
-	public static ArrayList<Chat> chats;
+	public Data() { }
 	
-	public static void init(String username) {
-		localUser = new User(username);
-		
-		onlineUsers = new ArrayList<User>();
-		offlineUsers = new ArrayList<User>();
-		
-		chats = new ArrayList<Chat>();
+	public void init(String username) throws Exception {
+		setLocalUser(new User(username));
+		setOnlineUsers(new ArrayList<User>());
+		setOfflineUsers(new ArrayList<User>());
+		setChats(new ArrayList<Chat>());
 	}
 	
-	public static void load(File dataFile) throws IOException, ClassNotFoundException {
-		init("anon");
-		
+	public void load(File dataFile) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(dataFile);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		
 		Object obj = ois.readObject();
 		
 		if (obj != null) {
-			AuxData aux; 
-			aux = (AuxData) obj;
-		    aux.dump();
+			Data aux = (Data) obj;
+			
+		    setLocalUser(aux.getLocalUser());
+		    setOnlineUsers(aux.getOnlineUsers());
+		    setOfflineUsers(aux.getOfflineUsers());
+		    setChats(aux.getChats());
 		}
-		
-		Client.updateUser(localUser);
-	    
-	    for (Chat chat : chats)
-	    	Client.loadChat(chat);
 	    
 	    ois.close();
 	    fis.close();
 	}
 	
-	public static void dump(File dataFile) throws IOException {	
+	public void dump(File dataFile) throws IOException {	
 		FileOutputStream fos = new FileOutputStream(dataFile);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
-		AuxData aux = new AuxData();
-		aux.load();
-		oos.writeObject(aux);
+		oos.writeObject(this);
 		
 		oos.close();
 		fos.close();
+	}
+
+	public User getLocalUser() {
+		return this.localUser;
+	}
+	public void setLocalUser(User localUser) {
+		this.localUser = localUser;
+	}
+	
+	public ArrayList<User> getOnlineUsers() {
+		return onlineUsers;
+	}
+	public void setOnlineUsers(ArrayList<User> onlineUsers) {
+		this.onlineUsers = onlineUsers;
+	}
+
+	public ArrayList<User> getOfflineUsers() {
+		return offlineUsers;
+	}
+	public void setOfflineUsers(ArrayList<User> offlineUsers) {
+		this.offlineUsers = offlineUsers;
+	}
+	
+	public ArrayList<Chat> getChats() {
+		return this.chats;
+	}
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
 	}
 }
