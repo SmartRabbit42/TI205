@@ -15,6 +15,8 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -96,6 +98,7 @@ public class Client {
         });
 	}
 	
+	// TODO reorganize widgets
 	private void initializeEntry() {
 		JPanel panEntry = new JPanel();
 		panEntry.setBackground(new Color(20, 100, 152, 255));
@@ -268,6 +271,7 @@ public class Client {
 		
 		JButton btnConfigurations = new JButton("");
 		btnConfigurations.setBounds(212, 20, 25, 25);
+		btnConfigurations.setIcon(new ImageIcon("src/resources/config_icon.png"));
 		
 		panCommands.add(lblUsername);
 		panCommands.add(lblAddress);
@@ -277,6 +281,11 @@ public class Client {
 		panChats.setBounds(0, 65, 250, 535);
 		panChats.setBackground(new Color(10, 50, 76, 255));
 		panChats.setLayout(null);
+		
+		JButton btnAddChats = new JButton("+");
+		btnAddChats.setBounds(110, 10, 30, 30);
+		
+		panChats.add(btnAddChats);
 		
 		panAside.add(panCommands);
 		panAside.add(panChats);
@@ -291,6 +300,15 @@ public class Client {
 		panMaster.add(box);
 		
 		frmDolphin.getContentPane().add(panMaster, "master");
+		
+		// Events
+		btnAddChats.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {	
+				AddChatDialog dialog = new AddChatDialog(frmDolphin);
+				dialog.setVisible(true);
+			}
+		});
 	}
 
 	// Methods
