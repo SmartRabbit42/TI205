@@ -14,7 +14,6 @@ import visual.Client;
 
 public class Network {
 	
-	private Client client;
 	private Data data;
 	
 	public boolean connected;
@@ -27,8 +26,7 @@ public class Network {
 	
 	private ServerSocket serverSocket;
 	
-	public Network(Client client, Data data) {
-		this.client = client;
+	public Network(Data data) {
 		this.data = data;
 	}
 	

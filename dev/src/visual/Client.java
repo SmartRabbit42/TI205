@@ -15,8 +15,6 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -33,16 +31,18 @@ import network.Network;
 import visual.dialogs.*;
 import visual.panels.*;
 
-public class Client {
+public class Client extends JFrame {
+	
+	private static final long serialVersionUID = 1L;
 
+	public static Client instance;
+	
 	private Data data;
 	private Network network;
 	
-	private JFrame frmDolphin;
-	private CardLayout cardLayout;
-	
 	private File dataFile;
 	
+	private JPanel panChats;
 	private JLabel lblUsername;
 	private JLabel lblAddress;
 
@@ -50,8 +50,8 @@ public class Client {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Client window = new Client();
-					window.frmDolphin.setVisible(true);
+					Client frmDolphin = new Client();
+					frmDolphin.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -61,8 +61,9 @@ public class Client {
 
 	// Initialization
 	public Client() {
+		instance = this;
 		data = new Data();
-		network = new Network(this, data);
+		network = new Network(data);
 		
 		initializeForm();
 		initializeEntry();
@@ -70,17 +71,14 @@ public class Client {
 	}
 
 	private void initializeForm() {
-		frmDolphin = new JFrame();
-		frmDolphin.setTitle("dolphin");
-		frmDolphin.setBounds(100, 100, 500, 600);
-		frmDolphin.setMinimumSize(new Dimension(516, 638));
-		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmDolphin.getContentPane().setLayout(new CardLayout());
+		setTitle("dolphin");
+		setBounds(100, 100, 500, 600);
+		setMinimumSize(new Dimension(516, 638));
+		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(new CardLayout());
 		
-		cardLayout = (CardLayout) frmDolphin.getContentPane().getLayout();
-		
-		frmDolphin.addWindowListener(new WindowAdapter() {
+		addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
             	try {
@@ -166,7 +164,7 @@ public class Client {
 		
 		panEntry.add(entryBox);
 		
-		frmDolphin.getContentPane().add(panEntry, "entry");
+		getContentPane().add(panEntry, "entry");
 		
 		// Events
 		btnDataFile.addMouseListener(new MouseAdapter() {
@@ -190,10 +188,11 @@ public class Client {
 					network.start();
 					
 					updateLocalUser();
-					loadChats();
+					for (Chat chat : data.getChats())
+						addChat(chat);
 					
-					frmDolphin.setMinimumSize(new Dimension(816, 638));
-					cardLayout.show(frmDolphin.getContentPane(), "master");
+					setMinimumSize(new Dimension(816, 638));
+					((CardLayout) getContentPane().getLayout()).show(getContentPane(), "master");
 				} catch (IOException e) {
 					// TODO
 					e.printStackTrace();
@@ -261,30 +260,27 @@ public class Client {
 		lblUsername.setForeground(new Color(255, 255, 255));
 		lblUsername.setFont(new Font("Arial", Font.BOLD, 30));
 		lblUsername.setVerticalAlignment(SwingConstants.TOP);
-		lblUsername.setText("xxxxxxxxxxxxxxxxx");
 		
 		lblAddress = new JLabel();
 		lblAddress.setBounds(10, 40, 200, 20);
 		lblAddress.setForeground(new Color(20, 100, 152, 255));
 		lblAddress.setFont(new Font("Arial", Font.ITALIC, 15));
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
-		lblAddress.setText("xxx.xxx.xxx.xxx:xxxxx");
 		
 		JButton btnConfigurations = new JButton("");
 		btnConfigurations.setBounds(212, 20, 25, 25);
-		btnConfigurations.setIcon(new ImageIcon("src/resources/config_icon.png"));
 		
 		panCommands.add(lblUsername);
 		panCommands.add(lblAddress);
 		panCommands.add(btnConfigurations);
 		
-		JPanel panChats = new JPanel();
+		panChats = new JPanel();
 		panChats.setBounds(0, 65, 250, 535);
 		panChats.setBackground(new Color(10, 50, 76, 255));
-		panChats.setLayout(null);
+		panChats.setLayout(new BoxLayout(panChats, BoxLayout.Y_AXIS));
 		
 		JButton btnCreateChat = new JButton("+");
-		btnCreateChat.setBounds(110, 10, 30, 30);
+		btnCreateChat.setSize(new Dimension(30, 30));
 		
 		panChats.add(btnCreateChat);
 		
@@ -299,14 +295,14 @@ public class Client {
 		box.add(Box.createVerticalGlue());
 		
 		panMaster.add(box);
-		
-		frmDolphin.getContentPane().add(panMaster, "master");
+		    
+		getContentPane().add(panMaster, "master");
 		
 		// Events
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog(frmDolphin);
+				CreateChatDialog dialog = new CreateChatDialog(instance, data);
 				dialog.setVisible(true);
 			}
 		});
@@ -317,12 +313,6 @@ public class Client {
 		
 	}
 	
-	public void loadChats() {
-		for (Chat chat : data.getChats()) {
-			
-		}	
-	}
-	
 	public void updateLocalUser() {
 		User localUser = data.getLocalUser();
 		
@@ -330,8 +320,13 @@ public class Client {
 		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
 	}
 	
-	public void addChat() {
+	public void addChat(Chat chat) {
+		if (!data.getChats().contains(chat))
+			return;
 		
+		ChatPanel newChat = new ChatPanel(chat);
+		
+		panChats.add(newChat, 0);
 	}
 	
 	private void selectDataFile() {
@@ -340,7 +335,7 @@ public class Client {
 		fc.setDialogTitle("select data file");
 		fc.setFileFilter(new FileNameExtensionFilter("dolphin files", "dolphin"));
 		
-        int returnVal = fc.showOpenDialog(frmDolphin);
+        int returnVal = fc.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION)
         	dataFile = fc.getSelectedFile();

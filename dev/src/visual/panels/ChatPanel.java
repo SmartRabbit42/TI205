@@ -1,5 +1,12 @@
 package visual.panels;
 
-public class ChatPanel {
+import javax.swing.JPanel;
 
+import data.containers.Chat;
+
+public class ChatPanel extends JPanel{
+	
+	public ChatPanel(Chat chat) {
+		
+	}
 }

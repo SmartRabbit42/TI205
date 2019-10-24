@@ -9,31 +9,71 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
+import data.Data;
+import data.containers.Chat;
+import visual.Client;
+
 public class CreateChatDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public CreateChatDialog(JFrame parent) {
+	private Data data;
+	
+	private Chat newChat;
+	
+	JPanel panUsers;
+	
+	public CreateChatDialog(JFrame parent, Data data) {
 		super(parent, Dialog.ModalityType.DOCUMENT_MODAL);
+
+		this.data = data;
 		
 		initializeComponent();
 	}
 	
 	private void initializeComponent() {
 		JPanel panList = new JPanel();
-		panList.setLayout(new BoxLayout(panList, BoxLayout.PAGE_AXIS));
+		panList.setLayout(new BoxLayout(panList, BoxLayout.Y_AXIS));
 		
-		JLabel label = new JLabel("Create Chat");
+		JLabel lblTitle = new JLabel("Create Chat");
 		
-		JScrollPane listScroller = new JScrollPane();
-		listScroller.setAlignmentX(LEFT_ALIGNMENT);
-
-		panList.add(label);
+		JLabel lblName = new JLabel("chat name:");
+		
+		JTextField txtName = new JTextField();
+		
+		JScrollPane jspUsers = new JScrollPane(panUsers);
+		jspUsers.setAlignmentX(LEFT_ALIGNMENT);
+		jspUsers.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		jspUsers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		panUsers = new JPanel();
+		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
+		
+		JPanel panAddUser = new JPanel();
+		panAddUser.setSize(panUsers.getWidth(), 30);
+		panAddUser.setLayout(new BoxLayout(panAddUser, BoxLayout.X_AXIS));
+		
+		JLabel lblAddUser = new JLabel("add user");
+		
+		JButton btnAddUser = new JButton("+");
+		
+		panAddUser.add(Box.createHorizontalGlue());
+		panAddUser.add(lblAddUser);
+		panAddUser.add(Box.createRigidArea(new Dimension(5, 0)));
+		panAddUser.add(btnAddUser);
+		
+		panUsers.add(panAddUser);
+		
+		panList.add(lblTitle);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));
-		panList.add(listScroller);
+		panList.add(lblName);
+		panList.add(txtName);
+		panList.add(Box.createRigidArea(new Dimension(0,5)));
+		panList.add(jspUsers);
+		panList.add(Box.createRigidArea(new Dimension(0,5)));
 
 		JPanel panButtons = new JPanel();
-		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.LINE_AXIS));
+		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		JButton btnCancel = new JButton("cancel");
 		
@@ -48,20 +88,30 @@ public class CreateChatDialog extends JDialog {
 		contentPane.add(panList, BorderLayout.CENTER);
 		contentPane.add(panButtons, BorderLayout.PAGE_END);
 		
+		newChat = new Chat();
+		
 		pack();
 		setLocationRelativeTo(this.getParent());
 		
 		// Events
-		btnCancel.addMouseListener(new MouseAdapter() {
+		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				
 			}
 		});
+		btnCancel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				setVisible(false);
+			}
+		});
 		btnCreate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				
+				data.getChats().add(newChat);
+				Client.instance.addChat(newChat);
+				setVisible(false);
 			}
 		});
 	}
