@@ -30,6 +30,8 @@ import data.containers.Message;
 import data.containers.User;
 import data.containers.Chat;
 import network.Network;
+import visual.dialogs.*;
+import visual.panels.*;
 
 public class Client {
 
@@ -73,7 +75,6 @@ public class Client {
 		frmDolphin.setBounds(100, 100, 500, 600);
 		frmDolphin.setMinimumSize(new Dimension(516, 638));
 		frmDolphin.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		frmDolphin.setVisible(true);
 		frmDolphin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmDolphin.getContentPane().setLayout(new CardLayout());
 		
@@ -83,10 +84,10 @@ public class Client {
             @Override
             public void windowClosing(WindowEvent e) {
             	try {
-            		if (dataFile == null)
-            			selectDataFile();
-          		
             		if (network.connected) {
+            			while (dataFile == null)
+                			selectDataFile();
+            			
             			data.dump(dataFile);
             			network.shut();
             		}
@@ -180,13 +181,13 @@ public class Client {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
 				try {
-					network.start();
-					
 					if (dataFile != null)
 						data.load(dataFile);
 					else {
 						data.init(txtUsername.getText());
 					}
+					
+					network.start();
 					
 					updateLocalUser();
 					loadChats();
@@ -282,10 +283,10 @@ public class Client {
 		panChats.setBackground(new Color(10, 50, 76, 255));
 		panChats.setLayout(null);
 		
-		JButton btnAddChats = new JButton("+");
-		btnAddChats.setBounds(110, 10, 30, 30);
+		JButton btnCreateChat = new JButton("+");
+		btnCreateChat.setBounds(110, 10, 30, 30);
 		
-		panChats.add(btnAddChats);
+		panChats.add(btnCreateChat);
 		
 		panAside.add(panCommands);
 		panAside.add(panChats);
@@ -302,10 +303,10 @@ public class Client {
 		frmDolphin.getContentPane().add(panMaster, "master");
 		
 		// Events
-		btnAddChats.addMouseListener(new MouseAdapter() {
+		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				AddChatDialog dialog = new AddChatDialog(frmDolphin);
+				CreateChatDialog dialog = new CreateChatDialog(frmDolphin);
 				dialog.setVisible(true);
 			}
 		});

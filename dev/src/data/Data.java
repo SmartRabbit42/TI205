@@ -63,6 +63,9 @@ public class Data implements Serializable {
 		return this.localUser;
 	}
 	public void setLocalUser(User localUser) {
+		if (this.localUser != null)
+			return;
+		
 		this.localUser = localUser;
 	}
 	
@@ -70,6 +73,9 @@ public class Data implements Serializable {
 		return onlineUsers;
 	}
 	public void setOnlineUsers(ArrayList<User> onlineUsers) {
+		if (this.onlineUsers != null)
+			return;
+		
 		this.onlineUsers = onlineUsers;
 	}
 
@@ -77,6 +83,9 @@ public class Data implements Serializable {
 		return offlineUsers;
 	}
 	public void setOfflineUsers(ArrayList<User> offlineUsers) {
+		if (this.offlineUsers != null)
+			return;
+		
 		this.offlineUsers = offlineUsers;
 	}
 	
@@ -84,6 +93,9 @@ public class Data implements Serializable {
 		return this.chats;
 	}
 	public void setChats(ArrayList<Chat> chats) {
+		if (this.chats != null)
+			return;
+		
 		this.chats = chats;
 	}
 }

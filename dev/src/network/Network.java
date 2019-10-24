@@ -33,25 +33,28 @@ public class Network {
 	}
 	
 	public void start() throws IOException {
-		if (connected)
+		if (this.connected)
 			return;
 		
-		serverSocket = new ServerSocket(0);
+		this.serverSocket = new ServerSocket(0);
 		
-		address = Inet4Address.getLocalHost().getHostAddress();
-		port = serverSocket.getLocalPort();
+		this.address = Inet4Address.getLocalHost().getHostAddress();
+		this.port = serverSocket.getLocalPort();
 		
-		listening = true;
-		connected = true;
+		data.getLocalUser().setAddress(this.address);
+		data.getLocalUser().setPort(this.port);
+		
+		this.listening = true;
+		this.connected = true;
 		
 		updateMessagePump();
 	}
 	
 	public void shut() throws IOException {
-		serverSocket.close();
+		this.serverSocket.close();
 		
-		listening = false;
-		connected = false;
+		this.listening = false;
+		this.connected = false;
 	}
 	
 	public void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {

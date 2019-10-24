@@ -1,6 +1,5 @@
 package network.netMsg.entry;
 
-import network.netMsg.MessageType;
 import network.netMsg.NetMsg;
 
 public class OnConnectionMsg extends NetMsg {

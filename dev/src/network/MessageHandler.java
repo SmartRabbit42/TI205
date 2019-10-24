@@ -3,7 +3,6 @@ package network;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-import network.netMsg.MessageType;
 import network.netMsg.NetMsg;
 
 public class MessageHandler implements Runnable {
@@ -29,7 +28,7 @@ public class MessageHandler implements Runnable {
 	private void handleMessage(NetMsg msg) {
 		switch (msg.getMessageType()) {
 			default:
-			case MessageType.none:
+			case NetMsg.MessageType.none:
 				break;
 		}
 	}

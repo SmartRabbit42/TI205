@@ -6,12 +6,21 @@ public class NetMsg implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private byte messageType = MessageType.none;
+	private byte messageType;
+	
+	public static final class MessageType {
+		public static final byte none = 0;
+		
+		public static final byte connect = 1;
+		public static final byte onConnect = 2;
+	}
 	
 	private String username;
 	private String token;
 
-	public NetMsg() { }
+	public NetMsg() { 
+		setMessageType(MessageType.none);
+	}
 
 	public byte getMessageType() {
 		return messageType;
