@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
-import data.Data;
 import data.containers.Chat;
 import visual.Client;
 
@@ -17,16 +16,16 @@ public class CreateChatDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Data data;
+	private Client client;
 	
 	private Chat newChat;
-	
-	JPanel panUsers;
-	
-	public CreateChatDialog(JFrame parent, Data data) {
-		super(parent, Dialog.ModalityType.DOCUMENT_MODAL);
 
-		this.data = data;
+	private JPanel panUsers;
+	
+	public CreateChatDialog(Client client) {
+		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
+		
+		this.client = client;
 		
 		initializeComponent();
 	}
@@ -46,8 +45,8 @@ public class CreateChatDialog extends JDialog {
 		jspUsers.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		jspUsers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		panUsers = new JPanel();
-		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
+		this.panUsers = new JPanel();
+		this.panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
 		JPanel panAddUser = new JPanel();
 		panAddUser.setSize(panUsers.getWidth(), 30);
@@ -62,7 +61,7 @@ public class CreateChatDialog extends JDialog {
 		panAddUser.add(Box.createRigidArea(new Dimension(5, 0)));
 		panAddUser.add(btnAddUser);
 		
-		panUsers.add(panAddUser);
+		this.panUsers.add(panAddUser);
 		
 		panList.add(lblTitle);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));
@@ -97,7 +96,7 @@ public class CreateChatDialog extends JDialog {
 		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				
+					
 			}
 		});
 		btnCancel.addMouseListener(new MouseAdapter() {
@@ -109,8 +108,7 @@ public class CreateChatDialog extends JDialog {
 		btnCreate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				data.getChats().add(newChat);
-				Client.instance.addChat(newChat);
+				client.addChat(newChat);
 				setVisible(false);
 			}
 		});

@@ -302,7 +302,10 @@ public class Client extends JFrame {
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog(instance, data);
+				CreateChatDialog dialog = new CreateChatDialog((Client) arg0.getComponent().
+						getParent().getParent().getParent().getParent().getParent().getParent()
+						.getParent().getParent().getParent());
+				
 				dialog.setVisible(true);
 			}
 		});
@@ -321,8 +324,7 @@ public class Client extends JFrame {
 	}
 	
 	public void addChat(Chat chat) {
-		if (!data.getChats().contains(chat))
-			return;
+		data.getChats().add(chat);
 		
 		ChatPanel newChat = new ChatPanel(chat);
 		
