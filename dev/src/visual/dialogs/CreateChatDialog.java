@@ -22,10 +22,10 @@ public class CreateChatDialog extends JDialog {
 
 	private JPanel panUsers;
 	
-	public CreateChatDialog(Client client) {
-		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
+	public CreateChatDialog(Client parent) {
+		super(parent, Dialog.ModalityType.DOCUMENT_MODAL);
 		
-		this.client = client;
+		this.client = parent;
 		
 		initializeComponent();
 	}
@@ -96,7 +96,7 @@ public class CreateChatDialog extends JDialog {
 		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-					
+				
 			}
 		});
 		btnCancel.addMouseListener(new MouseAdapter() {

@@ -2,6 +2,7 @@ package visual;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -323,12 +324,20 @@ public class Client extends JFrame {
 		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
 	}
 	
-	public void addChat(Chat chat) {
+	public void addChat(Chat chat) {	
 		data.getChats().add(chat);
 		
 		ChatPanel newChat = new ChatPanel(chat);
 		
 		panChats.add(newChat, 0);
+	}
+	
+	public ArrayList<User> getOnlineUsers() {
+		return data.getOnlineUsers();
+	}
+	
+	public ArrayList<User> getOfflineUsers() {
+		return data.getOfflineUsers();
 	}
 	
 	private void selectDataFile() {
