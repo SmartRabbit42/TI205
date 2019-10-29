@@ -1,6 +1,7 @@
 package visual.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
@@ -14,8 +15,8 @@ import visual.Client;
 
 public class CreateChatDialog extends JDialog {
 	
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 8544625027506291911L;
+
 	private Client client;
 	
 	private Chat newChat;
@@ -39,29 +40,21 @@ public class CreateChatDialog extends JDialog {
 		JLabel lblName = new JLabel("chat name:");
 		
 		JTextField txtName = new JTextField();
+		txtName.setMaximumSize(new Dimension(500, 50));
+
+		this.panUsers = new JPanel();
+		this.panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
+		
+		JButton btnAddUser = new JButton("+");
+		btnAddUser.setSize(new Dimension(30, 30));
+		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		this.panUsers.add(btnAddUser);
 		
 		JScrollPane jspUsers = new JScrollPane(panUsers);
 		jspUsers.setAlignmentX(LEFT_ALIGNMENT);
 		jspUsers.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		jspUsers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		this.panUsers = new JPanel();
-		this.panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
-		
-		JPanel panAddUser = new JPanel();
-		panAddUser.setSize(panUsers.getWidth(), 30);
-		panAddUser.setLayout(new BoxLayout(panAddUser, BoxLayout.X_AXIS));
-		
-		JLabel lblAddUser = new JLabel("add user");
-		
-		JButton btnAddUser = new JButton("+");
-		
-		panAddUser.add(Box.createHorizontalGlue());
-		panAddUser.add(lblAddUser);
-		panAddUser.add(Box.createRigidArea(new Dimension(5, 0)));
-		panAddUser.add(btnAddUser);
-		
-		this.panUsers.add(panAddUser);
 		
 		panList.add(lblTitle);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));
@@ -87,7 +80,7 @@ public class CreateChatDialog extends JDialog {
 		contentPane.add(panList, BorderLayout.CENTER);
 		contentPane.add(panButtons, BorderLayout.PAGE_END);
 		
-		newChat = new Chat();
+		this.newChat = new Chat();
 		
 		pack();
 		setLocationRelativeTo(this.getParent());

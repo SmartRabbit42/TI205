@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
@@ -35,7 +36,7 @@ public class Client extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 
-	public static Client instance;
+	private Client instance;
 	
 	private Data data;
 	private Network network;
@@ -43,6 +44,7 @@ public class Client extends JFrame {
 	private File dataFile;
 	
 	private JPanel panChats;
+	private JPanel panUsers;
 	private JLabel lblUsername;
 	private JLabel lblAddress;
 
@@ -250,10 +252,10 @@ public class Client extends JFrame {
 		panAside.setBounds(0, 0, 250, 600);
 		panAside.setLayout(null);
 		
-		JPanel panCommands = new JPanel();
-		panCommands.setBounds(0, 0, 250, 65);
-		panCommands.setBackground(new Color(5, 25, 38, 255));
-		panCommands.setLayout(null);
+		JPanel panHeader = new JPanel();
+		panHeader.setBounds(0, 0, 250, 65);
+		panHeader.setBackground(new Color(5, 25, 38, 255));
+		panHeader.setLayout(null);
 		
 		lblUsername = new JLabel();
 		lblUsername.setBounds(10, 5, 200, 40);
@@ -270,22 +272,61 @@ public class Client extends JFrame {
 		JButton btnConfigurations = new JButton("");
 		btnConfigurations.setBounds(212, 20, 25, 25);
 		
-		panCommands.add(lblUsername);
-		panCommands.add(lblAddress);
-		panCommands.add(btnConfigurations);
+		panHeader.add(lblUsername);
+		panHeader.add(lblAddress);
+		panHeader.add(btnConfigurations);
+		
+		JPanel panBody = new JPanel();
+		panBody.setLayout(null);
+		panBody.setBounds(0, 65, 250, 535);
+		
+		JPanel panButtons = new JPanel();
+		panButtons.setLayout(null);
+		panButtons.setBounds(0, 0, 250, 20);
+		
+		JButton btnChats = new JButton("chats");
+		btnChats.setBackground(new Color(100, 100, 100));
+		btnChats.setBounds(0, 0, 125, 20);
+		
+		JButton btnUsers = new JButton("users");
+		btnUsers.setBounds(125, 0, 125, 20);
+		
+		panButtons.add(btnChats);
+		panButtons.add(btnUsers);
+		
+		JPanel panTabs = new JPanel();
+		panTabs.setLayout(new CardLayout());
+		panTabs.setBackground(new Color(10,10,10));
+		panTabs.setBounds(0, 20, 250, 515);
 		
 		panChats = new JPanel();
-		panChats.setBounds(0, 65, 250, 535);
 		panChats.setBackground(new Color(10, 50, 76, 255));
 		panChats.setLayout(new BoxLayout(panChats, BoxLayout.Y_AXIS));
 		
 		JButton btnCreateChat = new JButton("+");
 		btnCreateChat.setSize(new Dimension(30, 30));
+		btnCreateChat.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panChats.add(btnCreateChat);
 		
-		panAside.add(panCommands);
-		panAside.add(panChats);
+		panUsers = new JPanel();
+		panUsers.setBackground(new Color(10, 50, 76, 255));
+		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
+		
+		JButton btnAddUser = new JButton("+");
+		btnAddUser.setSize(new Dimension(30, 30));
+		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		panUsers.add(btnAddUser);
+		
+		panTabs.add(panChats, "chats");
+		panTabs.add(panUsers, "users");
+		
+		panBody.add(panButtons);
+		panBody.add(panTabs);
+		
+		panAside.add(panHeader);
+		panAside.add(panBody);
 		
 		panMain.add(panMessages);
 		panMain.add(panAside);
@@ -299,13 +340,33 @@ public class Client extends JFrame {
 		getContentPane().add(panMaster, "master");
 		
 		// Events
+		btnChats.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {	
+				btnChats.setBackground(new Color(100, 100, 100));
+				btnUsers.setBackground(null);
+				((CardLayout) panTabs.getLayout()).show(panTabs, "chats");
+			}
+		});
+		btnUsers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {	
+				btnChats.setBackground(null);
+				btnUsers.setBackground(new Color(100, 100, 100));
+				((CardLayout) panTabs.getLayout()).show(panTabs, "users");
+			}
+		});
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog((Client) arg0.getComponent().
-						getParent().getParent().getParent().getParent().getParent().getParent()
-						.getParent().getParent().getParent());
-				
+				CreateChatDialog dialog = new CreateChatDialog(instance);
+				dialog.setVisible(true);
+			}
+		});
+		btnAddUser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {	
+				AddUserDialog dialog = new AddUserDialog(instance, network);
 				dialog.setVisible(true);
 			}
 		});
@@ -323,12 +384,20 @@ public class Client extends JFrame {
 		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
 	}
 	
+	public void addUser(User user) {
+		data.getOnlineUsers().add(user);
+		
+		UserPanel userPan = new UserPanel(user);
+		
+		panUsers.add(userPan, 0);
+	}
+	
 	public void addChat(Chat chat) {
 		data.getChats().add(chat);
 		
-		ChatPanel newChat = new ChatPanel(chat);
+		ChatPanel chatPan = new ChatPanel(chat);
 		
-		panChats.add(newChat, 0);
+		panChats.add(chatPan, 0);
 	}
 	
 	private void selectDataFile() {
