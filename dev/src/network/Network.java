@@ -14,7 +14,9 @@ import visual.Client;
 
 public class Network {
 	
+	private Client client;
 	private Data data;
+	private Network network;
 	
 	public boolean connected;
 	public boolean listening;
@@ -26,8 +28,10 @@ public class Network {
 	
 	private ServerSocket serverSocket;
 	
-	public Network(Data data) {
+	public Network(Client client, Data data) {
+		this.client = client;
 		this.data = data;
+		this.network = this;
 	}
 	
 	public void start() throws IOException {
@@ -56,20 +60,29 @@ public class Network {
 	}
 	
 	public void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
-		if (user.getStatus() == User.Status.offline) {
-			// TODO
-		}
-		
-		Socket receiver = new Socket(user.getAddress(), user.getPort());
+		Socket socket = new Socket(user.getAddress(), user.getPort());
 		
 		msg.setUsername(data.getLocalUser().getUsername());
 		msg.setToken(user.getToken());
 		
-		ObjectOutputStream out = new ObjectOutputStream(receiver.getOutputStream());
+		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 	    out.writeObject(msg);
 		out.close();
 		
-		receiver.close();
+		socket.close();
+	}
+	
+	public void sendMessage(String address, int port, String token, NetMsg msg) throws UnknownHostException, IOException {
+		Socket socket = new Socket(address, port);
+		
+		msg.setUsername(data.getLocalUser().getUsername());
+		msg.setToken(token);
+		
+		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+	    out.writeObject(msg);
+		out.close();
+		
+		socket.close();
 	}
 	
 	public void updateMessagePump() {
@@ -83,8 +96,8 @@ public class Network {
 				
 				while(listening) {
 					try {
-						Socket sender = serverSocket.accept();
-						Runnable handler = new MessageHandler(sender);
+						Socket socket = serverSocket.accept();
+						Runnable handler = new MessageHandler(socket, client, network, data);
 						new Thread(handler).start();
 					} catch (Exception e) { }
 				}
