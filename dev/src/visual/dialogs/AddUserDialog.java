@@ -14,7 +14,7 @@ import data.Data;
 import data.containers.Chat;
 import data.containers.User;
 import network.Network;
-import network.netMsg.GreetingMsg;
+import network.netMsg.standart.GreetingMsg;
 import visual.Client;
 
 public class AddUserDialog extends JDialog {

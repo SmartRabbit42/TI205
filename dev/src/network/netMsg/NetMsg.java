@@ -13,6 +13,8 @@ public class NetMsg implements Serializable {
 		
 		public static final byte greeting = 1;
 		public static final byte onGreeting = 2;
+		
+		public static final byte statusUpdate = 3;
 	}
 	
 	private String username;

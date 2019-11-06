@@ -48,6 +48,9 @@ public class Client extends JFrame {
 	private JPanel panUsers;
 	private JLabel lblUsername;
 	private JLabel lblAddress;
+	
+	private ArrayList<UserPanel> users;
+	private ArrayList<ChatPanel> chats;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -304,6 +307,8 @@ public class Client extends JFrame {
 		panTabs.setBackground(new Color(10,10,10));
 		panTabs.setBounds(0, 20, 250, 515);
 		
+		chats = new ArrayList<ChatPanel>();
+		
 		panChats = new JPanel();
 		panChats.setBackground(new Color(10, 50, 76, 255));
 		panChats.setLayout(new BoxLayout(panChats, BoxLayout.Y_AXIS));
@@ -313,6 +318,8 @@ public class Client extends JFrame {
 		btnCreateChat.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panChats.add(btnCreateChat);
+		
+		users = new ArrayList<UserPanel>();
 		
 		panUsers = new JPanel();
 		panUsers.setBackground(new Color(10, 50, 76, 255));
@@ -388,26 +395,28 @@ public class Client extends JFrame {
 		lblUsername.setText(localUser.getUsername());
 		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
 	}
-	
 
 	public void addUser(User user) {
 		UserPanel userPan = new UserPanel(user);
 		
+		users.add(userPan);
 		panUsers.add(userPan, 0);
+	}
+	
+	public void updateUser(User user) {
+		for (UserPanel userPan : users) {
+			if (userPan.getUser().equals(user)) {
+				userPan.update();
+				return;
+			}
+		}
 	}
 	
 	public void addChat(Chat chat) {
 		ChatPanel chatPan = new ChatPanel(chat);
 		
+		chats.add(chatPan);
 		panChats.add(chatPan, 0);
-	}
-	
-	public ArrayList<User> getOnlineUsers() {
-		return data.getOnlineUsers();
-	}
-	
-	public ArrayList<User> getOfflineUsers() {
-		return data.getOfflineUsers();
 	}
 	
 	private void selectDataFile() {

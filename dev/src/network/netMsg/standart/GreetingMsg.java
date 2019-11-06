@@ -1,4 +1,7 @@
-package network.netMsg;
+package network.netMsg.standart;
+
+import network.netMsg.NetMsg;
+import network.netMsg.NetMsg.MessageType;
 
 public class GreetingMsg extends NetMsg {
 
