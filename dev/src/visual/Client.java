@@ -30,6 +30,7 @@ import data.containers.Message;
 import data.containers.User;
 import data.containers.Chat;
 import network.Network;
+import network.netMsg.standart.DisconnectMsg;
 import visual.dialogs.*;
 import visual.panels.*;
 
@@ -91,6 +92,9 @@ public class Client extends JFrame {
             		if (network.connected) {
             			while (dataFile == null)
                 			selectDataFile();
+            			
+            			DisconnectMsg dmsg = new DisconnectMsg();
+            			network.spreadMessage(dmsg);
             			
             			data.dump(dataFile);
             			network.shut();
@@ -185,6 +189,7 @@ public class Client extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
 				try {
+					// TODO
 					if (dataFile != null)
 						data.load(dataFile);
 					else {
@@ -196,9 +201,7 @@ public class Client extends JFrame {
 					updateLocalUser();
 					for (Chat chat : data.getChats())
 						addChat(chat);
-					for (User user : data.getOnlineUsers())
-						addUser(user);
-					for (User user : data.getOfflineUsers())
+					for (User user : data.getUsers())
 						addUser(user);
 					
 					setMinimumSize(new Dimension(816, 638));
@@ -330,6 +333,7 @@ public class Client extends JFrame {
 		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panUsers.add(btnAddUser);
+		panUsers.add(Box.createVerticalGlue());
 		
 		panTabs.add(panChats, "chats");
 		panTabs.add(panUsers, "users");

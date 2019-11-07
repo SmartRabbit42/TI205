@@ -9,7 +9,9 @@ import java.net.UnknownHostException;
 
 import data.Data;
 import data.containers.User;
+import general.Helper;
 import network.netMsg.NetMsg;
+import network.netMsg.standart.ConnectMsg;
 import visual.Client;
 
 public class Network {
@@ -43,8 +45,13 @@ public class Network {
 		this.address = Inet4Address.getLocalHost().getHostAddress();
 		this.port = serverSocket.getLocalPort();
 		
-		data.getLocalUser().setAddress(this.address);
-		data.getLocalUser().setPort(this.port);
+		this.data.getLocalUser().setAddress(this.address);
+		this.data.getLocalUser().setPort(this.port);
+		
+		for (User user : this.data.getUsers())
+			user.setToken(Helper.createToken());
+		ConnectMsg cmsg = new ConnectMsg();
+		spreadMessage(cmsg);
 		
 		this.listening = true;
 		this.connected = true;
@@ -83,6 +90,17 @@ public class Network {
 		out.close();
 		
 		socket.close();
+	}
+	
+	public void spreadMessage(NetMsg msg) {
+		for (User user : data.getUsers()) {
+			try {
+				sendMessage(user, msg);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void updateMessagePump() {

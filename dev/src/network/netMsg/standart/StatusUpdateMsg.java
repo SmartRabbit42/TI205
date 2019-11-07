@@ -1,7 +1,6 @@
 package network.netMsg.standart;
 
 import network.netMsg.NetMsg;
-import network.netMsg.NetMsg.MessageType;
 
 public class StatusUpdateMsg extends NetMsg {
 

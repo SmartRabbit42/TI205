@@ -13,8 +13,9 @@ import javax.swing.*;
 import data.Data;
 import data.containers.Chat;
 import data.containers.User;
+import general.Helper;
 import network.Network;
-import network.netMsg.standart.GreetingMsg;
+import network.netMsg.standart.AddUser;
 import visual.Client;
 
 public class AddUserDialog extends JDialog {
@@ -85,9 +86,9 @@ public class AddUserDialog extends JDialog {
 				
 				String address = txtUserAddress.getText().split(":")[0];
 				int port = Integer.parseInt(txtUserAddress.getText().split(":")[1]);
-				String token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+				String token = Helper.createToken();
 				
-				GreetingMsg gmsg = new GreetingMsg();
+				AddUser gmsg = new AddUser();
 				gmsg.setAddress(data.getLocalUser().getAddress());
 				gmsg.setPort(data.getLocalUser().getPort());
 				

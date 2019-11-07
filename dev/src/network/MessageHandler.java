@@ -6,9 +6,7 @@ import java.net.Socket;
 import data.Data;
 import data.containers.User;
 import network.netMsg.NetMsg;
-import network.netMsg.standart.GreetingMsg;
-import network.netMsg.standart.OnGreetingMsg;
-import network.netMsg.standart.StatusUpdateMsg;
+import network.netMsg.standart.*;
 import visual.Client;
 
 public class MessageHandler implements Runnable {
@@ -43,58 +41,116 @@ public class MessageHandler implements Runnable {
 			default:
 			case NetMsg.MessageType.none:
 				break;
-			case NetMsg.MessageType.greeting:
-				greetingMsg((GreetingMsg) msg);
+			case NetMsg.MessageType.connect:
+				connectMsg((ConnectMsg) msg);
 				break;
-			case NetMsg.MessageType.onGreeting:
-				onGreetingMsg((OnGreetingMsg) msg);
+			case NetMsg.MessageType.onConnect:
+				onConnectMsg((OnConnectMsg) msg);
+				break;
+			case NetMsg.MessageType.disconnect:
+				disconnectMsg((DisconnectMsg) msg);
+				break;
+			case NetMsg.MessageType.addUser:
+				addUserMsg((AddUser) msg);
+				break;
+			case NetMsg.MessageType.onAddUser:
+				onAddUserMsg((OnAddUser) msg);
 				break;
 			case NetMsg.MessageType.statusUpdate:
-				statusUpdate((StatusUpdateMsg) msg);
+				statusUpdateMsg((StatusUpdateMsg) msg);
 				break;
 		}
 	}
 		
 	private User getSender(String username) throws Exception {
-		return data.getOnlineUsers().get(data.getOnlineUsers().indexOf(new User(username)));
+		return this.data.getUsers().get(this.data.getUsers().indexOf(new User(username)));
 	}
 	
 	// Handlers
-	private void greetingMsg(GreetingMsg msg) {
+	private void connectMsg(ConnectMsg msg) {
 		try {
-			User newUser = new User(msg.getUsername());
-			newUser.setToken(msg.getToken());
-			newUser.setAddress(msg.getAddress());
-			newUser.setPort(msg.getPort());
+			User user = getSender(msg.getUsername());
 			
-			OnGreetingMsg ogmsg = new OnGreetingMsg();
-			ogmsg.setAddress(data.getLocalUser().getAddress());
-			ogmsg.setPort(data.getLocalUser().getPort());
-			
-			if (data.getOnlineUsers().contains(newUser) || 
-					data.getOfflineUsers().contains(newUser))
-				ogmsg.setStatus(OnGreetingMsg.Status.user_already_added);
-			else {
-				ogmsg.setStatus(OnGreetingMsg.Status.success);
-				data.getOnlineUsers().add(newUser);
-				client.addUser(newUser);
+			if (user != null) {
+				user.setToken(msg.getToken());
+				user.setStatus(User.Status.online);
+				
+				this.client.updateUser(user);
+				
+				OnConnectMsg ocmsg = new OnConnectMsg();
+				this.network.sendMessage(user, ocmsg);
 			}
-			
-			network.sendMessage(newUser, ogmsg);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void onGreetingMsg(OnGreetingMsg msg) {
+	private void onConnectMsg(OnConnectMsg msg) {
+		try {
+			User user = getSender(msg.getUsername());
+			
+			if (user != null) {
+				user.setToken(msg.getToken());
+				user.setStatus(User.Status.online);
+				
+				this.client.updateUser(user);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void disconnectMsg(DisconnectMsg msg) {
+		try {
+			User user = getSender(msg.getUsername());
+			
+			if (user != null) {
+				user.setStatus(User.Status.offline);
+				
+				this.client.updateUser(user);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void addUserMsg(AddUser msg) {
+		try {
+			User newUser = new User(msg.getUsername());
+			newUser.setToken(msg.getToken());
+			newUser.setAddress(msg.getAddress());
+			newUser.setPort(msg.getPort());
+			
+			OnAddUser ogmsg = new OnAddUser();
+			ogmsg.setAddress(this.data.getLocalUser().getAddress());
+			ogmsg.setPort(this.data.getLocalUser().getPort());
+			
+			if (this.data.getUsers().contains(newUser))
+				ogmsg.setStatus(OnAddUser.Status.user_already_added);
+			else {
+				ogmsg.setStatus(OnAddUser.Status.success);
+				this.data.getUsers().add(newUser);
+				this.client.addUser(newUser);
+			}
+			
+			this.network.sendMessage(newUser, ogmsg);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void onAddUserMsg(OnAddUser msg) {
 		switch(msg.getStatus()) {
 			default:
-			case OnGreetingMsg.Status.unknown_error:
+			case OnAddUser.Status.unknown_error:
 				// TODO
 				System.out.print("ongreetingmsg: unknown error");
 				break;
-			case OnGreetingMsg.Status.success:
+			case OnAddUser.Status.success:
 				User newUser;
 				try {
 					newUser = new User(msg.getUsername());
@@ -102,30 +158,29 @@ public class MessageHandler implements Runnable {
 					newUser.setAddress(msg.getAddress());
 					newUser.setPort(msg.getPort());
 
-					data.getOnlineUsers().remove(newUser);
-					data.getOfflineUsers().remove(newUser);
-					data.getOnlineUsers().add(newUser);
+					this.data.getUsers().remove(newUser);
+					this.data.getUsers().add(newUser);
 					
-					client.addUser(newUser);
+					this.client.addUser(newUser);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}		
 				break;
-			case OnGreetingMsg.Status.user_already_added:
+			case OnAddUser.Status.user_already_added:
 				// TODO
 				System.out.print("ongreetingmsg: user-already-added error");
 				break;
 		}
 	}
 	
-	private void statusUpdate(StatusUpdateMsg msg) {
+	private void statusUpdateMsg(StatusUpdateMsg msg) {
 		try {			
 			User user = getSender(msg.getUsername());
 			
 			if (user.getToken().equals(msg.getToken())) {
 				user.setStatus(msg.getStatus());
-				client.updateUser(user);
+				this.client.updateUser(user);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

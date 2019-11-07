@@ -3,7 +3,7 @@ package network.netMsg.standart;
 import network.netMsg.NetMsg;
 import network.netMsg.NetMsg.MessageType;
 
-public class OnGreetingMsg extends NetMsg {
+public class OnAddUser extends NetMsg {
 
 	private static final long serialVersionUID = 6895296448150060379L;
 
@@ -18,8 +18,8 @@ public class OnGreetingMsg extends NetMsg {
 		public static final byte user_already_added = 2;
 	}
 	
-	public OnGreetingMsg() {
-		setMessageType(NetMsg.MessageType.onGreeting);
+	public OnAddUser() {
+		setMessageType(NetMsg.MessageType.onAddUser);
 	}
 
 	public String getAddress() {

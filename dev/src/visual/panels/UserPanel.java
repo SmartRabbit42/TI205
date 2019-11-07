@@ -22,27 +22,29 @@ public class UserPanel extends JPanel {
 	private JPanel panStatus;
 	
 	public UserPanel(User user) {
-		setLayout(new BorderLayout());
+		this.user = user;
 		
-		setSize(new Dimension(500, 30));
+		setLayout(null);
+		
+		setSize(new Dimension(250, 30));
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		lblName = new JLabel(user.getUsername());
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
-		lblName.setSize(new Dimension(500, 15));
+		lblName.setBounds(0, 0, 250, 15);
 		
 		lblAddress = new JLabel(user.getAddress() + ":" + user.getPort());
 		lblAddress.setAlignmentX(LEFT_ALIGNMENT);
-		lblAddress.setSize(new Dimension(500, 15));
+		lblAddress.setBounds(0, 15, 250, 15);
 		
 		panStatus = new JPanel();
-		panStatus.setSize(30, 30);
+		panStatus.setBounds(220, 5, 20, 20);
 		panStatus.setBackground(new Color(0,0,0));
 		
-		add(lblName, BorderLayout.NORTH);
-		add(lblAddress, BorderLayout.SOUTH);
-		add(panStatus, BorderLayout.EAST);
+		add(lblName);
+		add(lblAddress);
+		add(panStatus);
 	}
 	
 	public void update() {

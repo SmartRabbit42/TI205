@@ -17,16 +17,14 @@ public class Data implements Serializable {
 	private static final long serialVersionUID = -3185108578513027310L;
 	
 	private User localUser;
-	private ArrayList<User> onlineUsers;
-	private ArrayList<User> offlineUsers;
+	private ArrayList<User> users;
 	private ArrayList<Chat> chats;
 	
 	public Data() { }
 	
 	public void init(String username) throws Exception {
 		setLocalUser(new User(username));
-		setOnlineUsers(new ArrayList<User>());
-		setOfflineUsers(new ArrayList<User>());
+		setUsers(new ArrayList<User>());
 		setChats(new ArrayList<Chat>());
 	}
 	
@@ -40,8 +38,7 @@ public class Data implements Serializable {
 			Data aux = (Data) obj;
 			
 		    setLocalUser(aux.getLocalUser());
-		    setOnlineUsers(aux.getOnlineUsers());
-		    setOfflineUsers(aux.getOfflineUsers());
+		    setUsers(aux.getUsers());
 		    setChats(aux.getChats());
 		}
 	    
@@ -69,26 +66,13 @@ public class Data implements Serializable {
 		this.localUser = localUser;
 	}
 	
-	public ArrayList<User> getOnlineUsers() {
-		return onlineUsers;
+	public ArrayList<User> getUsers() {
+		return users;
 	}
-	public void setOnlineUsers(ArrayList<User> onlineUsers) {
-		if (this.onlineUsers != null)
-			return;
-		
-		this.onlineUsers = onlineUsers;
+	public void setUsers(ArrayList<User> users) {
+		this.users = users;
 	}
 
-	public ArrayList<User> getOfflineUsers() {
-		return offlineUsers;
-	}
-	public void setOfflineUsers(ArrayList<User> offlineUsers) {
-		if (this.offlineUsers != null)
-			return;
-		
-		this.offlineUsers = offlineUsers;
-	}
-	
 	public ArrayList<Chat> getChats() {
 		return this.chats;
 	}

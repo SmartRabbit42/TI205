@@ -11,10 +11,15 @@ public class NetMsg implements Serializable {
 	public static final class MessageType {
 		public static final byte none = 0;
 		
-		public static final byte greeting = 1;
-		public static final byte onGreeting = 2;
+		public static final byte connect = 1;
+		public static final byte onConnect = 2;
 		
-		public static final byte statusUpdate = 3;
+		public static final byte addUser = 3;
+		public static final byte onAddUser = 4;
+		
+		public static final byte disconnect = 5;
+		
+		public static final byte statusUpdate = 6;
 	}
 	
 	private String username;

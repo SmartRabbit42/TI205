@@ -3,15 +3,15 @@ package network.netMsg.standart;
 import network.netMsg.NetMsg;
 import network.netMsg.NetMsg.MessageType;
 
-public class GreetingMsg extends NetMsg {
+public class AddUser extends NetMsg {
 
 	private static final long serialVersionUID = 440000773731260800L;
 	
 	private String address;
 	private int port;
 	
-	public GreetingMsg() {
-		setMessageType(NetMsg.MessageType.greeting);
+	public AddUser() {
+		setMessageType(NetMsg.MessageType.addUser);
 	}
 
 	public String getAddress() {
