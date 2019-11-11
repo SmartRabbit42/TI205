@@ -7,9 +7,12 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
+import visual.panels.*;
+import data.Data;
 import data.containers.Chat;
 import visual.Client;
 
@@ -17,16 +20,22 @@ public class CreateChatDialog extends JDialog {
 	
 	private static final long serialVersionUID = 8544625027506291911L;
 
+	protected static final String CreateChatAddUserPanel = null;
+
 	private Client client;
+	private Data data;
 	
 	private Chat newChat;
 
 	private JPanel panUsers;
+	private ArrayList<CreateChatAddUserPanel> createChatAddUserPanels;
 	
-	public CreateChatDialog(Client parent) {
+	public CreateChatDialog(Client parent, Data data) {
 		super(parent, Dialog.ModalityType.DOCUMENT_MODAL);
 		
 		this.client = parent;
+		this.data = data;
+		this.createChatAddUserPanels = new ArrayList<CreateChatAddUserPanel>();
 		
 		initializeComponent();
 	}
@@ -82,14 +91,16 @@ public class CreateChatDialog extends JDialog {
 		
 		this.newChat = new Chat();
 		
-		pack();
-		setLocationRelativeTo(this.getParent());
+		adjust();
 		
 		// Events
 		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				
+				CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers(), panUsers.getWidth());
+				panUsers.add(createChatAddUserPanel, createChatAddUserPanels.size());
+				createChatAddUserPanels.add(createChatAddUserPanel);
+				adjust();
 			}
 		});
 		btnCancel.addMouseListener(new MouseAdapter() {
@@ -105,5 +116,10 @@ public class CreateChatDialog extends JDialog {
 				setVisible(false);
 			}
 		});
+	}
+	
+	private void adjust() {
+		pack();
+		setLocationRelativeTo(this.client);
 	}
 }

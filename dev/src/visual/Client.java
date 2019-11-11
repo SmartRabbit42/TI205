@@ -375,7 +375,7 @@ public class Client extends JFrame {
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog(instance);
+				CreateChatDialog dialog = new CreateChatDialog(instance, data);
 				dialog.setVisible(true);
 			}
 		});
