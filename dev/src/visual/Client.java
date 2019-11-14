@@ -28,6 +28,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import data.Data;
 import data.containers.Message;
 import data.containers.User;
+import general.exceptions.EmptyDataFileException;
+import general.exceptions.InvalidUsernameException;
 import data.containers.Chat;
 import network.Network;
 import network.netMsg.standart.DisconnectMsg;
@@ -212,10 +214,13 @@ public class Client extends JFrame {
 				} catch (ClassNotFoundException e) {
 					// TODO
 					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO 
+				} catch (EmptyDataFileException e) {
+					// TODO
 					e.printStackTrace();
-				} 
+				} catch (InvalidUsernameException e) {
+					// TODO
+					e.printStackTrace();
+				}
 			}
 		});
 	}

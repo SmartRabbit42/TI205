@@ -19,6 +19,7 @@ public class MessageHandler implements Runnable {
 	
 	public MessageHandler(Socket sender, Client client, Network network, Data data) {
 		this.sender = sender;
+		
 		this.client = client;
 		this.network = network;
 		this.data = data;

@@ -3,6 +3,8 @@ package data.containers;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import general.exceptions.InvalidUsernameException;
+
 public class User implements Serializable {
 	
 	public static class Status {
@@ -24,7 +26,7 @@ public class User implements Serializable {
 	
 	private ArrayList<Chat> chats;
 	
-	public User (String username) throws Exception {
+	public User (String username) throws InvalidUsernameException {
 		setUsername(username);
 		setStatus(Status.online);
 	}
@@ -51,9 +53,9 @@ public class User implements Serializable {
 	public String getUsername() {
 		return username;
 	}
-	public void setUsername(String username) throws Exception {
+	public void setUsername(String username) throws InvalidUsernameException {
 		if (username.equals(null) || username.equals(""))
-			throw new Exception();
+			throw new InvalidUsernameException();
 		
 		this.username = username;
 	}

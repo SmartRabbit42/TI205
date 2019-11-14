@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import data.containers.User;
+import general.exceptions.EmptyDataFileException;
+import general.exceptions.InvalidUsernameException;
 import data.containers.Chat;
 
 public class Data implements Serializable {
@@ -22,28 +24,29 @@ public class Data implements Serializable {
 	
 	public Data() { }
 	
-	public void init(String username) throws Exception {
+	public void init(String username) throws InvalidUsernameException {
 		setLocalUser(new User(username));
 		setUsers(new ArrayList<User>());
 		setChats(new ArrayList<Chat>());
 	}
 	
-	public void load(File dataFile) throws IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(dataFile);
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		
-		Object obj = ois.readObject();
-		
-		if (obj != null) {
-			Data aux = (Data) obj;
+	public void load(File dataFile) throws IOException, ClassNotFoundException, EmptyDataFileException {
+		try (FileInputStream fis = new FileInputStream(dataFile); 
+				ObjectInputStream ois = new ObjectInputStream(fis)) {
+			Object obj = ois.readObject();
 			
-		    setLocalUser(aux.getLocalUser());
-		    setUsers(aux.getUsers());
-		    setChats(aux.getChats());
+			if (obj == null)
+				throw new EmptyDataFileException();
+				
+			Data aux = (Data) obj;
+				
+			setLocalUser(aux.getLocalUser());
+			setUsers(aux.getUsers());
+			setChats(aux.getChats());
+		    
+		    ois.close();
+		    fis.close();
 		}
-	    
-	    ois.close();
-	    fis.close();
 	}
 	
 	public void dump(File dataFile) throws IOException {	

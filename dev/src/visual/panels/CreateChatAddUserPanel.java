@@ -18,7 +18,7 @@ public class CreateChatAddUserPanel extends JPanel {
 	private ArrayList<User> users;
 	private String[] names;
 	private int width;
-	
+
 	public CreateChatAddUserPanel(ArrayList<User> users, int width) {
 		this.users = users;
 		this.width = width;
