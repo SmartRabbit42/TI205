@@ -22,17 +22,21 @@ public class UserPanel extends JPanel {
 	public UserPanel(User user) {
 		this.user = user;
 		
+		initializeComponents();
+	}
+
+	private void initializeComponents() {
 		setLayout(null);
 		
 		setSize(new Dimension(250, 30));
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		lblName = new JLabel(user.getUsername());
+		lblName = new JLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
 		lblName.setBounds(0, 0, 250, 15);
 		
-		lblAddress = new JLabel(user.getAddress() + ":" + user.getPort());
+		lblAddress = new JLabel();
 		lblAddress.setAlignmentX(LEFT_ALIGNMENT);
 		lblAddress.setBounds(0, 15, 250, 15);
 		
@@ -43,15 +47,33 @@ public class UserPanel extends JPanel {
 		add(lblName);
 		add(lblAddress);
 		add(panStatus);
+		
+		update();
 	}
 	
 	public void update() {
 		lblName.setText(user.getUsername());
-		lblAddress.setText(user.getAddress());
-		panStatus.setBackground(new Color(user.getStatus(), user.getStatus(), user.getStatus()));
+		lblAddress.setText(user.getAddress() + ":" + user.getPort());
+		switch (user.getStatus()) {
+			default:
+			case User.Status.unknown:
+				panStatus.setBackground(Color.white);
+				break;
+			case User.Status.offline:
+				panStatus.setBackground(Color.red);
+				break;
+			case User.Status.online:
+				panStatus.setBackground(Color.green);
+				break;
+			case User.Status.busy:
+				panStatus.setBackground(Color.orange);
+				break;
+			case User.Status.occupied:
+				panStatus.setBackground(Color.yellow);
+		}
 	}
 	
 	public User getUser() {
-		return this.user;
+		return user;
 	}
 }

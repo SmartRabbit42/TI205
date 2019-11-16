@@ -11,11 +11,9 @@ import java.io.IOException;
 import javax.swing.*;
 
 import data.Data;
-import data.containers.Chat;
-import data.containers.User;
 import general.Helper;
 import network.Network;
-import network.netMsg.standart.AddUser;
+import network.netMsg.standart.AddUserMsg;
 import visual.Client;
 
 public class AddUserDialog extends JDialog {
@@ -76,30 +74,38 @@ public class AddUserDialog extends JDialog {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				client.setEnabled(true);
 				setVisible(false);
 			}
 		});
 		btnAdd.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				setVisible(false);
-				
-				String address = txtUserAddress.getText().split(":")[0];
-				int port = Integer.parseInt(txtUserAddress.getText().split(":")[1]);
-				String token = Helper.createToken();
-				
-				AddUser gmsg = new AddUser();
-				gmsg.setAddress(data.getLocalUser().getAddress());
-				gmsg.setPort(data.getLocalUser().getPort());
-				
 				try {
-					network.sendMessage(address, port, token, gmsg);
+					String[] aux = txtUserAddress.getText().split(":");
 					
-					MessageDialog msg = new MessageDialog(client, "sent cripto-invite to user");
-					msg.setVisible(true);
+					String address = aux[0];
+					int port = Integer.parseInt(aux[1]);
+					String token = Helper.createToken();
+					
+					data.getLocalUser().setToken(token);
+					
+					AddUserMsg aumsg = new AddUserMsg();
+					aumsg.setId(String.format("%s-", data.getNum()));
+					aumsg.setStatus(data.getLocalUser().getStatus());
+					aumsg.setAddress(data.getLocalUser().getAddress());
+					aumsg.setPort(data.getLocalUser().getPort());
+					
+					network.sendMessage(address, port, token, aumsg);
+					
+					client.setEnabled(false);
+					setVisible(false);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
+					msg.setVisible(true);
+				} catch (IndexOutOfBoundsException e) {
+					MessageDialog msg = new MessageDialog(client, "invalid address");
+					msg.setVisible(true);
 				}
 			}
 		});

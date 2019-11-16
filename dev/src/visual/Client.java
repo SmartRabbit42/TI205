@@ -29,12 +29,21 @@ import data.Data;
 import data.containers.Message;
 import data.containers.User;
 import general.exceptions.EmptyDataFileException;
-import general.exceptions.InvalidUsernameException;
+import general.exceptions.InvalidParameterException;
 import data.containers.Chat;
 import network.Network;
 import network.netMsg.standart.DisconnectMsg;
 import visual.dialogs.*;
 import visual.panels.*;
+
+/*
+ * TODO:
+ * 	 user option menu
+ * 	 create chat dialog
+ *   messaging system
+ *   reorganize visual
+ *   criptograph
+ */
 
 public class Client extends JFrame {
 	
@@ -67,7 +76,7 @@ public class Client extends JFrame {
 			}
 		});
 	}
-
+	
 	// Initialization
 	public Client() {
 		instance = this;
@@ -91,7 +100,7 @@ public class Client extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
             	try {
-            		if (network.connected) {
+            		if (network.running) {
             			while (dataFile == null)
                 			selectDataFile();
             			
@@ -108,8 +117,7 @@ public class Client extends JFrame {
             }
         });
 	}
-	
-	// TODO reorganize widgets
+
 	private void initializeEntry() {
 		JPanel panEntry = new JPanel();
 		panEntry.setBackground(new Color(20, 100, 152, 255));
@@ -217,7 +225,7 @@ public class Client extends JFrame {
 				} catch (EmptyDataFileException e) {
 					// TODO
 					e.printStackTrace();
-				} catch (InvalidUsernameException e) {
+				} catch (InvalidParameterException e) {
 					// TODO
 					e.printStackTrace();
 				}

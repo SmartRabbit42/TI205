@@ -32,6 +32,6 @@ public class MessageDialog extends JDialog {
 		contentPane.add(lblMessage, BorderLayout.CENTER);
 		
 		pack();
-		setLocationRelativeTo(this.getParent());
+		setLocationRelativeTo(getParent());
 	}
 }

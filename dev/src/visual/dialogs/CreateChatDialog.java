@@ -14,6 +14,8 @@ import javax.swing.*;
 import visual.panels.*;
 import data.Data;
 import data.containers.Chat;
+import data.containers.User;
+import general.exceptions.InvalidParameterException;
 import visual.Client;
 
 public class CreateChatDialog extends JDialog {
@@ -24,8 +26,6 @@ public class CreateChatDialog extends JDialog {
 
 	private Client client;
 	private Data data;
-	
-	private Chat newChat;
 
 	private JPanel panUsers;
 	private ArrayList<CreateChatAddUserPanel> createChatAddUserPanels;
@@ -51,14 +51,14 @@ public class CreateChatDialog extends JDialog {
 		JTextField txtName = new JTextField();
 		txtName.setMaximumSize(new Dimension(500, 50));
 
-		this.panUsers = new JPanel();
-		this.panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
+		panUsers = new JPanel();
+		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
 		JButton btnAddUser = new JButton("+");
 		btnAddUser.setSize(new Dimension(30, 30));
 		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		this.panUsers.add(btnAddUser);
+		panUsers.add(btnAddUser);
 		
 		JScrollPane jspUsers = new JScrollPane(panUsers);
 		jspUsers.setAlignmentX(LEFT_ALIGNMENT);
@@ -89,15 +89,13 @@ public class CreateChatDialog extends JDialog {
 		contentPane.add(panList, BorderLayout.CENTER);
 		contentPane.add(panButtons, BorderLayout.PAGE_END);
 		
-		this.newChat = new Chat();
-		
 		adjust();
 		
 		// Events
 		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers(), panUsers.getWidth());
+				CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers());
 				panUsers.add(createChatAddUserPanel, createChatAddUserPanels.size());
 				createChatAddUserPanels.add(createChatAddUserPanel);
 				adjust();
@@ -112,14 +110,37 @@ public class CreateChatDialog extends JDialog {
 		btnCreate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				client.addChat(newChat);
-				setVisible(false);
+				try {
+					Chat newChat = new Chat(txtName.getText());
+					newChat.setMembers(findUsers());
+					client.addChat(newChat);
+					setVisible(false);
+				} catch (InvalidParameterException e) { 
+					MessageDialog msg = new MessageDialog(client, "Invalid chat name");
+					msg.setVisible(true);
+				}
 			}
 		});
 	}
 	
+	private ArrayList<User> findUsers(){
+		ArrayList<User> users = new ArrayList<User>();
+		
+		for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
+			try {
+				User user = new User(ccaup.getSelectedUsername());
+				for (User u : data.getUsers())
+					if (u.equals(user))
+						if (!users.contains(u))
+							users.add(u);
+			} catch (InvalidParameterException e) { }
+		}
+		
+		return users;
+	}
+	
 	private void adjust() {
 		pack();
-		setLocationRelativeTo(this.client);
+		setLocationRelativeTo(client);
 	}
 }

@@ -18,13 +18,9 @@ public class Network {
 	
 	private Client client;
 	private Data data;
-	private Network network;
+	private Network instance;
 	
-	public boolean connected;
-	public boolean listening;
-	
-	public String address;
-	public int port;
+	public boolean running;
 	
 	private boolean updating;
 	
@@ -33,43 +29,56 @@ public class Network {
 	public Network(Client client, Data data) {
 		this.client = client;
 		this.data = data;
-		this.network = this;
+		
+		instance = this;
 	}
 	
 	public void start() throws IOException {
-		if (this.connected)
+		if (running)
 			return;
 		
-		this.serverSocket = new ServerSocket(0);
+		serverSocket = new ServerSocket(0);
 		
-		this.address = Inet4Address.getLocalHost().getHostAddress();
-		this.port = serverSocket.getLocalPort();
+		String address = Inet4Address.getLocalHost().getHostAddress();
+		int port = serverSocket.getLocalPort();
 		
-		this.data.getLocalUser().setAddress(this.address);
-		this.data.getLocalUser().setPort(this.port);
+		User localUser = data.getLocalUser();
 		
-		for (User user : this.data.getUsers())
+		localUser.setAddress(address);
+		localUser.setPort(port);
+		
+		for (User user : data.getUsers()) {
+			System.out.println(user.getUsername());
+			
+			user.setStatus(User.Status.unknown);
 			user.setToken(Helper.createToken());
+		}
+		
 		ConnectMsg cmsg = new ConnectMsg();
+		cmsg.setStatus(localUser.getStatus());
+		cmsg.setAddress(address);
+		cmsg.setPort(port);
+		
 		spreadMessage(cmsg);
 		
-		this.listening = true;
-		this.connected = true;
+		running = true;
 		
 		updateMessagePump();
 	}
 	
 	public void shut() throws IOException {
-		this.serverSocket.close();
+		running = false;
 		
-		this.listening = false;
-		this.connected = false;
+		serverSocket.close();
 	}
 	
 	public void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
+		if (user.getStatus() == User.Status.offline)
+			return;
+		
 		Socket socket = new Socket(user.getAddress(), user.getPort());
 		
-		msg.setUsername(data.getLocalUser().getUsername());
+		msg.setId(user.getId());
 		msg.setToken(user.getToken());
 		
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -82,7 +91,6 @@ public class Network {
 	public void sendMessage(String address, int port, String token, NetMsg msg) throws UnknownHostException, IOException {
 		Socket socket = new Socket(address, port);
 		
-		msg.setUsername(data.getLocalUser().getUsername());
 		msg.setToken(token);
 		
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -97,8 +105,7 @@ public class Network {
 			try {
 				sendMessage(user, msg);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				user.setStatus(User.Status.unknown);
 			}
 		}
 	}
@@ -112,10 +119,10 @@ public class Network {
 				
 				updating = true;
 				
-				while(listening) {
+				while(running) {
 					try {
 						Socket socket = serverSocket.accept();
-						Runnable handler = new MessageHandler(socket, client, network, data);
+						Runnable handler = new MessageHandler(socket, client, instance, data);
 						new Thread(handler).start();
 					} catch (Exception e) { }
 				}

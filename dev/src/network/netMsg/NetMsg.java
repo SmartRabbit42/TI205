@@ -22,7 +22,7 @@ public class NetMsg implements Serializable {
 		public static final byte statusUpdate = 6;
 	}
 	
-	private String username;
+	private String id;
 	private String token;
 
 	public NetMsg() { 
@@ -36,11 +36,11 @@ public class NetMsg implements Serializable {
 		this.messageType = messageType;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getId() {
+		return id;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getToken() {
