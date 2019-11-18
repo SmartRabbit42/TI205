@@ -21,7 +21,6 @@ public class Network {
 	private Network instance;
 	
 	public boolean running;
-	
 	private boolean updating;
 	
 	private ServerSocket serverSocket;
@@ -48,10 +47,8 @@ public class Network {
 		localUser.setPort(port);
 		
 		for (User user : data.getUsers()) {
-			System.out.println(user.getUsername());
-			
 			user.setStatus(User.Status.unknown);
-			user.setToken(Helper.createToken());
+			user.setToken(Helper.generateNewToken());
 		}
 		
 		ConnectMsg cmsg = new ConnectMsg();
@@ -63,6 +60,8 @@ public class Network {
 		
 		running = true;
 		
+		System.out.println(String.format("network running on port %d", port));
+		
 		updateMessagePump();
 	}
 	
@@ -70,13 +69,21 @@ public class Network {
 		running = false;
 		
 		serverSocket.close();
+		
+		System.out.println("network no longer running");
 	}
 	
-	public void sendMessage(User user, NetMsg msg) throws UnknownHostException, IOException {
+	public void sendMessage(User user, NetMsg msg) throws IOException  {
 		if (user.getStatus() == User.Status.offline)
 			return;
 		
-		Socket socket = new Socket(user.getAddress(), user.getPort());
+		Socket socket;
+		try {
+			socket = new Socket(user.getAddress(), user.getPort());
+		} catch (UnknownHostException e) {
+			user.setStatus(User.Status.unknown);
+			return;
+		}
 		
 		msg.setId(user.getId());
 		msg.setToken(user.getToken());
@@ -102,16 +109,19 @@ public class Network {
 	
 	public void spreadMessage(NetMsg msg) {
 		for (User user : data.getUsers()) {
-			try {
-				sendMessage(user, msg);
-			} catch (IOException e) {
-				user.setStatus(User.Status.unknown);
-			}
+			new Thread(new Runnable() {
+			    @Override
+			    public void run() {
+			    	try {
+						sendMessage(user, msg);
+					} catch (IOException e) { }
+			    }
+			}).start();
 		}
 	}
 	
-	public void updateMessagePump() {
-		Runnable monitor = new Runnable() {
+	private void updateMessagePump() {
+		new Thread (new Runnable() {
 			@Override
 			public void run() {
 				if (updating)
@@ -129,7 +139,6 @@ public class Network {
 				
 				updating = false;
 			}
-		};
-		new Thread(monitor).start();
+		}).start();
 	}
 }

@@ -38,8 +38,9 @@ import visual.panels.*;
 
 /*
  * TODO:
- * 	 user option menu
  * 	 create chat dialog
+ *   status selection
+ *   config options
  *   messaging system
  *   reorganize visual
  *   criptograph
@@ -388,7 +389,7 @@ public class Client extends JFrame {
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog(instance, data);
+				CreateChatDialog dialog = new CreateChatDialog(instance, network, data);
 				dialog.setVisible(true);
 			}
 		});
@@ -414,7 +415,7 @@ public class Client extends JFrame {
 	}
 
 	public void addUser(User user) {
-		UserPanel userPan = new UserPanel(user);
+		UserPanel userPan = new UserPanel(instance, network, data, user);
 		
 		users.add(userPan);
 		panUsers.add(userPan, 0);
@@ -430,7 +431,7 @@ public class Client extends JFrame {
 	}
 	
 	public void addChat(Chat chat) {
-		ChatPanel chatPan = new ChatPanel(chat);
+		ChatPanel chatPan = new ChatPanel(instance, network, data, chat);
 		
 		chats.add(chatPan);
 		panChats.add(chatPan, 0);

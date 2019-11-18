@@ -6,31 +6,27 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.swing.*;
 
-import data.Data;
-import general.Helper;
+import data.containers.User;
 import general.exceptions.InvalidParameterException;
-import network.Network;
-import network.netMsg.standart.AddUserMsg;
 import visual.Client;
 
-public class AddUserDialog extends JDialog {
+public class ChangeUsernameDialog extends JDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
 	private Client client;
-	private Data data;
-	private Network network;
 	
-	public AddUserDialog(Client client, Network network, Data data) {
+	private User user;
+	
+	public ChangeUsernameDialog(Client client, User user) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
 		
 		this.client = client;
-		this.network = network;
-		this.data = data;
+		
+		this.user = user;
 		
 		initializeComponent();
 	}
@@ -39,17 +35,17 @@ public class AddUserDialog extends JDialog {
 		JPanel panUpper = new JPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Add User");
+		JLabel lblTitle = new JLabel("Change username");
 		
-		JLabel lblUserAddress = new JLabel("user address:");
+		JLabel lblUsername = new JLabel("new username:");
 		
-		JTextField txtUserAddress = new JTextField();
-		txtUserAddress.setMaximumSize(new Dimension(500, 50));
+		JTextField txtUsername = new JTextField();
+		txtUsername.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
-		panUpper.add(lblUserAddress);
-		panUpper.add(txtUserAddress);
+		panUpper.add(lblUsername);
+		panUpper.add(txtUsername);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
 		JPanel panButtons = new JPanel();
@@ -57,12 +53,12 @@ public class AddUserDialog extends JDialog {
 		
 		JButton btnCancel = new JButton("cancel");
 		
-		JButton btnAdd = new JButton("add");
+		JButton btnChange = new JButton("change");
 		
 		panButtons.add(Box.createHorizontalGlue());
 		panButtons.add(btnCancel);
 		panButtons.add(Box.createRigidArea(new Dimension(10, 0)));
-		panButtons.add(btnAdd);
+		panButtons.add(btnChange);
 		
 		Container contentPane = getContentPane();
 		contentPane.add(panUpper, BorderLayout.CENTER);
@@ -79,38 +75,17 @@ public class AddUserDialog extends JDialog {
 				setVisible(false);
 			}
 		});
-		btnAdd.addMouseListener(new MouseAdapter() {
+		btnChange.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				try {
-					String fullAddress = txtUserAddress.getText();
+					user.setUsername(txtUsername.getText());
 					
-					if (!fullAddress.matches(Helper.addressRegex))
-						throw new InvalidParameterException();
+					client.updateUser(user);
 					
-					String[] aux = fullAddress.split(":");
-					String address = aux[0];
-					int port = Integer.parseInt(aux[1]);
-					
-					String token = Helper.generateNewToken();
-					
-					data.getLocalUser().setToken(token);
-					
-					AddUserMsg aumsg = new AddUserMsg();
-					aumsg.setId(String.format("%s-", data.getNum()));
-					aumsg.setStatus(data.getLocalUser().getStatus());
-					aumsg.setAddress(data.getLocalUser().getAddress());
-					aumsg.setPort(data.getLocalUser().getPort());
-					
-					network.sendMessage(address, port, token, aumsg);
-					
-					client.setEnabled(false);
 					setVisible(false);
-				} catch (IOException e) {
-					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
-					msg.setVisible(true);
 				} catch (InvalidParameterException e) {
-					MessageDialog msg = new MessageDialog(client, "invalid address");
+					MessageDialog msg = new MessageDialog(client, "invalid username");
 					msg.setVisible(true);
 				}
 			}

@@ -13,13 +13,14 @@ public class NetMsg implements Serializable {
 		
 		public static final byte connect = 1;
 		public static final byte onConnect = 2;
+		public static final byte disconnect = 3;
 		
-		public static final byte addUser = 3;
-		public static final byte onAddUser = 4;
+		public static final byte statusUpdate = 4;
 		
-		public static final byte disconnect = 5;
+		public static final byte addUser = 5;
+		public static final byte onAddUser = 6;
 		
-		public static final byte statusUpdate = 6;
+		public static final byte addedOnChat = 7;
 	}
 	
 	private String id;

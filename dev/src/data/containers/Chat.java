@@ -3,6 +3,7 @@ package data.containers;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import general.exceptions.InvalidParameterException;
 
@@ -13,8 +14,8 @@ public class Chat implements Serializable {
 	private String name;
 	private Date start;
 	
-	private ArrayList<User> members;
-	private ArrayList<Message> messages;
+	private List<User> members;
+	private List<Message> messages;
 	
 	public Chat() {
 		try {
@@ -49,17 +50,17 @@ public class Chat implements Serializable {
 		this.start = start;
 	}
 
-	public ArrayList<Message> getMessages() {
+	public List<Message> getMessages() {
 		return messages;
 	}
-	public void setMessages(ArrayList<Message> messageFlow) {
+	public void setMessages(List<Message> messageFlow) {
 		this.messages = messageFlow;
 	}
 
-	public ArrayList<User> getMembers() {
+	public List<User> getMembers() {
 		return members;
 	}
-	public void setMembers(ArrayList<User> members) {
+	public void setMembers(List<User> members) {
 		this.members = members;
 	}
 }

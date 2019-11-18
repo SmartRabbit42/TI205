@@ -7,7 +7,9 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -16,6 +18,8 @@ import data.Data;
 import data.containers.Chat;
 import data.containers.User;
 import general.exceptions.InvalidParameterException;
+import network.Network;
+import network.netMsg.messaging.AddedOnChatMsg;
 import visual.Client;
 
 public class CreateChatDialog extends JDialog {
@@ -25,16 +29,19 @@ public class CreateChatDialog extends JDialog {
 	protected static final String CreateChatAddUserPanel = null;
 
 	private Client client;
+	private Network network;
 	private Data data;
 
 	private JPanel panUsers;
 	private ArrayList<CreateChatAddUserPanel> createChatAddUserPanels;
 	
-	public CreateChatDialog(Client parent, Data data) {
-		super(parent, Dialog.ModalityType.DOCUMENT_MODAL);
+	public CreateChatDialog(Client client, Network network, Data data) {
+		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
 		
-		this.client = parent;
+		this.client = client;
+		this.network = network;
 		this.data = data;
+		
 		this.createChatAddUserPanels = new ArrayList<CreateChatAddUserPanel>();
 		
 		initializeComponent();
@@ -112,7 +119,43 @@ public class CreateChatDialog extends JDialog {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					Chat newChat = new Chat(txtName.getText());
-					newChat.setMembers(findUsers());
+
+					List<User> members = newChat.getMembers();
+					
+					List<String> membersAddress = new ArrayList<String>();
+					List<Integer> membersPort = new ArrayList<Integer>();
+					List<Byte> membersStatus = new ArrayList<Byte>();
+					
+					for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
+						User user = ccaup.getUser();
+						if (!members.contains(user)) {
+							members.add(user);
+							
+							membersAddress.add(user.getAddress());
+							membersPort.add(user.getPort());
+							membersStatus.add(user.getStatus());
+						}
+					}
+					
+					AddedOnChatMsg aocm = new AddedOnChatMsg();
+					aocm.setName(newChat.getName());
+					aocm.setDate(newChat.getStart().getTime());
+					aocm.setMembersAddress(membersAddress);
+					aocm.setMembersPort(membersPort);
+					aocm.setMembersStatus(membersStatus);
+					
+					for (User user : newChat.getMembers()) {
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									network.sendMessage(user, aocm);
+								} catch (IOException e) { }
+							}
+						}).start();
+					}
+					
+					data.getChats().add(newChat);
 					client.addChat(newChat);
 					setVisible(false);
 				} catch (InvalidParameterException e) { 
@@ -121,22 +164,6 @@ public class CreateChatDialog extends JDialog {
 				}
 			}
 		});
-	}
-	
-	private ArrayList<User> findUsers(){
-		ArrayList<User> users = new ArrayList<User>();
-		
-		for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
-			try {
-				User user = new User(ccaup.getSelectedUsername());
-				for (User u : data.getUsers())
-					if (u.equals(user))
-						if (!users.contains(u))
-							users.add(u);
-			} catch (InvalidParameterException e) { }
-		}
-		
-		return users;
 	}
 	
 	private void adjust() {

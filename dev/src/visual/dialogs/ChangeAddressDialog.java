@@ -11,26 +11,31 @@ import java.io.IOException;
 import javax.swing.*;
 
 import data.Data;
+import data.containers.User;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
 import network.Network;
-import network.netMsg.standart.AddUserMsg;
+import network.netMsg.standart.ConnectMsg;
 import visual.Client;
 
-public class AddUserDialog extends JDialog {
+public class ChangeAddressDialog extends JDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
 	private Client client;
-	private Data data;
 	private Network network;
+	private Data data;
 	
-	public AddUserDialog(Client client, Network network, Data data) {
+	private User user;
+	
+	public ChangeAddressDialog(Client client, Network network, Data data, User user) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
 		
 		this.client = client;
 		this.network = network;
 		this.data = data;
+		
+		this.user = user;
 		
 		initializeComponent();
 	}
@@ -39,7 +44,7 @@ public class AddUserDialog extends JDialog {
 		JPanel panUpper = new JPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Add User");
+		JLabel lblTitle = new JLabel("Change user address");
 		
 		JLabel lblUserAddress = new JLabel("user address:");
 		
@@ -57,12 +62,12 @@ public class AddUserDialog extends JDialog {
 		
 		JButton btnCancel = new JButton("cancel");
 		
-		JButton btnAdd = new JButton("add");
+		JButton btnChange = new JButton("change");
 		
 		panButtons.add(Box.createHorizontalGlue());
 		panButtons.add(btnCancel);
 		panButtons.add(Box.createRigidArea(new Dimension(10, 0)));
-		panButtons.add(btnAdd);
+		panButtons.add(btnChange);
 		
 		Container contentPane = getContentPane();
 		contentPane.add(panUpper, BorderLayout.CENTER);
@@ -79,7 +84,7 @@ public class AddUserDialog extends JDialog {
 				setVisible(false);
 			}
 		});
-		btnAdd.addMouseListener(new MouseAdapter() {
+		btnChange.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
 				try {
@@ -94,20 +99,20 @@ public class AddUserDialog extends JDialog {
 					
 					String token = Helper.generateNewToken();
 					
-					data.getLocalUser().setToken(token);
+					user.setToken(token);
+					user.setAddress(address);
+					user.setPort(port);
 					
-					AddUserMsg aumsg = new AddUserMsg();
-					aumsg.setId(String.format("%s-", data.getNum()));
-					aumsg.setStatus(data.getLocalUser().getStatus());
-					aumsg.setAddress(data.getLocalUser().getAddress());
-					aumsg.setPort(data.getLocalUser().getPort());
+					ConnectMsg cmsg = new ConnectMsg();
+					cmsg.setStatus(data.getLocalUser().getStatus());
+					cmsg.setAddress(data.getLocalUser().getAddress());
+					cmsg.setPort(data.getLocalUser().getPort());
 					
-					network.sendMessage(address, port, token, aumsg);
-					
-					client.setEnabled(false);
+					network.sendMessage(user, cmsg);
+
 					setVisible(false);
 				} catch (IOException e) {
-					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
+					MessageDialog msg = new MessageDialog(client, "couldn't send connectmsg");
 					msg.setVisible(true);
 				} catch (InvalidParameterException e) {
 					MessageDialog msg = new MessageDialog(client, "invalid address");

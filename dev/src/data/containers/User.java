@@ -1,8 +1,8 @@
 package data.containers;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import general.exceptions.InvalidParameterException;
 
@@ -19,7 +19,7 @@ public class User implements Serializable {
 	
 	private byte status;
 	
-	private ArrayList<Chat> chats;
+	private List<Chat> chats;
 	
 	public static class Status {
 		public static final byte unknown = 0;
@@ -106,10 +106,10 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-	public ArrayList<Chat> getChats() {
+	public List<Chat> getChats() {
 		return chats;
 	}
-	public void setChats(ArrayList<Chat> chats) {
+	public void setChats(List<Chat> chats) {
 		this.chats = chats;
 	}
 

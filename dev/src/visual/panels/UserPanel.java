@@ -7,19 +7,31 @@ import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import data.Data;
 import data.containers.User;
+import network.Network;
+import visual.Client;
+import visual.popups.UserPopup;
 
 public class UserPanel extends JPanel {
 
 	private static final long serialVersionUID = -5194642801471406001L;
 
+	private Client client;
+	private Network network;
+	private Data data;
+	
 	private User user;
 	
 	private JLabel lblName;
 	private JLabel lblAddress;
 	private JPanel panStatus;
 	
-	public UserPanel(User user) {
+	public UserPanel(Client client, Network network, Data data, User user) {
+		this.client = client;
+		this.network = network;
+		this.data = data;
+		
 		this.user = user;
 		
 		initializeComponents();
@@ -31,6 +43,8 @@ public class UserPanel extends JPanel {
 		setSize(new Dimension(250, 30));
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		setComponentPopupMenu(new UserPopup(client, network, data, user));
 		
 		lblName = new JLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
@@ -53,7 +67,7 @@ public class UserPanel extends JPanel {
 	
 	public void update() {
 		lblName.setText(user.getUsername());
-		lblAddress.setText(user.getAddress() + ":" + user.getPort());
+		lblAddress.setText(user.getFullAddress());
 		switch (user.getStatus()) {
 			default:
 			case User.Status.unknown:

@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import data.containers.User;
 import general.exceptions.EmptyDataFileException;
@@ -19,8 +20,8 @@ public class Data implements Serializable {
 	private static final long serialVersionUID = -3185108578513027310L;
 	
 	private User localUser;
-	private ArrayList<User> users;
-	private ArrayList<Chat> chats;
+	private List<User> users;
+	private List<Chat> chats;
 	private int num;
 	
 	public Data() { }
@@ -72,20 +73,20 @@ public class Data implements Serializable {
 		this.localUser = localUser;
 	}
 	
-	public ArrayList<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
-	public void setUsers(ArrayList<User> users) {
+	public void setUsers(List<User> users) {
 		if (this.users != null)
 			return;
 		
 		this.users = users;
 	}
 
-	public ArrayList<Chat> getChats() {
+	public List<Chat> getChats() {
 		return chats;
 	}
-	public void setChats(ArrayList<Chat> chats) {
+	public void setChats(List<Chat> chats) {
 		if (this.chats != null)
 			return;
 		

@@ -7,6 +7,7 @@ import java.net.Socket;
 import data.Data;
 import data.containers.User;
 import network.netMsg.NetMsg;
+import network.netMsg.messaging.*;
 import network.netMsg.standart.*;
 import visual.Client;
 import visual.dialogs.MessageDialog;
@@ -31,37 +32,52 @@ public class MessageHandler implements Runnable {
 	public void run() {
 		try {
 			ObjectInputStream in = new ObjectInputStream(sender.getInputStream());
-		    Object msg = in.readObject();
+			Object msg = in.readObject();
 			sender.close();
 			
-			handleMessage((NetMsg)msg);
+			handleMessage((NetMsg) msg);
 		}
 	    catch(Exception e) { }
 	}
 
 	private void handleMessage(NetMsg msg) {
-		switch (msg.getMessageType()) {
-			default:
-			case NetMsg.MessageType.none:
-				break;
-			case NetMsg.MessageType.connect:
-				connectMsg((ConnectMsg) msg);
-				break;
-			case NetMsg.MessageType.onConnect:
-				onConnectMsg((OnConnectMsg) msg);
-				break;
-			case NetMsg.MessageType.disconnect:
-				disconnectMsg((DisconnectMsg) msg);
-				break;
-			case NetMsg.MessageType.addUser:
-				addUserMsg((AddUserMsg) msg);
-				break;
-			case NetMsg.MessageType.onAddUser:
-				onAddUserMsg((OnAddUserMsg) msg);
-				break;
-			case NetMsg.MessageType.statusUpdate:
-				statusUpdateMsg((StatusUpdateMsg) msg);
-				break;
+		try {
+			switch (msg.getMessageType()) {
+				default:
+				case NetMsg.MessageType.none:
+					System.out.println("none message received");
+					break;
+				case NetMsg.MessageType.connect:
+					System.out.println("connect message received");
+					connectMsg((ConnectMsg) msg);
+					break;
+				case NetMsg.MessageType.onConnect:
+					System.out.println("onconnect message received");
+					onConnectMsg((OnConnectMsg) msg);
+					break;
+				case NetMsg.MessageType.disconnect:
+					System.out.println("disconnect message received");
+					disconnectMsg((DisconnectMsg) msg);
+					break;
+				case NetMsg.MessageType.statusUpdate:
+					System.out.println("statusupdate message received");
+					statusUpdateMsg((StatusUpdateMsg) msg);
+					break;
+				case NetMsg.MessageType.addUser:
+					System.out.println("adduser message received");
+					addUserMsg((AddUserMsg) msg);
+					break;
+				case NetMsg.MessageType.onAddUser:
+					System.out.println("onadduser message received");
+					onAddUserMsg((OnAddUserMsg) msg);
+					break;
+				case NetMsg.MessageType.addedOnChat:
+					System.out.println("addedonchat message received");
+					addedOnChatMsg((AddedOnChatMsg) msg);
+					break;
+			} 
+		} catch (Exception e) { 
+			System.out.println("unknown error");
 		}
 	}
 		
@@ -110,6 +126,15 @@ public class MessageHandler implements Runnable {
 		if (user != null && user.getToken().equals(msg.getToken())) {
 			user.setStatus(User.Status.offline);
 			
+			client.updateUser(user);
+		}
+	}
+	
+	private void statusUpdateMsg(StatusUpdateMsg msg) {		
+		User user = getSender(msg.getId());
+		
+		if (user != null && user.getToken().equals(msg.getToken())) {
+			user.setStatus(msg.getStatus());
 			client.updateUser(user);
 		}
 	}
@@ -193,13 +218,8 @@ public class MessageHandler implements Runnable {
 			client.setEnabled(true);
 		}
 	}
-	
-	private void statusUpdateMsg(StatusUpdateMsg msg) {		
-		User user = getSender(msg.getId());
-		
-		if (user != null && user.getToken().equals(msg.getToken())) {
-			user.setStatus(msg.getStatus());
-			client.updateUser(user);
-		}
+
+	private void addedOnChatMsg(AddedOnChatMsg msg) {
+		System.out.println(msg.getMembersAddress().get(0));
 	}
 }
