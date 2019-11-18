@@ -22,7 +22,6 @@ public class Data implements Serializable {
 	private User localUser;
 	private List<User> users;
 	private List<Chat> chats;
-	private int num;
 	
 	public Data() { }
 	
@@ -30,7 +29,6 @@ public class Data implements Serializable {
 		setLocalUser(new User(username));
 		setUsers(new ArrayList<User>());
 		setChats(new ArrayList<Chat>());
-		setNum(0);
 	}
 	
 	public void load(File dataFile) throws IOException, ClassNotFoundException, EmptyDataFileException {
@@ -46,7 +44,6 @@ public class Data implements Serializable {
 			setLocalUser(aux.getLocalUser());
 			setUsers(aux.getUsers());
 			setChats(aux.getChats());
-			setNum(aux.getNum());
 		    
 		    ois.close();
 		    fis.close();
@@ -82,7 +79,15 @@ public class Data implements Serializable {
 		
 		this.users = users;
 	}
+	public User getUser(String id) {
+		for (User user : users)
+			if (user.getId().equals(id))
+				return user;
+		
+		return null;
+	}
 
+	
 	public List<Chat> getChats() {
 		return chats;
 	}
@@ -91,15 +96,5 @@ public class Data implements Serializable {
 			return;
 		
 		this.chats = chats;
-	}
-
-	public int getNum() {
-		return num;
-	}
-	public void setNum(int num) {
-		this.num = num;
-	}
-	public void increaseNum() {
-		num++;
 	}
 }

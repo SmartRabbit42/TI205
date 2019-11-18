@@ -3,9 +3,13 @@ package network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.Date;
+import java.util.List;
 
 import data.Data;
+import data.containers.Chat;
 import data.containers.User;
+import general.exceptions.InvalidParameterException;
 import network.netMsg.NetMsg;
 import network.netMsg.messaging.*;
 import network.netMsg.standart.*;
@@ -80,68 +84,65 @@ public class MessageHandler implements Runnable {
 			System.out.println("unknown error");
 		}
 	}
-		
-	private User getSender(String id) {
-		for (User user : data.getUsers())
-			if (user.getId().equals(id))
-				return user;
-		
-		return null;
-	}
 	
 	// Handlers
 	private void connectMsg(ConnectMsg msg) {
-		User user = getSender(msg.getId());
+		User user = data.getUser(msg.getId());
 		
-		if (user != null) {
-			user.setToken(msg.getToken());
-			user.setStatus(msg.getStatus());
-			user.setAddress(msg.getAddress());
-			user.setPort(msg.getPort());
-			
-			client.updateUser(user);
-			
-			OnConnectMsg ocmsg = new OnConnectMsg();
-			ocmsg.setStatus(data.getLocalUser().getStatus());
+		if (user == null)
+			return;
+		
+		user.setToken(msg.getToken());
+		user.setStatus(msg.getStatus());
+		user.setAddress(msg.getAddress());
+		user.setPort(msg.getPort());
+		
+		client.updateUser(user);
+		
+		OnConnectMsg ocmsg = new OnConnectMsg();
+		ocmsg.setStatus(data.getLocalUser().getStatus());
 
-			try {
-				network.sendMessage(user, ocmsg);
-			} catch (IOException e) { }
-		}
+		try {
+			network.sendMessage(user, ocmsg);
+		} catch (IOException e) { }
 	}
 	
 	private void onConnectMsg(OnConnectMsg msg) {
-		User user = getSender(msg.getId());
+		User user = data.getUser(msg.getId());
 		
-		if (user != null && user.getToken().equals(msg.getToken())) {
-			user.setStatus(msg.getStatus());
-			
-			client.updateUser(user);
-		}
+		if (user == null || !user.getToken().equals(msg.getToken()))
+			return;
+
+		user.setStatus(msg.getStatus());
+		
+		client.updateUser(user);
 	}
 	
 	private void disconnectMsg(DisconnectMsg msg) {
-		User user = getSender(msg.getId());
+		User user = data.getUser(msg.getId());
 		
-		if (user != null && user.getToken().equals(msg.getToken())) {
-			user.setStatus(User.Status.offline);
-			
-			client.updateUser(user);
-		}
+		if (user == null || user.getToken().equals(msg.getToken()))
+			return;
+		
+		user.setStatus(User.Status.offline);
+		
+		client.updateUser(user);
 	}
 	
 	private void statusUpdateMsg(StatusUpdateMsg msg) {		
-		User user = getSender(msg.getId());
+		User user = data.getUser(msg.getId());
 		
-		if (user != null && user.getToken().equals(msg.getToken())) {
-			user.setStatus(msg.getStatus());
-			client.updateUser(user);
-		}
+		if (user == null || !user.getToken().equals(msg.getToken()))
+			return;
+		
+		user.setStatus(msg.getStatus());
+		client.updateUser(user);
 	}
 	
 	private void addUserMsg(AddUserMsg msg) {
 		try {
 			User newUser = new User();
+			newUser.setId(msg.getId());
 			newUser.setAddress(msg.getAddress());
 			newUser.setPort(msg.getPort());
 			
@@ -152,17 +153,12 @@ public class MessageHandler implements Runnable {
 			else if (data.getUsers().contains(newUser))
 				oaumsg.setMsgStatus(OnAddUserMsg.Status.user_already_added);
 			else {
-				String id = msg.getId() + data.getNum();
-				
-				newUser.setId(id);
 				newUser.setToken(msg.getToken());
 				newUser.setStatus(msg.getStatus());
 				
 				data.getUsers().add(newUser);
-				data.increaseNum();
 				client.addUser(newUser);
 				
-				oaumsg.setId(id);
 				oaumsg.setMsgStatus(OnAddUserMsg.Status.success);
 				oaumsg.setStatus(data.getLocalUser().getStatus());
 				oaumsg.setAddress(data.getLocalUser().getAddress());
@@ -174,52 +170,74 @@ public class MessageHandler implements Runnable {
 	}
 	
 	private void onAddUserMsg(OnAddUserMsg msg) {
-		if (data.getLocalUser().getToken().equals(msg.getToken())) {
-			MessageDialog msgd;
-			
-			switch(msg.getMsgStatus()) {
-				default:
-				case OnAddUserMsg.Status.unknown_error:
+		User user = data.getUser(msg.getToken());
+		
+		if (user == null || !user.getToken().equals(msg.getToken()))
+			return;
+		
+		MessageDialog msgd;
+		
+		switch(msg.getMsgStatus()) {
+			default:
+			case OnAddUserMsg.Status.unknown_error:
+				data.getUsers().remove(user);
+				
+				msgd = new MessageDialog(client, "couldn't add new user: unknown error");
+				msgd.setVisible(true);
+				break;
+			case OnAddUserMsg.Status.success:
+				try {
+					user.setId(msg.getId());
+					user.setStatus(msg.getStatus());
+					user.setAddress(msg.getAddress());
+					user.setPort(msg.getPort());
+					
+					client.addUser(user);
+					
+					msgd = new MessageDialog(client, "added new user");
+					msgd.setVisible(true);
+				} catch (Exception e) { 
 					msgd = new MessageDialog(client, "couldn't add new user: unknown error");
 					msgd.setVisible(true);
-					break;
-				case OnAddUserMsg.Status.success:
-					User newUser;
-					try {
-						newUser = new User();
-						newUser.setId(msg.getId());
-						newUser.setToken(msg.getToken());
-						newUser.setStatus(msg.getStatus());
-						newUser.setAddress(msg.getAddress());
-						newUser.setPort(msg.getPort());
-	
-						data.getUsers().remove(newUser);
-						data.getUsers().add(newUser);
-						
-						client.addUser(newUser);
-						
-						msgd = new MessageDialog(client, "added new user");
-						msgd.setVisible(true);
-					} catch (Exception e) { 
-						msgd = new MessageDialog(client, "couldn't add new user: unknown error");
-						msgd.setVisible(true);
-					}		
-					break;
-				case OnAddUserMsg.Status.trying_to_befriend_self:
-					msgd = new MessageDialog(client, "couldn't add new user: user is you");
-					msgd.setVisible(true);
-					break;
-				case OnAddUserMsg.Status.user_already_added:
-					msgd = new MessageDialog(client, "couldn't add new user: user already added");
-					msgd.setVisible(true);
-					break;
-			}
-			
-			client.setEnabled(true);
+				}		
+				break;
+			case OnAddUserMsg.Status.trying_to_befriend_self:
+				data.getUsers().remove(user);
+				
+				msgd = new MessageDialog(client, "couldn't add new user: user is you");
+				msgd.setVisible(true);
+				break;
+			case OnAddUserMsg.Status.user_already_added:
+				data.getUsers().remove(user);
+				
+				msgd = new MessageDialog(client, "couldn't add new user: user already added");
+				msgd.setVisible(true);
+				break;
 		}
 	}
 
 	private void addedOnChatMsg(AddedOnChatMsg msg) {
-		System.out.println(msg.getMembersAddress().get(0));
+		User user = data.getUser(msg.getId());
+		
+		if (user == null || !user.getToken().equals(msg.getToken()))
+			return;
+
+		try {
+			Chat newChat = new Chat(msg.getName());
+			newChat.setStart(new Date(msg.getDate()));
+			
+			List<String> membersAddress = msg.getMembersAddress();
+			List<Integer> membersPort = msg.getMembersPort();
+			List<Byte> membersStatus = msg.getMembersStatus();
+			
+			List<User> members = newChat.getMembers();
+			
+			for (int i = 0; i < membersAddress.size(); i++) {
+				
+			}
+		} catch (InvalidParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

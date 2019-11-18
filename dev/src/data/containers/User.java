@@ -55,7 +55,7 @@ public class User implements Serializable {
         User usr = (User) obj;
         
 
-        if (!usr.getFullAddress().equals(getFullAddress()))
+        if (!(usr.getFullAddress().equals(getFullAddress()) && usr.getId().equals(getId())))
         	return false;
 
         return true;

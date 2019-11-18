@@ -46,6 +46,8 @@ public class Network {
 		localUser.setAddress(address);
 		localUser.setPort(port);
 		
+		localUser.setId(Helper.generateNewId(localUser.getFullAddress()));
+		
 		for (User user : data.getUsers()) {
 			user.setStatus(User.Status.unknown);
 			user.setToken(Helper.generateNewToken());
@@ -85,7 +87,7 @@ public class Network {
 			return;
 		}
 		
-		msg.setId(user.getId());
+		msg.setId(data.getLocalUser().getId());
 		msg.setToken(user.getToken());
 		
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -98,6 +100,7 @@ public class Network {
 	public void sendMessage(String address, int port, String token, NetMsg msg) throws UnknownHostException, IOException {
 		Socket socket = new Socket(address, port);
 		
+		msg.setId(data.getLocalUser().getId());
 		msg.setToken(token);
 		
 		ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());

@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.swing.*;
 
 import data.Data;
+import data.containers.User;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
 import network.Network;
@@ -87,24 +88,28 @@ public class AddUserDialog extends JDialog {
 					
 					if (!fullAddress.matches(Helper.addressRegex))
 						throw new InvalidParameterException();
-					
+
 					String[] aux = fullAddress.split(":");
 					String address = aux[0];
 					int port = Integer.parseInt(aux[1]);
 					
 					String token = Helper.generateNewToken();
 					
-					data.getLocalUser().setToken(token);
+					User newUser = new User();
+					newUser.setId(token);
+					newUser.setToken(token);
+					newUser.setAddress(address);
+					newUser.setPort(port);
+					
+					data.getUsers().add(newUser);
 					
 					AddUserMsg aumsg = new AddUserMsg();
-					aumsg.setId(String.format("%s-", data.getNum()));
 					aumsg.setStatus(data.getLocalUser().getStatus());
 					aumsg.setAddress(data.getLocalUser().getAddress());
 					aumsg.setPort(data.getLocalUser().getPort());
 					
 					network.sendMessage(address, port, token, aumsg);
-					
-					client.setEnabled(false);
+
 					setVisible(false);
 				} catch (IOException e) {
 					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
