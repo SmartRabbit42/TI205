@@ -46,11 +46,14 @@ public class Network {
 		localUser.setAddress(address);
 		localUser.setPort(port);
 		
-		localUser.setId(Helper.generateNewId(localUser.getFullAddress()));
+		if (localUser.getId() == null)
+			localUser.setId(Helper.generateNewId(localUser.getFullAddress()));
 		
 		for (User user : data.getUsers()) {
 			user.setStatus(User.Status.unknown);
 			user.setToken(Helper.generateNewToken());
+			
+			System.out.println(user.getId());
 		}
 		
 		ConnectMsg cmsg = new ConnectMsg();

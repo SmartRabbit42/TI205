@@ -11,10 +11,7 @@ public class AddedOnChatMsg extends NetMsg {
 	private String name;
 	private long date;
 	
-	private List<String> membersAddress;
-	private List<Integer> membersPort;
-	
-	private List<Byte> membersStatus;
+	private List<String> membersId;
 	
 	public AddedOnChatMsg() {
 		setMessageType(NetMsg.MessageType.addedOnChat);
@@ -34,25 +31,10 @@ public class AddedOnChatMsg extends NetMsg {
 		this.date = date;
 	}
 
-	public List<String> getMembersAddress() {
-		return membersAddress;
+	public List<String> getMembersId() {
+		return membersId;
 	}
-	public void setMembersAddress(List<String> membersAddress) {
-		this.membersAddress = membersAddress;
+	public void setMembersId(List<String> membersId) {
+		this.membersId = membersId;
 	}
-
-	public List<Integer> getMembersPort() {
-		return membersPort;
-	}
-	public void setMembersPort(List<Integer> membersPort) {
-		this.membersPort = membersPort;
-	}
-
-	public List<Byte> getMembersStatus() {
-		return membersStatus;
-	}
-	public void setMembersStatus(List<Byte> membersStatus) {
-		this.membersStatus = membersStatus;
-	}
-
 }

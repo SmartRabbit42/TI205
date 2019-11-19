@@ -1,9 +1,9 @@
 package data.containers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import general.exceptions.InvalidParameterException;
 
 public class User implements Serializable {
@@ -33,12 +33,16 @@ public class User implements Serializable {
 		try {
 			setUsername("anon" + (new Date()).getTime());
 			setStatus(Status.online);
+			
+			setChats(new ArrayList<Chat>());
 		} catch (InvalidParameterException e) { }
 	}
 	
 	public User (String username) throws InvalidParameterException {
 		setUsername(username);
 		setStatus(Status.online);
+		
+		setChats(new ArrayList<Chat>());
 	}
 	
 	public boolean equals (Object obj)

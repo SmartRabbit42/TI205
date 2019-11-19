@@ -98,6 +98,7 @@ public class AddUserDialog extends JDialog {
 					User newUser = new User();
 					newUser.setId(token);
 					newUser.setToken(token);
+					newUser.setStatus(User.Status.unknown);
 					newUser.setAddress(address);
 					newUser.setPort(port);
 					
@@ -108,7 +109,7 @@ public class AddUserDialog extends JDialog {
 					aumsg.setAddress(data.getLocalUser().getAddress());
 					aumsg.setPort(data.getLocalUser().getPort());
 					
-					network.sendMessage(address, port, token, aumsg);
+					network.sendMessage(newUser, aumsg);
 
 					setVisible(false);
 				} catch (IOException e) {

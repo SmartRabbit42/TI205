@@ -122,27 +122,21 @@ public class CreateChatDialog extends JDialog {
 
 					List<User> members = newChat.getMembers();
 					
-					List<String> membersAddress = new ArrayList<String>();
-					List<Integer> membersPort = new ArrayList<Integer>();
-					List<Byte> membersStatus = new ArrayList<Byte>();
+					List<String> membersId = new ArrayList<String>();
 					
 					for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
 						User user = ccaup.getUser();
 						if (!members.contains(user)) {
 							members.add(user);
 							
-							membersAddress.add(user.getAddress());
-							membersPort.add(user.getPort());
-							membersStatus.add(user.getStatus());
+							membersId.add(user.getId());
 						}
 					}
 					
 					AddedOnChatMsg aocm = new AddedOnChatMsg();
 					aocm.setName(newChat.getName());
 					aocm.setDate(newChat.getStart().getTime());
-					aocm.setMembersAddress(membersAddress);
-					aocm.setMembersPort(membersPort);
-					aocm.setMembersStatus(membersStatus);
+					aocm.setMembersId(membersId);
 					
 					for (User user : newChat.getMembers()) {
 						new Thread(new Runnable() {

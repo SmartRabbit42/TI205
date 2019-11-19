@@ -88,7 +88,7 @@ public class MessageHandler implements Runnable {
 	// Handlers
 	private void connectMsg(ConnectMsg msg) {
 		User user = data.getUser(msg.getId());
-		
+
 		if (user == null)
 			return;
 		
@@ -121,7 +121,7 @@ public class MessageHandler implements Runnable {
 	private void disconnectMsg(DisconnectMsg msg) {
 		User user = data.getUser(msg.getId());
 		
-		if (user == null || user.getToken().equals(msg.getToken()))
+		if (user == null || !user.getToken().equals(msg.getToken()))
 			return;
 		
 		user.setStatus(User.Status.offline);
@@ -165,7 +165,7 @@ public class MessageHandler implements Runnable {
 				oaumsg.setPort(data.getLocalUser().getPort());
 			}
 			
-			network.sendMessage(msg.getAddress(), msg.getPort(), msg.getToken(), oaumsg);
+			network.sendMessage(newUser, oaumsg);
 		} catch (Exception e) { }
 	}
 	
@@ -174,16 +174,11 @@ public class MessageHandler implements Runnable {
 		
 		if (user == null || !user.getToken().equals(msg.getToken()))
 			return;
-		
-		MessageDialog msgd;
-		
+
 		switch(msg.getMsgStatus()) {
 			default:
 			case OnAddUserMsg.Status.unknown_error:
 				data.getUsers().remove(user);
-				
-				msgd = new MessageDialog(client, "couldn't add new user: unknown error");
-				msgd.setVisible(true);
 				break;
 			case OnAddUserMsg.Status.success:
 				try {
@@ -193,25 +188,13 @@ public class MessageHandler implements Runnable {
 					user.setPort(msg.getPort());
 					
 					client.addUser(user);
-					
-					msgd = new MessageDialog(client, "added new user");
-					msgd.setVisible(true);
-				} catch (Exception e) { 
-					msgd = new MessageDialog(client, "couldn't add new user: unknown error");
-					msgd.setVisible(true);
-				}		
+				} catch (Exception e) {  }		
 				break;
 			case OnAddUserMsg.Status.trying_to_befriend_self:
 				data.getUsers().remove(user);
-				
-				msgd = new MessageDialog(client, "couldn't add new user: user is you");
-				msgd.setVisible(true);
 				break;
 			case OnAddUserMsg.Status.user_already_added:
 				data.getUsers().remove(user);
-				
-				msgd = new MessageDialog(client, "couldn't add new user: user already added");
-				msgd.setVisible(true);
 				break;
 		}
 	}
@@ -226,16 +209,32 @@ public class MessageHandler implements Runnable {
 			Chat newChat = new Chat(msg.getName());
 			newChat.setStart(new Date(msg.getDate()));
 			
-			List<String> membersAddress = msg.getMembersAddress();
-			List<Integer> membersPort = msg.getMembersPort();
-			List<Byte> membersStatus = msg.getMembersStatus();
+			List<String> membersId = msg.getMembersId();
 			
 			List<User> members = newChat.getMembers();
 			
-			for (int i = 0; i < membersAddress.size(); i++) {
+			for (String id : membersId) {
+				if (id.equals(data.getLocalUser().getId())) {
+					members.add(data.getLocalUser());
+					continue;
+				}
+					
+				User member = data.getUser(id);
 				
+				if (member == null) {
+					RequestAddressMsg ram = new RequestAddressMsg();
+					ram.setUserId(id);
+					
+					network.sendMessage(user, ram);
+				} else {
+					members.add(member);
+					member.getChats().add(newChat);
+				}
 			}
 		} catch (InvalidParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
