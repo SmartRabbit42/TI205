@@ -2,17 +2,19 @@ package network.netMsg.standart;
 
 import network.netMsg.NetMsg;
 
-public class AddUserMsg extends NetMsg {
+public class ReachUserMsg extends NetMsg {
 
 	private static final long serialVersionUID = 440000773731260800L;
 	
 	private String address;
 	private int port;
 	
+	private String username;
+	
 	private byte status;
 	
-	public AddUserMsg() {
-		setMessageType(NetMsg.MessageType.addUser);
+	public ReachUserMsg() {
+		setMessageType(NetMsg.MessageType.reachUser);
 	}
 
 	public String getAddress() {
@@ -29,6 +31,13 @@ public class AddUserMsg extends NetMsg {
 		this.port = port;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	public byte getStatus() {
 		return status;
 	}

@@ -71,7 +71,6 @@ public class ChangeUsernameDialog extends JDialog {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				client.setEnabled(true);
 				setVisible(false);
 			}
 		});

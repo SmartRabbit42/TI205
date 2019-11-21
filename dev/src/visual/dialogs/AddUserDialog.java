@@ -6,7 +6,6 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.swing.*;
 
@@ -14,8 +13,9 @@ import data.Data;
 import data.containers.User;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
+import general.exceptions.MessageNotSentException;
 import network.Network;
-import network.netMsg.standart.AddUserMsg;
+import network.netMsg.standart.ReachUserMsg;
 import visual.Client;
 
 public class AddUserDialog extends JDialog {
@@ -76,7 +76,6 @@ public class AddUserDialog extends JDialog {
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				client.setEnabled(true);
 				setVisible(false);
 			}
 		});
@@ -93,26 +92,27 @@ public class AddUserDialog extends JDialog {
 					String address = aux[0];
 					int port = Integer.parseInt(aux[1]);
 					
-					String token = Helper.generateNewToken();
+					String token = Helper.generateToken();
 					
 					User newUser = new User();
 					newUser.setId(token);
 					newUser.setToken(token);
-					newUser.setStatus(User.Status.unknown);
+					newUser.setStatus(User.Status.loading);
 					newUser.setAddress(address);
 					newUser.setPort(port);
 					
 					data.getUsers().add(newUser);
 					
-					AddUserMsg aumsg = new AddUserMsg();
-					aumsg.setStatus(data.getLocalUser().getStatus());
+					ReachUserMsg aumsg = new ReachUserMsg();
 					aumsg.setAddress(data.getLocalUser().getAddress());
 					aumsg.setPort(data.getLocalUser().getPort());
+					aumsg.setStatus(data.getLocalUser().getStatus());
+					aumsg.setUsername(data.getLocalUser().getUsername());
 					
 					network.sendMessage(newUser, aumsg);
 
 					setVisible(false);
-				} catch (IOException e) {
+				} catch (MessageNotSentException e) {
 					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
 					msg.setVisible(true);
 				} catch (InvalidParameterException e) {

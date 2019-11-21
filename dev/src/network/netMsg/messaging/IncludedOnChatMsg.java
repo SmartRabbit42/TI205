@@ -4,17 +4,18 @@ import java.util.List;
 
 import network.netMsg.NetMsg;
 
-public class AddedOnChatMsg extends NetMsg {
+public class IncludedOnChatMsg extends NetMsg {
 
 	private static final long serialVersionUID = -8098369012506824015L;
 	
 	private String name;
+	private String chatId;
 	private long date;
 	
 	private List<String> membersId;
 	
-	public AddedOnChatMsg() {
-		setMessageType(NetMsg.MessageType.addedOnChat);
+	public IncludedOnChatMsg() {
+		setMessageType(NetMsg.MessageType.includedOnChat);
 	}
 
 	public String getName() {
@@ -24,6 +25,13 @@ public class AddedOnChatMsg extends NetMsg {
 		this.name = name;
 	}
 
+	public String getChatId() {
+		return chatId;
+	}
+	public void setChatId(String chatId) {
+		this.chatId = chatId;
+	}
+	
 	public long getDate() {
 		return date;
 	}

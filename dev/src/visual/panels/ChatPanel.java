@@ -8,9 +8,9 @@ import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.Chat;
+import visual.popups.ChatPopup;
 import network.Network;
 import visual.Client;
-import visual.popups.UserPopup;
 
 public class ChatPanel extends JPanel {
 
@@ -41,7 +41,7 @@ public class ChatPanel extends JPanel {
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		setComponentPopupMenu(new UserPopup(client, network, data, null));
+		setComponentPopupMenu(new ChatPopup(client, network, data, null));
 		
 		lblName = new JLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);

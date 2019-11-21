@@ -12,6 +12,7 @@ public class Chat implements Serializable {
 	private static final long serialVersionUID = -7541266357185083144L;
 	
 	private String name;
+	private String id;
 	private Date start;
 	
 	private List<User> members;
@@ -33,6 +34,26 @@ public class Chat implements Serializable {
 		setMessages(new ArrayList<Message>());
 	}
 
+	public boolean equals (Object obj)
+    {
+        if (this==obj)
+            return true;
+
+        if (obj==null)
+            return false;
+
+        if (this.getClass()!=obj.getClass())
+            return false;
+
+        Chat cht = (Chat) obj;
+        
+
+        if (!cht.getId().equals(getId()))
+        	return false;
+
+        return true;
+    }
+	
 	public String getName() {
 		return name;
 	}
@@ -41,6 +62,13 @@ public class Chat implements Serializable {
 			throw new InvalidParameterException();
 		
 		this.name = name;
+	}
+
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Date getStart() {

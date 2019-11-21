@@ -23,10 +23,11 @@ public class User implements Serializable {
 	
 	public static class Status {
 		public static final byte unknown = 0;
-		public static final byte offline = 1;
-		public static final byte online = 2;
-		public static final byte busy = 3;
-		public static final byte occupied = 4;
+		public static final byte loading = 1;
+		public static final byte offline = 3;
+		public static final byte online = 4;
+		public static final byte busy = 5;
+		public static final byte typing = 6;
 	}
 	
 	public User () {
@@ -59,7 +60,7 @@ public class User implements Serializable {
         User usr = (User) obj;
         
 
-        if (!(usr.getFullAddress().equals(getFullAddress()) && usr.getId().equals(getId())))
+        if (!usr.getId().equals(getId()))
         	return false;
 
         return true;

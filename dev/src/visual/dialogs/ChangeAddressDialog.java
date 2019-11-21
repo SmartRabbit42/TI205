@@ -6,7 +6,6 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.swing.*;
 
@@ -14,6 +13,7 @@ import data.Data;
 import data.containers.User;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
+import general.exceptions.MessageNotSentException;
 import network.Network;
 import network.netMsg.standart.ConnectMsg;
 import visual.Client;
@@ -97,7 +97,7 @@ public class ChangeAddressDialog extends JDialog {
 					String address = aux[0];
 					int port = Integer.parseInt(aux[1]);
 					
-					String token = Helper.generateNewToken();
+					String token = Helper.generateToken();
 					
 					user.setToken(token);
 					user.setAddress(address);
@@ -111,7 +111,7 @@ public class ChangeAddressDialog extends JDialog {
 					network.sendMessage(user, cmsg);
 
 					setVisible(false);
-				} catch (IOException e) {
+				} catch (MessageNotSentException e) {
 					MessageDialog msg = new MessageDialog(client, "couldn't send connectmsg");
 					msg.setVisible(true);
 				} catch (InvalidParameterException e) {

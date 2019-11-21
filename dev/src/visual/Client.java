@@ -1,7 +1,6 @@
 package visual;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -28,9 +27,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import data.Data;
 import data.containers.Message;
 import data.containers.User;
-import general.exceptions.EmptyDataFileException;
-import general.exceptions.InvalidParameterException;
 import data.containers.Chat;
+import general.exceptions.DataNotLoadedException;
+import general.exceptions.DataNotSavedException;
+import general.exceptions.InvalidParameterException;
+import general.exceptions.NetworkUnableToShutException;
+import general.exceptions.NetworkUnableToStartException;
 import network.Network;
 import network.netMsg.standart.DisconnectMsg;
 import visual.dialogs.*;
@@ -38,12 +40,11 @@ import visual.panels.*;
 
 /*
  * TODO:
- * 	 create chat dialog
- *   status selection
- *   config options
  *   messaging system
- *   reorganize visual
  *   criptograph
+ *   status selection
+ *   reorganize visual
+ *   config options
  */
 
 public class Client extends JFrame {
@@ -59,11 +60,14 @@ public class Client extends JFrame {
 	
 	private JPanel panChats;
 	private JPanel panUsers;
+	private JPanel panFlows;
+	
 	private JLabel lblUsername;
 	private JLabel lblAddress;
 	
 	private ArrayList<UserPanel> users;
 	private ArrayList<ChatPanel> chats;
+	private ArrayList<FlowPanel> flows;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -93,7 +97,6 @@ public class Client extends JFrame {
 		setTitle("dolphin");
 		setBounds(100, 100, 500, 600);
 		setMinimumSize(new Dimension(516, 638));
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout());
 		
@@ -111,7 +114,11 @@ public class Client extends JFrame {
             			data.dump(dataFile);
             			network.shut();
             		}
-				} catch (IOException e1) { 
+				} catch (NetworkUnableToShutException e1) {
+					// TODO
+					e1.printStackTrace();
+				} catch (DataNotSavedException e1) {
+					// TODO
 					e1.printStackTrace();
 				}
             	System.exit(0);
@@ -217,16 +224,13 @@ public class Client extends JFrame {
 					
 					setMinimumSize(new Dimension(816, 638));
 					((CardLayout) getContentPane().getLayout()).show(getContentPane(), "master");
-				} catch (IOException e) {
-					// TODO
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					// TODO
-					e.printStackTrace();
-				} catch (EmptyDataFileException e) {
-					// TODO
-					e.printStackTrace();
 				} catch (InvalidParameterException e) {
+					// TODO
+					e.printStackTrace();
+				} catch (NetworkUnableToStartException e) {
+					// TODO
+					e.printStackTrace();
+				} catch (DataNotLoadedException e) {
 					// TODO
 					e.printStackTrace();
 				}
@@ -251,10 +255,12 @@ public class Client extends JFrame {
 		panMessages.setBounds(250, 0, 550, 600);
 		panMessages.setLayout(null);
 		
-		JPanel panMessageFlow = new JPanel();
-		panMessageFlow.setBounds(0, 0, 550, 550);
-		panMessageFlow.setBackground(new Color(15, 75, 114, 255));
-		panMessageFlow.setLayout(null);
+		flows = new ArrayList<FlowPanel>();
+		
+		panFlows = new JPanel();
+		panFlows.setBounds(0, 0, 550, 550);
+		panFlows.setBackground(new Color(15, 75, 114, 255));
+		panFlows.setLayout(new CardLayout());
 		
 		JPanel panSendMessage = new JPanel();
 		panSendMessage.setBounds(0, 550, 550, 50);
@@ -270,7 +276,7 @@ public class Client extends JFrame {
 		panSendMessage.add(txtMessage);
 		panSendMessage.add(btnMessage);
 		
-		panMessages.add(panMessageFlow);
+		panMessages.add(panFlows);
 		panMessages.add(panSendMessage);
 		
 		JPanel panAside = new JPanel();
@@ -335,6 +341,7 @@ public class Client extends JFrame {
 		btnCreateChat.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		panChats.add(btnCreateChat);
+		panChats.add(Box.createVerticalGlue());
 		
 		users = new ArrayList<UserPanel>();
 		
@@ -404,14 +411,19 @@ public class Client extends JFrame {
 
 	// Methods
 	public void addMessage(Message msg, Chat chat) {
-		
+		for (FlowPanel flowPan : flows) {
+			if (flowPan.getChat().equals(chat)) {
+				flowPan.addMessage(msg);
+				return;
+			}
+		}
 	}
 	
 	public void updateLocalUser() {
 		User localUser = data.getLocalUser();
 		
 		lblUsername.setText(localUser.getUsername());
-		lblAddress.setText(localUser.getAddress() + ":" + localUser.getPort());
+		lblAddress.setText(localUser.getFullAddress());
 	}
 
 	public void addUser(User user) {
@@ -432,9 +444,20 @@ public class Client extends JFrame {
 	
 	public void addChat(Chat chat) {
 		ChatPanel chatPan = new ChatPanel(instance, network, data, chat);
+		FlowPanel flowPan = new FlowPanel(chat);
 		
 		chats.add(chatPan);
+		flows.add(flowPan);
+
 		panChats.add(chatPan, 0);
+		panFlows.add(flowPan, chat.getId());
+		
+		chatPan.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				((CardLayout) panFlows.getLayout()).show(panFlows, chat.getId());
+			}
+		});
 	}
 	
 	private void selectDataFile() {

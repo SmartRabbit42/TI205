@@ -8,10 +8,10 @@ import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.User;
-import network.Network;
-import visual.Client;
 import visual.dialogs.ChangeAddressDialog;
 import visual.dialogs.ChangeUsernameDialog;
+import network.Network;
+import visual.Client;
 
 public class UserPopup extends JPopupMenu {
 

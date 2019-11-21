@@ -7,19 +7,19 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
-import visual.panels.*;
 import data.Data;
 import data.containers.Chat;
 import data.containers.User;
+import general.Helper;
+import visual.panels.CreateChatAddUserPanel;
 import general.exceptions.InvalidParameterException;
 import network.Network;
-import network.netMsg.messaging.AddedOnChatMsg;
+import network.netMsg.messaging.IncludedOnChatMsg;
 import visual.Client;
 
 public class CreateChatDialog extends JDialog {
@@ -119,38 +119,32 @@ public class CreateChatDialog extends JDialog {
 			public void mousePressed(MouseEvent arg0) {
 				try {
 					Chat newChat = new Chat(txtName.getText());
-
+					newChat.setId(Helper.generateChatId(data.getLocalUser().getFullAddress()));
+					
 					List<User> members = newChat.getMembers();
 					
 					List<String> membersId = new ArrayList<String>();
 					
 					for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
 						User user = ccaup.getUser();
-						if (!members.contains(user)) {
+						if (user != null && !members.contains(user)) {
 							members.add(user);
 							
 							membersId.add(user.getId());
 						}
 					}
 					
-					AddedOnChatMsg aocm = new AddedOnChatMsg();
+					IncludedOnChatMsg aocm = new IncludedOnChatMsg();
 					aocm.setName(newChat.getName());
+					aocm.setChatId(newChat.getId());
 					aocm.setDate(newChat.getStart().getTime());
 					aocm.setMembersId(membersId);
 					
-					for (User user : newChat.getMembers()) {
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									network.sendMessage(user, aocm);
-								} catch (IOException e) { }
-							}
-						}).start();
-					}
+					network.spreadMessage(members, aocm);
 					
 					data.getChats().add(newChat);
 					client.addChat(newChat);
+					
 					setVisible(false);
 				} catch (InvalidParameterException e) { 
 					MessageDialog msg = new MessageDialog(client, "Invalid chat name");

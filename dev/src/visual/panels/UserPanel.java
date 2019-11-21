@@ -9,9 +9,9 @@ import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.User;
+import visual.popups.UserPopup;
 import network.Network;
 import visual.Client;
-import visual.popups.UserPopup;
 
 public class UserPanel extends JPanel {
 
@@ -82,7 +82,7 @@ public class UserPanel extends JPanel {
 			case User.Status.busy:
 				panStatus.setBackground(Color.orange);
 				break;
-			case User.Status.occupied:
+			case User.Status.typing:
 				panStatus.setBackground(Color.yellow);
 		}
 	}
