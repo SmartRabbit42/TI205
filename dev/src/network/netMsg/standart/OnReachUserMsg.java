@@ -24,7 +24,7 @@ public class OnReachUserMsg extends NetMsg {
 	}
 	
 	public OnReachUserMsg() {
-		setMessageType(NetMsg.MessageType.onReachUser);
+		setMessageType(MessageType.onReachUser);
 	}
 
 	public String getAddress() {

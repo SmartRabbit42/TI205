@@ -12,7 +12,7 @@ public class ConnectMsg extends NetMsg {
 	private int port;
 	
 	public ConnectMsg() {
-		setMessageType(NetMsg.MessageType.connect);
+		setMessageType(MessageType.connect);
 	}
 
 	public byte getStatus() {

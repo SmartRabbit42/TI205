@@ -8,6 +8,7 @@ public class Message implements Serializable {
 	private static final long serialVersionUID = 3495882302934872561L;
 	
 	private User sender;
+	private Chat chat;
 	private String content;
 	private Date time;
 	
@@ -20,6 +21,13 @@ public class Message implements Serializable {
 		this.sender = sender;
 	}
 
+	public Chat getChat() {
+		return chat;
+	}
+
+	public void setChat(Chat chat) {
+		this.chat = chat;
+	}
 	public String getContent() {
 		return content;
 	}

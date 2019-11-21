@@ -2,6 +2,7 @@ package visual;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -34,6 +35,7 @@ import general.exceptions.InvalidParameterException;
 import general.exceptions.NetworkUnableToShutException;
 import general.exceptions.NetworkUnableToStartException;
 import network.Network;
+import network.netMsg.messaging.MessageMsg;
 import network.netMsg.standart.DisconnectMsg;
 import visual.dialogs.*;
 import visual.panels.*;
@@ -61,6 +63,8 @@ public class Client extends JFrame {
 	private JPanel panChats;
 	private JPanel panUsers;
 	private JPanel panFlows;
+	
+	private Chat currentChat;
 	
 	private JLabel lblUsername;
 	private JLabel lblAddress;
@@ -109,7 +113,7 @@ public class Client extends JFrame {
                 			selectDataFile();
             			
             			DisconnectMsg dmsg = new DisconnectMsg();
-            			network.spreadMessage(dmsg);
+            			network.spreadMessage(dmsg, false);
             			
             			data.dump(dataFile);
             			network.shut();
@@ -217,8 +221,12 @@ public class Client extends JFrame {
 					network.start();
 					
 					updateLocalUser();
-					for (Chat chat : data.getChats())
+					for (Chat chat : data.getChats()) {
 						addChat(chat);
+						for (Message message : chat.getMessages())
+							addMessage(message, chat);
+					}
+						
 					for (User user : data.getUsers())
 						addUser(user);
 					
@@ -407,6 +415,30 @@ public class Client extends JFrame {
 				dialog.setVisible(true);
 			}
 		});
+		btnMessage.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				String content = txtMessage.getText();
+				Date now = new Date();
+				
+				Message message = new Message();
+				message.setContent(content);
+				message.setSender(data.getLocalUser());
+				message.setTime(now);
+				message.setChat(currentChat);
+				
+				MessageMsg mm = new MessageMsg();
+				mm.setChatId(currentChat.getId());
+				mm.setTime(now.getTime());
+				mm.setContent(content);
+				
+				network.spreadMessage(currentChat.getMembers(), mm, true);
+				
+				currentChat.getMessages().add(message);
+				
+				addMessage(message, currentChat);
+			}
+		});
 	}
 
 	// Methods
@@ -452,9 +484,13 @@ public class Client extends JFrame {
 		panChats.add(chatPan, 0);
 		panFlows.add(flowPan, chat.getId());
 		
+		if(currentChat == null)
+			currentChat = chat;
+					
 		chatPan.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				currentChat = chat;
 				((CardLayout) panFlows.getLayout()).show(panFlows, chat.getId());
 			}
 		});

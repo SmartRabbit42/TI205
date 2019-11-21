@@ -7,6 +7,7 @@ import java.util.List;
 
 import data.Data;
 import data.containers.Chat;
+import data.containers.Message;
 import data.containers.User;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
@@ -86,7 +87,11 @@ public class MessageHandler implements Runnable {
 				System.out.println("onRequestAddress message received");
 				onRequestAddressMsg((OnRequestAddressMsg) msg);
 				break;
-		} 
+			case NetMsg.MessageType.message:
+				System.out.println("messageMsg message received");
+				messageMsg((MessageMsg) msg);
+				break;
+		}
 	}
 	
 	// Handlers
@@ -107,6 +112,8 @@ public class MessageHandler implements Runnable {
 
 			network.sendMessage(user, ocmsg);
 			
+			network.sendUnsentMessages(user);
+			
 			client.updateUser(user);
 		} catch (MessageNotSentException e) { }
 	}
@@ -118,6 +125,8 @@ public class MessageHandler implements Runnable {
 			return;
 
 		user.setStatus(msg.getStatus());
+		
+		network.sendUnsentMessages(user);
 		
 		client.updateUser(user);
 	}
@@ -224,7 +233,7 @@ public class MessageHandler implements Runnable {
 					members.add(data.getLocalUser());
 					continue;
 				}
-					
+				
 				User member = data.getUser(id);
 				
 				if (member == null) {
@@ -280,5 +289,27 @@ public class MessageHandler implements Runnable {
 		
 		requestedUser.setAddress(msg.getAddress());
 		requestedUser.setPort(msg.getPort());
+	}
+	
+	private void messageMsg(MessageMsg msg) {
+		User user = data.getUser(msg.getId());
+		
+		if (user == null || !user.getToken().equals(msg.getToken()))
+			return;
+		
+		Chat chat = data.getChat(msg.getChatId());
+		
+		if (chat == null)
+			return;
+		
+		Message message = new Message();
+		message.setChat(chat);
+		message.setSender(user);
+		message.setTime(new Date(msg.getTime()));
+		message.setContent(msg.getContent());
+		
+		chat.getMessages().add(message);
+		
+		client.addMessage(message, chat);
 	}
 }

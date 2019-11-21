@@ -1,6 +1,8 @@
 package visual.panels;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -15,11 +17,15 @@ public class FlowPanel extends JPanel {
 
 	private Chat chat;
 	
+	private List<MessagePanel> messages;
+	
 	private JLabel lblName;
 	private JPanel panMessages;
 	
 	public FlowPanel(Chat chat) {
 		this.chat = chat;
+		
+		messages = new ArrayList<MessagePanel>();
 		
 		initializeComponent();
 		
@@ -46,7 +52,10 @@ public class FlowPanel extends JPanel {
 	}
 	
 	public void addMessage(Message msg) {
+		MessagePanel newMessagePan = new MessagePanel(msg);
+		messages.add(newMessagePan);
 		
+		panMessages.add(newMessagePan);
 	}
 	
 	public void updateChat() {

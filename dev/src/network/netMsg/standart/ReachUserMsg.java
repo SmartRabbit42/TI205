@@ -14,7 +14,7 @@ public class ReachUserMsg extends NetMsg {
 	private byte status;
 	
 	public ReachUserMsg() {
-		setMessageType(NetMsg.MessageType.reachUser);
+		setMessageType(MessageType.reachUser);
 	}
 
 	public String getAddress() {

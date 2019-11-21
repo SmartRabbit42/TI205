@@ -9,7 +9,7 @@ public class StatusUpdateMsg extends NetMsg {
 	private byte status;
 
 	public StatusUpdateMsg() {
-		setMessageType(NetMsg.MessageType.statusUpdate);
+		setMessageType(MessageType.statusUpdate);
 	}
 
 	public byte getStatus() {

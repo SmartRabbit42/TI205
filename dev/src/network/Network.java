@@ -4,6 +4,7 @@ import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import data.Data;
@@ -55,20 +56,20 @@ public class Network {
 			for (User user : data.getUsers()) {
 				user.setStatus(User.Status.loading);
 				user.setToken(Helper.generateToken());
-			}
-			
-			ConnectMsg cmsg = new ConnectMsg();
-			cmsg.setStatus(localUser.getStatus());
-			cmsg.setAddress(address);
-			cmsg.setPort(port);
-			
-			spreadMessage(cmsg);
+			}		
 			
 			running = true;
 		
 			updateMessagePump();
 			
 			System.out.println(String.format("network running on port %d", port));
+			
+			ConnectMsg cmsg = new ConnectMsg();
+			cmsg.setStatus(localUser.getStatus());
+			cmsg.setAddress(address);
+			cmsg.setPort(port);
+			
+			spreadMessage(cmsg, false);
 		} catch (Exception e) {
 			throw new NetworkUnableToStartException();
 		}
@@ -87,8 +88,10 @@ public class Network {
 	}
 	
 	public void sendMessage(User user, NetMsg msg) throws MessageNotSentException  {
-		if (user.getStatus() == User.Status.offline)
+		if (user.equals(data.getLocalUser()))
 			return;
+		if (user.getStatus() == User.Status.offline)
+			throw new MessageNotSentException();
 		
     	try {
 	    	Socket socket;
@@ -109,30 +112,55 @@ public class Network {
     	}
 	}
 	
-	public void spreadMessage(NetMsg msg) {
+	public void spreadMessage(NetMsg msg, boolean store) {
 		for (User user : data.getUsers()) {
 			new Thread(new Runnable() {
 			    @Override
 			    public void run() {
 			    	try {
 						sendMessage(user, msg);
-					} catch (MessageNotSentException e) { }
+					} catch (MessageNotSentException e) { 
+						if (store)
+							user.getUnsentMessages().add(msg);
+					}
 			    }
 			}).start();
 		}
 	}
 	
-	public void spreadMessage(List<User> users, NetMsg msg) {
+	public void spreadMessage(List<User> users, NetMsg msg, boolean store) {
 		for (User user : users) {
 			new Thread(new Runnable() {
 			    @Override
 			    public void run() {
 			    	try {
 						sendMessage(user, msg);
-					} catch (MessageNotSentException e) { }
+					} catch (MessageNotSentException e) { 
+						if (store)
+							user.getUnsentMessages().add(msg);
+					}
 			    }
 			}).start();
 		}
+	}
+	
+	public void sendUnsentMessages(User user) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				List<NetMsg> unsent = new ArrayList<NetMsg>();
+				
+				for (NetMsg msg : user.getUnsentMessages()) {
+					try {
+						sendMessage(user, msg);
+					} catch (MessageNotSentException e) {
+						unsent.add(msg);
+					}
+				}
+				
+				user.setUnsentMessages(unsent);			
+			}
+		}).start();
 	}
 	
 	private void updateMessagePump() {

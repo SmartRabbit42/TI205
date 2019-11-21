@@ -125,6 +125,9 @@ public class CreateChatDialog extends JDialog {
 					
 					List<String> membersId = new ArrayList<String>();
 					
+					members.add(data.getLocalUser());
+					membersId.add(data.getLocalUser().getId());
+					
 					for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
 						User user = ccaup.getUser();
 						if (user != null && !members.contains(user)) {
@@ -140,7 +143,7 @@ public class CreateChatDialog extends JDialog {
 					aocm.setDate(newChat.getStart().getTime());
 					aocm.setMembersId(membersId);
 					
-					network.spreadMessage(members, aocm);
+					network.spreadMessage(members, aocm, true);
 					
 					data.getChats().add(newChat);
 					client.addChat(newChat);

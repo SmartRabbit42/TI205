@@ -24,6 +24,8 @@ public class NetMsg implements Serializable {
 		
 		public static final byte requestAddress = 8;
 		public static final byte onRequestAddress = 9;
+		
+		public static final byte message = 10;
 	}
 	
 	private String id;

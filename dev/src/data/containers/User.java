@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import general.exceptions.InvalidParameterException;
+import network.netMsg.NetMsg;
 
 public class User implements Serializable {
 
@@ -21,6 +22,8 @@ public class User implements Serializable {
 	
 	private List<Chat> chats;
 	
+	private List<NetMsg> unsentMessages;
+	
 	public static class Status {
 		public static final byte unknown = 0;
 		public static final byte loading = 1;
@@ -36,6 +39,7 @@ public class User implements Serializable {
 			setStatus(Status.online);
 			
 			setChats(new ArrayList<Chat>());
+			setUnsentMessages(new ArrayList<NetMsg>());
 		} catch (InvalidParameterException e) { }
 	}
 	
@@ -44,6 +48,7 @@ public class User implements Serializable {
 		setStatus(Status.online);
 		
 		setChats(new ArrayList<Chat>());
+		setUnsentMessages(new ArrayList<NetMsg>());
 	}
 	
 	public boolean equals (Object obj)
@@ -120,5 +125,12 @@ public class User implements Serializable {
 
 	public String getFullAddress() {
 		return String.format("%s:%d", address, port);
+	}
+
+	public List<NetMsg> getUnsentMessages() {
+		return unsentMessages;
+	}
+	public void setUnsentMessages(List<NetMsg> unsentMessages) {
+		this.unsentMessages = unsentMessages;
 	}
 }

@@ -15,7 +15,7 @@ public class IncludedOnChatMsg extends NetMsg {
 	private List<String> membersId;
 	
 	public IncludedOnChatMsg() {
-		setMessageType(NetMsg.MessageType.includedOnChat);
+		setMessageType(MessageType.includedOnChat);
 	}
 
 	public String getName() {

@@ -77,4 +77,11 @@ public class Data {
 	public List<Chat> getChats() {
 		return meta.getChats();
 	}
+	public Chat getChat(String id) {
+		for (Chat chat : meta.getChats())
+			if (chat.getId().equals(id))
+				return chat;
+		
+		return null;
+	}
 }

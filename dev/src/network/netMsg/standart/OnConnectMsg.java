@@ -9,7 +9,7 @@ public class OnConnectMsg extends NetMsg {
 	private byte status;
 	
 	public OnConnectMsg() {
-		setMessageType(NetMsg.MessageType.onConnect);
+		setMessageType(MessageType.onConnect);
 	}
 
 	public byte getStatus() {

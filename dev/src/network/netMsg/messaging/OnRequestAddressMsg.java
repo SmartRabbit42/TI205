@@ -11,7 +11,7 @@ public class OnRequestAddressMsg extends NetMsg {
 	private String userId;
 	
 	public OnRequestAddressMsg() {
-		setMessageType(NetMsg.MessageType.onRequestAddress);
+		setMessageType(MessageType.onRequestAddress);
 	}
 
 	public String getAddress() {

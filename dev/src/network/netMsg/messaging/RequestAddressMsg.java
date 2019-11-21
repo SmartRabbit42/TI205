@@ -9,7 +9,7 @@ public class RequestAddressMsg extends NetMsg {
 	private String userId;
 	
 	public RequestAddressMsg() {
-		setMessageType(NetMsg.MessageType.requestAddress);
+		setMessageType(MessageType.requestAddress);
 	}
 
 	public String getUserId() {
