@@ -17,15 +17,12 @@ public class NetMsg implements Serializable {
 		
 		public static final byte statusUpdate = 4;
 		
-		public static final byte reachUser = 5;
-		public static final byte onReachUser = 6;
+		public static final byte add  = 5;
+		public static final byte onAdd = 6;
 		
 		public static final byte includedOnChat = 7;
 		
-		public static final byte requestAddress = 8;
-		public static final byte onRequestAddress = 9;
-		
-		public static final byte message = 10;
+		public static final byte message = 8;
 	}
 	
 	private String id;

@@ -20,6 +20,8 @@ public class User implements Serializable {
 	
 	private byte status;
 	
+	private boolean hidden;
+	
 	private List<Chat> chats;
 	
 	private List<NetMsg> unsentMessages;
@@ -59,7 +61,7 @@ public class User implements Serializable {
         if (obj==null)
             return false;
 
-        if (this.getClass()!=obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
 
         User usr = (User) obj;
@@ -76,7 +78,7 @@ public class User implements Serializable {
 	}
 	public void setUsername(String username) throws InvalidParameterException {
 		if (username.equals(null) || username.equals(""))
-			throw new InvalidParameterException();
+			throw new InvalidParameterException("invalid username");
 		
 		this.username = username;
 	}
@@ -114,6 +116,13 @@ public class User implements Serializable {
 	}
 	public void setStatus(byte status) {
 		this.status = status;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	public List<Chat> getChats() {

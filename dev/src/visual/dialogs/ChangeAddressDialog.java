@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
@@ -15,7 +13,7 @@ import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
 import network.Network;
-import network.netMsg.standart.ConnectMsg;
+import network.netMsg.messages.ConnectMsg;
 import visual.Client;
 
 public class ChangeAddressDialog extends JDialog {
@@ -27,6 +25,8 @@ public class ChangeAddressDialog extends JDialog {
 	private Data data;
 	
 	private User user;
+	
+	private JTextField txtUserAddress;
 	
 	public ChangeAddressDialog(Client client, Network network, Data data, User user) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
@@ -48,7 +48,7 @@ public class ChangeAddressDialog extends JDialog {
 		
 		JLabel lblUserAddress = new JLabel("user address:");
 		
-		JTextField txtUserAddress = new JTextField();
+		txtUserAddress = new JTextField();
 		txtUserAddress.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
@@ -61,8 +61,10 @@ public class ChangeAddressDialog extends JDialog {
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(e -> setVisible(false));
 		
 		JButton btnChange = new JButton("change");
+		btnChange.addActionListener(e -> btnChangeClick());
 		
 		panButtons.add(Box.createHorizontalGlue());
 		panButtons.add(btnCancel);
@@ -75,50 +77,47 @@ public class ChangeAddressDialog extends JDialog {
 		
 		pack();
 		setLocationRelativeTo(this.getParent());
-		
-		// Events
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				client.setEnabled(true);
-				setVisible(false);
-			}
-		});
-		btnChange.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				try {
-					String fullAddress = txtUserAddress.getText();
-					
-					if (!fullAddress.matches(Helper.addressRegex))
-						throw new InvalidParameterException();
-					
-					String[] aux = fullAddress.split(":");
-					String address = aux[0];
-					int port = Integer.parseInt(aux[1]);
-					
-					String token = Helper.generateToken();
-					
-					user.setToken(token);
-					user.setAddress(address);
-					user.setPort(port);
-					
-					ConnectMsg cmsg = new ConnectMsg();
-					cmsg.setStatus(data.getLocalUser().getStatus());
-					cmsg.setAddress(data.getLocalUser().getAddress());
-					cmsg.setPort(data.getLocalUser().getPort());
-					
-					network.sendMessage(user, cmsg);
+	}
+	
+	private void btnChangeClick() {
+		try {
+			String fullAddress = txtUserAddress.getText();
+			
+			if (!fullAddress.matches(Helper.addressRegex))
+				throw new InvalidParameterException("invalid address");
 
-					setVisible(false);
-				} catch (MessageNotSentException e) {
-					MessageDialog msg = new MessageDialog(client, "couldn't send connectmsg");
-					msg.setVisible(true);
-				} catch (InvalidParameterException e) {
-					MessageDialog msg = new MessageDialog(client, "invalid address");
-					msg.setVisible(true);
-				}
-			}
-		});
+			if (fullAddress.equals(data.getLocalUser().getFullAddress()))
+				throw new InvalidParameterException("trying to add local user");
+			
+			for (User user : data.getUsers())
+				if (fullAddress.equals(user.getFullAddress()))
+					throw new InvalidParameterException("user already added");
+			
+			String[] aux = fullAddress.split(":");
+			String address = aux[0];
+			int port = Integer.parseInt(aux[1]);
+
+			user.setAddress(address);
+			user.setPort(port);
+			
+			ConnectMsg cmsg = new ConnectMsg();
+			cmsg.setStatus(data.getLocalUser().getStatus());
+			cmsg.setAddress(data.getLocalUser().getAddress());
+			cmsg.setPort(data.getLocalUser().getPort());
+			
+			network.sendMessage(user, cmsg);
+
+			setVisible(false);
+		} catch (MessageNotSentException e) {
+			 JOptionPane.showMessageDialog(client,
+				        "couldn't send connectMsg",
+				        "error",
+				        JOptionPane.INFORMATION_MESSAGE);
+		} catch (InvalidParameterException e) {
+			JOptionPane.showMessageDialog(client,
+			        e.getMessage(),
+			        "error",
+			        JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

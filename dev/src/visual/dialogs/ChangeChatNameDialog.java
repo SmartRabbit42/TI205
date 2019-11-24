@@ -7,26 +7,29 @@ import java.awt.Dimension;
 
 import javax.swing.*;
 
-import data.containers.User;
+import data.containers.Chat;
 import general.exceptions.InvalidParameterException;
+import network.Network;
 import visual.Client;
 
-public class ChangeUsernameDialog extends JDialog {
+public class ChangeChatNameDialog extends JDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
 	private Client client;
+	private Network network;
 	
-	private User user;
+	private Chat chat;
 	
-	private JTextField txtUsername;
+	private JTextField txtName;
 	
-	public ChangeUsernameDialog(Client client, User user) {
+	public ChangeChatNameDialog(Client client, Network network, Chat chat) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
 		
 		this.client = client;
+		this.network = network;
 		
-		this.user = user;
+		this.chat = chat;
 		
 		initializeComponent();
 	}
@@ -35,17 +38,17 @@ public class ChangeUsernameDialog extends JDialog {
 		JPanel panUpper = new JPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Change username");
+		JLabel lblTitle = new JLabel("Change chat name");
 		
-		JLabel lblUsername = new JLabel("new username:");
+		JLabel lblName = new JLabel("new name:");
 		
-		txtUsername = new JTextField();
-		txtUsername.setMaximumSize(new Dimension(500, 50));
+		txtName = new JTextField();
+		txtName.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
-		panUpper.add(lblUsername);
-		panUpper.add(txtUsername);
+		panUpper.add(lblName);
+		panUpper.add(txtName);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
 		JPanel panButtons = new JPanel();
@@ -69,12 +72,12 @@ public class ChangeUsernameDialog extends JDialog {
 		pack();
 		setLocationRelativeTo(this.getParent());
 	}
-	
+
 	private void btnChangeClick() {
 		try {
-			user.setUsername(txtUsername.getText());
+			chat.setName(txtName.getText());
 			
-			client.updateUser(user);
+			client.updateChat(chat);
 			
 			setVisible(false);
 		} catch (InvalidParameterException e) {

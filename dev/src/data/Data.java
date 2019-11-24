@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import data.containers.User;
@@ -23,10 +22,7 @@ public class Data {
 	public Data() { }
 	
 	public void init(String username) throws InvalidParameterException {
-		meta = new Meta();
-		meta.setLocalUser(new User(username));
-		meta.setChats(new ArrayList<Chat>());
-		meta.setUsers(new ArrayList<User>());
+		meta = new Meta(username);
 	}
 	
 

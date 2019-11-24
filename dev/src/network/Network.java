@@ -14,7 +14,7 @@ import general.exceptions.MessageNotSentException;
 import general.exceptions.NetworkUnableToShutException;
 import general.exceptions.NetworkUnableToStartException;
 import network.netMsg.NetMsg;
-import network.netMsg.standart.ConnectMsg;
+import network.netMsg.messages.ConnectMsg;
 import visual.Client;
 
 public class Network {
@@ -53,10 +53,8 @@ public class Network {
 			if (localUser.getId() == null)
 				localUser.setId(Helper.generateUserId(localUser.getFullAddress()));
 			
-			for (User user : data.getUsers()) {
+			for (User user : data.getUsers())
 				user.setStatus(User.Status.loading);
-				user.setToken(Helper.generateToken());
-			}		
 			
 			running = true;
 		
@@ -91,7 +89,7 @@ public class Network {
 		if (user.equals(data.getLocalUser()))
 			return;
 		if (user.getStatus() == User.Status.offline)
-			throw new MessageNotSentException();
+			throw new MessageNotSentException("offline receiver");
 		
     	try {
 	    	Socket socket;
@@ -113,35 +111,33 @@ public class Network {
 	}
 	
 	public void spreadMessage(NetMsg msg, boolean store) {
-		for (User user : data.getUsers()) {
-			new Thread(new Runnable() {
-			    @Override
-			    public void run() {
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	for (User user : data.getUsers())
 			    	try {
 						sendMessage(user, msg);
 					} catch (MessageNotSentException e) { 
 						if (store)
 							user.getUnsentMessages().add(msg);
 					}
-			    }
-			}).start();
-		}
+		    }
+		}).start();
 	}
 	
 	public void spreadMessage(List<User> users, NetMsg msg, boolean store) {
-		for (User user : users) {
-			new Thread(new Runnable() {
-			    @Override
-			    public void run() {
+		new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	for (User user : users)
 			    	try {
 						sendMessage(user, msg);
 					} catch (MessageNotSentException e) { 
 						if (store)
 							user.getUnsentMessages().add(msg);
 					}
-			    }
-			}).start();
-		}
+		    }
+		}).start();
 	}
 	
 	public void sendUnsentMessages(User user) {

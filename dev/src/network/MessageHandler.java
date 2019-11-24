@@ -12,8 +12,7 @@ import data.containers.User;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
 import network.netMsg.NetMsg;
-import network.netMsg.messaging.*;
-import network.netMsg.standart.*;
+import network.netMsg.messages.*;
 import visual.Client;
 
 public class MessageHandler implements Runnable {
@@ -41,11 +40,11 @@ public class MessageHandler implements Runnable {
 			
 			handleMessage((NetMsg) msg);
 		} catch(Exception e) {
-	    	System.out.println("unknown error");
+	    	e.printStackTrace();
 	    }
 	}
 
-	private void handleMessage(NetMsg msg) {
+	private void handleMessage(NetMsg msg) throws Exception {
 		switch (msg.getMessageType()) {
 			default:
 			case NetMsg.MessageType.none:
@@ -67,25 +66,17 @@ public class MessageHandler implements Runnable {
 				System.out.println("statusupdate message received");
 				statusUpdateMsg((StatusUpdateMsg) msg);
 				break;
-			case NetMsg.MessageType.reachUser:
-				System.out.println("adduser message received");
-				reachUserMsg((ReachUserMsg) msg);
+			case NetMsg.MessageType.add:
+				System.out.println("add message received");
+				addMsg((AddMsg) msg);
 				break;
-			case NetMsg.MessageType.onReachUser:
-				System.out.println("onadduser message received");
-				onReachUserMsg((OnReachUserMsg) msg);
+			case NetMsg.MessageType.onAdd:
+				System.out.println("onadd message received");
+				onAddMsg((OnAddMsg) msg);
 				break;
 			case NetMsg.MessageType.includedOnChat:
-				System.out.println("addedonchat message received");
+				System.out.println("includedOnChat message received");
 				includedOnChatMsg((IncludedOnChatMsg) msg);
-				break;
-			case NetMsg.MessageType.requestAddress:
-				System.out.println("requestAddress message received");
-				requestAddressMsg((RequestAddressMsg) msg);
-				break;
-			case NetMsg.MessageType.onRequestAddress:
-				System.out.println("onRequestAddress message received");
-				onRequestAddressMsg((OnRequestAddressMsg) msg);
 				break;
 			case NetMsg.MessageType.message:
 				System.out.println("messageMsg message received");
@@ -94,15 +85,27 @@ public class MessageHandler implements Runnable {
 		}
 	}
 	
+	private boolean isMessageLegit(User sender, String msgToken) {
+		if (sender == null)
+			return false;
+		
+		if (sender.equals(data.getLocalUser()))
+			return false;
+		
+		if (!sender.getToken().equals(msgToken))
+			return false;
+		
+		return true;
+	}
+	
 	// Handlers
 	private void connectMsg(ConnectMsg msg) {
 		User user = data.getUser(msg.getId());
 
-		if (user == null)
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
 		try {
-			user.setToken(msg.getToken());
 			user.setStatus(msg.getStatus());
 			user.setAddress(msg.getAddress());
 			user.setPort(msg.getPort());
@@ -114,14 +117,15 @@ public class MessageHandler implements Runnable {
 			
 			network.sendUnsentMessages(user);
 			
-			client.updateUser(user);
+			if (!user.isHidden())
+				client.updateUser(user);
 		} catch (MessageNotSentException e) { }
 	}
 	
 	private void onConnectMsg(OnConnectMsg msg) {
 		User user = data.getUser(msg.getId());
 		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 
 		user.setStatus(msg.getStatus());
@@ -134,7 +138,7 @@ public class MessageHandler implements Runnable {
 	private void disconnectMsg(DisconnectMsg msg) {
 		User user = data.getUser(msg.getId());
 		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
 		user.setStatus(User.Status.offline);
@@ -152,7 +156,7 @@ public class MessageHandler implements Runnable {
 		client.updateUser(user);
 	}
 	
-	private void reachUserMsg(ReachUserMsg msg) {
+	private void addMsg(AddMsg msg) {
 		try {
 			User newUser = new User();
 			newUser.setId(msg.getId());
@@ -160,12 +164,12 @@ public class MessageHandler implements Runnable {
 			newUser.setPort(msg.getPort());
 			newUser.setToken(msg.getToken());
 			
-			OnReachUserMsg oaumsg = new OnReachUserMsg();
+			OnAddMsg oamsg = new OnAddMsg();
 			
 			if (newUser.equals(data.getLocalUser()))
-				oaumsg.setMsgStatus(OnReachUserMsg.Status.tryingToReachLocalUser);
+				oamsg.setMsgStatus(OnAddMsg.Status.tryingToAddLocalUser);
 			else if (data.getUsers().contains(newUser))
-				oaumsg.setMsgStatus(OnReachUserMsg.Status.userAlreadyReached);
+				oamsg.setMsgStatus(OnAddMsg.Status.userAlreadyAdded);
 			else {
 				newUser.setStatus(msg.getStatus());
 				newUser.setUsername(msg.getUsername());
@@ -173,29 +177,37 @@ public class MessageHandler implements Runnable {
 				data.getUsers().add(newUser);
 				client.addUser(newUser);
 				
-				oaumsg.setAddress(data.getLocalUser().getAddress());
-				oaumsg.setPort(data.getLocalUser().getPort());
-				oaumsg.setUsername(data.getLocalUser().getUsername());
-				oaumsg.setStatus(data.getLocalUser().getStatus());
-				oaumsg.setMsgStatus(OnReachUserMsg.Status.success);
+				oamsg.setAddress(data.getLocalUser().getAddress());
+				oamsg.setPort(data.getLocalUser().getPort());
+				oamsg.setUsername(data.getLocalUser().getUsername());
+				oamsg.setStatus(data.getLocalUser().getStatus());
+				oamsg.setMsgStatus(OnAddMsg.Status.success);
 			}
 			
-			network.sendMessage(newUser, oaumsg);
-		} catch (Exception e) { }
+			try {
+				network.sendMessage(newUser, oamsg);
+			} catch (MessageNotSentException e) {
+				newUser.getUnsentMessages().add(oamsg);
+			}
+		} catch (InvalidParameterException e) { }
 	}
 	
-	private void onReachUserMsg(OnReachUserMsg msg) {
+	private void onAddMsg(OnAddMsg msg) {
 		User user = data.getUser(msg.getToken());
 		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 
 		switch(msg.getMsgStatus()) {
 			default:
-			case OnReachUserMsg.Status.unknownError:
+			case OnAddMsg.Status.unknownError:
+				if (user.getId() != null)
+					break;
+				
 				data.getUsers().remove(user);
+				client.removeUser(user);
 				break;
-			case OnReachUserMsg.Status.success:
+			case OnAddMsg.Status.success:
 				try {
 					user.setId(msg.getId());
 					user.setAddress(msg.getAddress());
@@ -203,32 +215,34 @@ public class MessageHandler implements Runnable {
 					user.setUsername(msg.getUsername());
 					user.setStatus(msg.getStatus());
 					
-					client.addUser(user);
+					client.updateUser(user);
 				} catch (Exception e) {  }		
 				break;
-			case OnReachUserMsg.Status.tryingToReachLocalUser:
+			case OnAddMsg.Status.tryingToAddLocalUser:
 				data.getUsers().remove(user);
+				client.removeUser(user);
 				break;
-			case OnReachUserMsg.Status.userAlreadyReached:
-				data.getUsers().remove(user);
+			case OnAddMsg.Status.userAlreadyAdded:
 				break;
 		}
 	}
 
 	private void includedOnChatMsg(IncludedOnChatMsg msg) {
 		User user = data.getUser(msg.getId());
-		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 
-		try {		
+		try {
 			Chat newChat = new Chat(msg.getName());
 			newChat.setId(msg.getChatId());
 			newChat.setStart(new Date(msg.getDate()));
 
 			List<User> members = newChat.getMembers();
 			
-			for (String id : msg.getMembersId()) {
+			for (int i = 0; i < msg.getMembersId().size(); i++) {
+				String id = msg.getMembersId().get(i);
+				
 				if (id.equals(data.getLocalUser().getId())) {
 					members.add(data.getLocalUser());
 					continue;
@@ -237,19 +251,24 @@ public class MessageHandler implements Runnable {
 				User member = data.getUser(id);
 				
 				if (member == null) {
+					String fullAddress = msg.getMembersAddress().get(i);
+					
+					String[] aux = fullAddress.split(":");
+					String address = aux[0];
+					int port = Integer.parseInt(aux[1]);
+					
 					member = new User();
 					member.setId(id);
-					member.setStatus(User.Status.loading);
+					member.setToken(newChat.getId());
+					member.setAddress(address);
+					member.setPort(port);
+					member.setStatus(User.Status.unknown);
+					member.setHidden(true);
 					member.getChats().add(newChat);
 					
 					members.add(member);
 					
-					RequestAddressMsg ram = new RequestAddressMsg();
-					ram.setUserId(id);
-					
-					try {
-						network.sendMessage(user, ram);
-					} catch (MessageNotSentException e) {  }
+					data.getUsers().add(member);
 				} else {
 					member.getChats().add(newChat);
 					members.add(member);
@@ -261,45 +280,18 @@ public class MessageHandler implements Runnable {
 		} catch (InvalidParameterException e) { }
 	}
 	
-	private void requestAddressMsg(RequestAddressMsg msg) {
-		User user = data.getUser(msg.getId());
-		
-		if (user == null || !user.getToken().equals(msg.getToken()))
-			return;
-		
-		User requestedUser = data.getUser(msg.getUserId());
-		
-		OnRequestAddressMsg oram = new OnRequestAddressMsg();
-		oram.setUserId(requestedUser.getId());
-		oram.setAddress(requestedUser.getAddress());
-		oram.setPort(requestedUser.getPort());
-		
-		try {
-			network.sendMessage(user, oram);
-		} catch (MessageNotSentException e) { }
-	}
-	
-	private void onRequestAddressMsg(OnRequestAddressMsg msg) {
-		User user = data.getUser(msg.getId());
-		
-		if (user == null || !user.getToken().equals(msg.getToken()))
-			return;
-		
-		User requestedUser = data.getUser(msg.getUserId());
-		
-		requestedUser.setAddress(msg.getAddress());
-		requestedUser.setPort(msg.getPort());
-	}
-	
 	private void messageMsg(MessageMsg msg) {
 		User user = data.getUser(msg.getId());
-		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
 		Chat chat = data.getChat(msg.getChatId());
-		
+
 		if (chat == null)
+			return;
+		
+		if (!chat.getMembers().contains(user))
 			return;
 		
 		Message message = new Message();

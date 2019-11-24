@@ -1,7 +1,10 @@
 package data.containers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import general.exceptions.InvalidParameterException;
 
 public class Meta implements Serializable {
 
@@ -11,7 +14,11 @@ public class Meta implements Serializable {
 	private List<User> users;
 	private List<Chat> chats;
 	
-	public Meta() { }
+	public Meta(String username) throws InvalidParameterException {
+		setLocalUser(new User(username));
+		setChats(new ArrayList<Chat>());
+		setUsers(new ArrayList<User>());
+	}
 	
 	public User getLocalUser() {
 		return localUser;

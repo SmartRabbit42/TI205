@@ -29,7 +29,7 @@ public class FlowPanel extends JPanel {
 		
 		initializeComponent();
 		
-		updateChat();
+		update();
 	}
 	
 	private void initializeComponent() {
@@ -56,9 +56,12 @@ public class FlowPanel extends JPanel {
 		messages.add(newMessagePan);
 		
 		panMessages.add(newMessagePan);
+		
+		revalidate();
+		repaint();
 	}
 	
-	public void updateChat() {
+	public void update() {
 		lblName.setText(chat.getName());
 	}
 	

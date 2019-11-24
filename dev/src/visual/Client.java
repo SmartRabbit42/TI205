@@ -18,8 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
@@ -35,14 +37,15 @@ import general.exceptions.InvalidParameterException;
 import general.exceptions.NetworkUnableToShutException;
 import general.exceptions.NetworkUnableToStartException;
 import network.Network;
-import network.netMsg.messaging.MessageMsg;
-import network.netMsg.standart.DisconnectMsg;
+import network.netMsg.messages.DisconnectMsg;
+import network.netMsg.messages.MessageMsg;
 import visual.dialogs.*;
 import visual.panels.*;
 
 /*
  * TODO:
- *   messaging system
+ *   change chat name
+ *   admin system in chat
  *   criptograph
  *   status selection
  *   reorganize visual
@@ -51,7 +54,7 @@ import visual.panels.*;
 
 public class Client extends JFrame {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4444444444444444444L;
 
 	private Client instance;
 	
@@ -64,7 +67,7 @@ public class Client extends JFrame {
 	private JPanel panUsers;
 	private JPanel panFlows;
 	
-	private Chat currentChat;
+	private Chat activeChat;
 	
 	private JLabel lblUsername;
 	private JLabel lblAddress;
@@ -109,13 +112,20 @@ public class Client extends JFrame {
             public void windowClosing(WindowEvent e) {
             	try {
             		if (network.running) {
-            			while (dataFile == null)
-                			selectDataFile();
-            			
+            			int dialogResult = JOptionPane.showConfirmDialog (null,
+            					"save activities?",
+            					"confirmation",
+            					JOptionPane.YES_NO_OPTION);
+            			if(dialogResult == JOptionPane.YES_OPTION) {
+            				if (dataFile == null)
+            					selectDataFile();
+            				
+            				data.dump(dataFile);
+            			}
+ 
             			DisconnectMsg dmsg = new DisconnectMsg();
             			network.spreadMessage(dmsg, false);
             			
-            			data.dump(dataFile);
             			network.shut();
             		}
 				} catch (NetworkUnableToShutException e1) {
@@ -197,8 +207,7 @@ public class Client extends JFrame {
 		panEntry.add(entryBox);
 		
 		getContentPane().add(panEntry, "entry");
-		
-		// Events
+
 		btnDataFile.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -226,7 +235,6 @@ public class Client extends JFrame {
 						for (Message message : chat.getMessages())
 							addMessage(message, chat);
 					}
-						
 					for (User user : data.getUsers())
 						addUser(user);
 					
@@ -404,15 +412,15 @@ public class Client extends JFrame {
 		btnCreateChat.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				CreateChatDialog dialog = new CreateChatDialog(instance, network, data);
-				dialog.setVisible(true);
+				JDialog ccd = new CreateChatDialog(instance, network, data);
+				ccd.setVisible(true);
 			}
 		});
 		btnAddUser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				AddUserDialog dialog = new AddUserDialog(instance, network, data);
-				dialog.setVisible(true);
+				JDialog aud = new AddUserDialog(instance, network, data);
+				aud.setVisible(true);
 			}
 		});
 		btnMessage.addMouseListener(new MouseAdapter() {
@@ -425,32 +433,23 @@ public class Client extends JFrame {
 				message.setContent(content);
 				message.setSender(data.getLocalUser());
 				message.setTime(now);
-				message.setChat(currentChat);
+				message.setChat(activeChat);
 				
 				MessageMsg mm = new MessageMsg();
-				mm.setChatId(currentChat.getId());
+				mm.setChatId(activeChat.getId());
 				mm.setTime(now.getTime());
 				mm.setContent(content);
 				
-				network.spreadMessage(currentChat.getMembers(), mm, true);
+				network.spreadMessage(activeChat.getMembers(), mm, true);
 				
-				currentChat.getMessages().add(message);
+				activeChat.getMessages().add(message);
 				
-				addMessage(message, currentChat);
+				addMessage(message, activeChat);
 			}
 		});
 	}
 
 	// Methods
-	public void addMessage(Message msg, Chat chat) {
-		for (FlowPanel flowPan : flows) {
-			if (flowPan.getChat().equals(chat)) {
-				flowPan.addMessage(msg);
-				return;
-			}
-		}
-	}
-	
 	public void updateLocalUser() {
 		User localUser = data.getLocalUser();
 		
@@ -459,19 +458,45 @@ public class Client extends JFrame {
 	}
 
 	public void addUser(User user) {
+		if (user.isHidden())
+			return;
+		
 		UserPanel userPan = new UserPanel(instance, network, data, user);
 		
 		users.add(userPan);
 		panUsers.add(userPan, 0);
+		
+		panUsers.revalidate();
+		panUsers.repaint();
 	}
 	
 	public void updateUser(User user) {
-		for (UserPanel userPan : users) {
+		if (user.isHidden())
+			return;
+		
+		for (UserPanel userPan : users)
 			if (userPan.getUser().equals(user)) {
 				userPan.update();
 				return;
 			}
-		}
+		
+		panUsers.revalidate();
+		panUsers.repaint();
+	}
+	
+	public void removeUser(User user) {
+		if (user.isHidden())
+			return;
+		
+		for (UserPanel userPan : users)
+			if (userPan.getUser().equals(user)) {
+				panUsers.remove(userPan);
+				users.remove(userPan);
+				return;
+			}
+		
+		panUsers.revalidate();
+		panUsers.repaint();
 	}
 	
 	public void addChat(Chat chat) {
@@ -484,16 +509,69 @@ public class Client extends JFrame {
 		panChats.add(chatPan, 0);
 		panFlows.add(flowPan, chat.getId());
 		
-		if(currentChat == null)
-			currentChat = chat;
+		if(activeChat == null)
+			changeActiveChat(chat);
 					
-		chatPan.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				currentChat = chat;
-				((CardLayout) panFlows.getLayout()).show(panFlows, chat.getId());
+		chatPan.addActionListener(e -> changeActiveChat(chat));
+		
+		panChats.revalidate();
+		panChats.repaint();
+		panFlows.revalidate();
+		panFlows.repaint();
+	}
+	
+	public void updateChat(Chat chat) {
+		for (ChatPanel chatPan : chats) 
+			if (chatPan.getChat().equals(chat)) {
+				chatPan.update();
+				break;
 			}
-		});
+		panChats.revalidate();
+		panChats.repaint();
+		
+		for (FlowPanel flowPan : flows)
+			if (flowPan.getChat().equals(chat)) {
+				flowPan.update();
+				return;
+			}
+		panFlows.revalidate();
+		panFlows.repaint();
+	}
+	
+	public void removeChat(Chat chat) {
+		for (ChatPanel chatPan : chats) 
+			if (chatPan.getChat().equals(chat)) {
+				panChats.remove(chatPan);
+				chats.remove(chatPan);
+				break;
+			}
+		panChats.revalidate();
+		panChats.repaint();
+		
+		for (FlowPanel flowPan : flows)
+			if (flowPan.getChat().equals(chat)) {
+				panFlows.remove(flowPan);
+				flows.remove(flowPan);
+				return;
+			}
+		panFlows.revalidate();
+		panFlows.repaint();
+	}
+	
+	public void addMessage(Message msg, Chat chat) {
+		for (FlowPanel flowPan : flows)
+			if (flowPan.getChat().equals(chat)) {
+				flowPan.addMessage(msg);
+				return;
+			}
+	}
+	
+	private void changeActiveChat(Chat chat) {
+		activeChat = chat;
+		((CardLayout) panFlows.getLayout()).show(panFlows, chat.getId());
+		
+		panFlows.revalidate();
+		panFlows.repaint();
 	}
 	
 	private void selectDataFile() {

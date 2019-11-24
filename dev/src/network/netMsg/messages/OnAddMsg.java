@@ -1,10 +1,11 @@
-package network.netMsg.standart;
+package network.netMsg.messages;
 
 import network.netMsg.NetMsg;
 
-public class ReachUserMsg extends NetMsg {
+public class OnAddMsg extends NetMsg {
 
-	private static final long serialVersionUID = 440000773731260800L;
+	private static final long serialVersionUID = 6895296448150060379L;
+
 	
 	private String address;
 	private int port;
@@ -12,9 +13,18 @@ public class ReachUserMsg extends NetMsg {
 	private String username;
 	
 	private byte status;
+
+	private byte msgStatus;
 	
-	public ReachUserMsg() {
-		setMessageType(MessageType.reachUser);
+	public static final class Status {
+		public static final byte unknownError = 0;
+		public static final byte success = 1;
+		public static final byte tryingToAddLocalUser = 2;
+		public static final byte userAlreadyAdded = 3;
+	}
+	
+	public OnAddMsg() {
+		setMessageType(MessageType.onAdd);
 	}
 
 	public String getAddress() {
@@ -44,4 +54,13 @@ public class ReachUserMsg extends NetMsg {
 	public void setStatus(byte status) {
 		this.status = status;
 	}
+	
+	public byte getMsgStatus() {
+		return msgStatus;
+	}
+	public void setMsgStatus(byte status) {
+		this.msgStatus = status;
+	}
+
+	
 }

@@ -1,4 +1,4 @@
-package network.netMsg.messaging;
+package network.netMsg.messages;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ public class IncludedOnChatMsg extends NetMsg {
 	private long date;
 	
 	private List<String> membersId;
+	private List<String> membersAddress;
 	
 	public IncludedOnChatMsg() {
 		setMessageType(MessageType.includedOnChat);
@@ -44,5 +45,12 @@ public class IncludedOnChatMsg extends NetMsg {
 	}
 	public void setMembersId(List<String> membersId) {
 		this.membersId = membersId;
+	}
+
+	public List<String> getMembersAddress() {
+		return membersAddress;
+	}
+	public void setMembersAddress(List<String> membersAddress) {
+		this.membersAddress = membersAddress;
 	}
 }

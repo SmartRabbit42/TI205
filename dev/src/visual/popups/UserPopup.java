@@ -1,9 +1,8 @@
 package visual.popups;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import data.Data;
@@ -34,37 +33,46 @@ public class UserPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
-		JMenuItem profile = new JMenuItem("profile");
+		JMenuItem info = new JMenuItem("info");
+		info.addActionListener(e -> infoClick());
+		
 		JMenuItem changeUsername = new JMenuItem("change username");
+		changeUsername.addActionListener(e -> changeUsernameClick());
+		
 	    JMenuItem changeAddress = new JMenuItem("change address");
-	    JMenuItem delete = new JMenuItem("delete");
+	    changeAddress.addActionListener(e -> changeAddressClick());
 	    
-	    add(profile);
+	    JMenuItem delete = new JMenuItem("delete");
+	    delete.addActionListener(e -> deleteClick());
+
+	    add(info);
 	    add(changeUsername);
 	    add(changeAddress);
 	    add(delete);
-	    
-	    profile.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });
-	    changeUsername.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		ChangeUsernameDialog changeUsernameDialog = new ChangeUsernameDialog(client, user);
-	    		changeUsernameDialog.setVisible(true);
-            }  
-        });
-	    changeAddress.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		ChangeAddressDialog changeAddressDialog = new ChangeAddressDialog(client, network, data, user);
-	    		changeAddressDialog.setVisible(true);
-            }  
-        });  
-	    delete.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });  
+	}
+	
+	private void infoClick() {
+		// TODO
+	}
+	
+	private void changeUsernameClick() {
+		JDialog cud = new ChangeUsernameDialog(client, user);
+		cud.setVisible(true);
+	}
+	
+	private void changeAddressClick() {
+		JDialog cad = new ChangeAddressDialog(client, network, data, user);
+		cad.setVisible(true);
+	}
+
+	private void deleteClick() {
+		int dialogResult = JOptionPane.showConfirmDialog (null,
+				String.format("delete %s from your computer?", user.getUsername()),
+				"confirmation",
+				JOptionPane.YES_NO_OPTION);
+		if(dialogResult == JOptionPane.YES_OPTION){
+			user.setHidden(true);
+			client.removeUser(user);
+		}
 	}
 }

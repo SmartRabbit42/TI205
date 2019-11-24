@@ -1,15 +1,16 @@
 package visual.popups;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.Chat;
+import data.containers.User;
 import network.Network;
 import visual.Client;
+import visual.dialogs.ChangeChatNameDialog;
 
 public class ChatPopup extends JPopupMenu {
 
@@ -32,35 +33,48 @@ public class ChatPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
-		JMenuItem members = new JMenuItem("members");
+		JMenuItem info = new JMenuItem("info");
+		info.addActionListener(e -> infoClick());
+		
 		JMenuItem changeName = new JMenuItem("change name");
-	    JMenuItem silence = new JMenuItem("silence");
-	    JMenuItem leave = new JMenuItem("leave");
+		changeName.addActionListener(e -> changeNameClick());
+		
+	    JMenuItem silence = new JMenuItem(chat.isSilenced() ? "silence" : "unsilence");
+	    silence.addActionListener(e -> silenceClick());
 	    
-	    add(members);
+	    JMenuItem leave = new JMenuItem("leave");
+	    leave.addActionListener(e -> leaveClick());
+
+	    add(info);
 	    add(changeName);
 	    add(silence);
 	    add(leave);
-	    
-	    members.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });
-	    changeName.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });
-	    silence.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });  
-	    leave.addActionListener(new ActionListener(){  
-	    	public void actionPerformed(ActionEvent e) {              
-	    		// TODO
-            }  
-        });  
+	}
+	
+	private void infoClick() {
+		// TODO
+	}
+	
+	private void changeNameClick() {
+		JDialog ccnd = new ChangeChatNameDialog(client, network, chat);
+		ccnd.setVisible(true);
+	}
+	
+	private void silenceClick() {
+		chat.setSilenced(!chat.isSilenced());
+	}
+	
+	private void leaveClick() {
+		int dialogResult = JOptionPane.showConfirmDialog (null,
+				String.format("leave %s chat?", chat.getName()),
+				"confirmation",
+				JOptionPane.YES_NO_OPTION);
+		if(dialogResult == JOptionPane.YES_OPTION){
+			data.getChats().remove(chat);
+			for (User member : chat.getMembers())
+				if (member.isHidden())
+					if(member.getChats().size() == 1)
+						data.getUsers().remove(member);
+		}
 	}
 }

@@ -3,8 +3,8 @@ package visual.panels;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.Chat;
@@ -12,7 +12,7 @@ import visual.popups.ChatPopup;
 import network.Network;
 import visual.Client;
 
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JButton {
 
 	private static final long serialVersionUID = -5194642801471406001L;
 
@@ -32,6 +32,8 @@ public class ChatPanel extends JPanel {
 		this.chat = chat;
 		
 		initializeComponents();
+		
+		update();
 	}
 
 	private void initializeComponents() {
@@ -41,15 +43,13 @@ public class ChatPanel extends JPanel {
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		setComponentPopupMenu(new ChatPopup(client, network, data, null));
+		setComponentPopupMenu(new ChatPopup(client, network, data, chat));
 		
 		lblName = new JLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
 		lblName.setBounds(0, 0, 250, 15);
 		
 		add(lblName);
-		
-		update();
 	}
 	
 	public void update() {

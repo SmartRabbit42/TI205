@@ -35,6 +35,8 @@ public class UserPanel extends JPanel {
 		this.user = user;
 		
 		initializeComponents();
+		
+		update();
 	}
 
 	private void initializeComponents() {
@@ -61,8 +63,6 @@ public class UserPanel extends JPanel {
 		add(lblName);
 		add(lblAddress);
 		add(panStatus);
-		
-		update();
 	}
 	
 	public void update() {

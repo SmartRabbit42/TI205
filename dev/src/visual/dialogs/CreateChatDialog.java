@@ -5,8 +5,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +17,7 @@ import general.Helper;
 import visual.panels.CreateChatAddUserPanel;
 import general.exceptions.InvalidParameterException;
 import network.Network;
-import network.netMsg.messaging.IncludedOnChatMsg;
+import network.netMsg.messages.IncludedOnChatMsg;
 import visual.Client;
 
 public class CreateChatDialog extends JDialog {
@@ -33,6 +31,7 @@ public class CreateChatDialog extends JDialog {
 	private Data data;
 
 	private JPanel panUsers;
+	private JTextField txtName;
 	private ArrayList<CreateChatAddUserPanel> createChatAddUserPanels;
 	
 	public CreateChatDialog(Client client, Network network, Data data) {
@@ -55,7 +54,7 @@ public class CreateChatDialog extends JDialog {
 		
 		JLabel lblName = new JLabel("chat name:");
 		
-		JTextField txtName = new JTextField();
+		txtName = new JTextField();
 		txtName.setMaximumSize(new Dimension(500, 50));
 
 		panUsers = new JPanel();
@@ -64,6 +63,7 @@ public class CreateChatDialog extends JDialog {
 		JButton btnAddUser = new JButton("+");
 		btnAddUser.setSize(new Dimension(30, 30));
 		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnAddUser.addActionListener(e -> btnAddUserClick());
 		
 		panUsers.add(btnAddUser);
 		
@@ -84,8 +84,10 @@ public class CreateChatDialog extends JDialog {
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(e -> setVisible(false));
 		
 		JButton btnCreate = new JButton("create");
+		btnCreate.addActionListener(e -> btnCreateClick());
 		
 		panButtons.add(Box.createHorizontalGlue());
 		panButtons.add(btnCancel);
@@ -97,64 +99,59 @@ public class CreateChatDialog extends JDialog {
 		contentPane.add(panButtons, BorderLayout.PAGE_END);
 		
 		adjust();
-		
-		// Events
-		btnAddUser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers());
-				panUsers.add(createChatAddUserPanel, createChatAddUserPanels.size());
-				createChatAddUserPanels.add(createChatAddUserPanel);
-				adjust();
-			}
-		});
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				setVisible(false);
-			}
-		});
-		btnCreate.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				try {
-					Chat newChat = new Chat(txtName.getText());
-					newChat.setId(Helper.generateChatId(data.getLocalUser().getFullAddress()));
+	}
+	
+	private void btnAddUserClick() {
+		CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers());
+		panUsers.add(createChatAddUserPanel, createChatAddUserPanels.size());
+		createChatAddUserPanels.add(createChatAddUserPanel);
+		adjust();
+	}
+	
+	private void btnCreateClick() {
+		try {
+			Chat newChat = new Chat(txtName.getText());
+			newChat.setId(Helper.generateChatId(data.getLocalUser().getFullAddress()));
+			
+			List<User> members = newChat.getMembers();
+			
+			List<String> membersId = new ArrayList<String>();
+			List<String> membersAddress = new ArrayList<String>();
+			
+			members.add(data.getLocalUser());
+			
+			membersId.add(data.getLocalUser().getId());
+			membersAddress.add(data.getLocalUser().getFullAddress());
+			
+			for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
+				User user = ccaup.getUser();
+				if (user != null && !members.contains(user)) {
+					members.add(user);
 					
-					List<User> members = newChat.getMembers();
-					
-					List<String> membersId = new ArrayList<String>();
-					
-					members.add(data.getLocalUser());
-					membersId.add(data.getLocalUser().getId());
-					
-					for (CreateChatAddUserPanel ccaup : createChatAddUserPanels) {
-						User user = ccaup.getUser();
-						if (user != null && !members.contains(user)) {
-							members.add(user);
-							
-							membersId.add(user.getId());
-						}
-					}
-					
-					IncludedOnChatMsg aocm = new IncludedOnChatMsg();
-					aocm.setName(newChat.getName());
-					aocm.setChatId(newChat.getId());
-					aocm.setDate(newChat.getStart().getTime());
-					aocm.setMembersId(membersId);
-					
-					network.spreadMessage(members, aocm, true);
-					
-					data.getChats().add(newChat);
-					client.addChat(newChat);
-					
-					setVisible(false);
-				} catch (InvalidParameterException e) { 
-					MessageDialog msg = new MessageDialog(client, "Invalid chat name");
-					msg.setVisible(true);
+					membersId.add(user.getId());
+					membersAddress.add(user.getFullAddress());
 				}
 			}
-		});
+			
+			IncludedOnChatMsg aocm = new IncludedOnChatMsg();
+			aocm.setName(newChat.getName());
+			aocm.setChatId(newChat.getId());
+			aocm.setDate(newChat.getStart().getTime());
+			aocm.setMembersId(membersId);
+			aocm.setMembersAddress(membersAddress);
+			
+			network.spreadMessage(members, aocm, true);
+			
+			data.getChats().add(newChat);
+			client.addChat(newChat);
+			
+			setVisible(false);
+		} catch (InvalidParameterException e) { 
+			JOptionPane.showMessageDialog(client,
+			        e.getMessage(),
+			        "error",
+			        JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	private void adjust() {

@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
@@ -15,7 +13,7 @@ import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
 import network.Network;
-import network.netMsg.standart.ReachUserMsg;
+import network.netMsg.messages.AddMsg;
 import visual.Client;
 
 public class AddUserDialog extends JDialog {
@@ -25,6 +23,8 @@ public class AddUserDialog extends JDialog {
 	private Client client;
 	private Data data;
 	private Network network;
+	
+	private JTextField txtUserAddress;
 	
 	public AddUserDialog(Client client, Network network, Data data) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
@@ -44,7 +44,7 @@ public class AddUserDialog extends JDialog {
 		
 		JLabel lblUserAddress = new JLabel("user address:");
 		
-		JTextField txtUserAddress = new JTextField();
+		txtUserAddress = new JTextField();
 		txtUserAddress.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
@@ -57,8 +57,10 @@ public class AddUserDialog extends JDialog {
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(e -> setVisible(false));
 		
 		JButton btnAdd = new JButton("add");
+		btnAdd.addActionListener(e -> btnAddClick());
 		
 		panButtons.add(Box.createHorizontalGlue());
 		panButtons.add(btnCancel);
@@ -71,55 +73,58 @@ public class AddUserDialog extends JDialog {
 		
 		pack();
 		setLocationRelativeTo(this.getParent());
-		
-		// Events
-		btnCancel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				setVisible(false);
-			}
-		});
-		btnAdd.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				try {
-					String fullAddress = txtUserAddress.getText();
-					
-					if (!fullAddress.matches(Helper.addressRegex))
-						throw new InvalidParameterException();
+	}
+	
+	private void btnAddClick() {
+		try {
+			String fullAddress = txtUserAddress.getText();
+			
+			if (!fullAddress.matches(Helper.addressRegex))
+				throw new InvalidParameterException("invalid address");
 
-					String[] aux = fullAddress.split(":");
-					String address = aux[0];
-					int port = Integer.parseInt(aux[1]);
-					
-					String token = Helper.generateToken();
-					
-					User newUser = new User();
-					newUser.setId(token);
-					newUser.setToken(token);
-					newUser.setStatus(User.Status.loading);
-					newUser.setAddress(address);
-					newUser.setPort(port);
-					
-					data.getUsers().add(newUser);
-					
-					ReachUserMsg aumsg = new ReachUserMsg();
-					aumsg.setAddress(data.getLocalUser().getAddress());
-					aumsg.setPort(data.getLocalUser().getPort());
-					aumsg.setStatus(data.getLocalUser().getStatus());
-					aumsg.setUsername(data.getLocalUser().getUsername());
-					
-					network.sendMessage(newUser, aumsg);
+			if (fullAddress.equals(data.getLocalUser().getFullAddress()))
+				throw new InvalidParameterException("trying to add local user");
+			
+			for (User user : data.getUsers())
+				if (fullAddress.equals(user.getFullAddress()))
+					throw new InvalidParameterException("user already added");
+			
+			String[] aux = fullAddress.split(":");
+			String address = aux[0];
+			int port = Integer.parseInt(aux[1]);
+			
+			String token = Helper.generateToken();
+			
+			User newUser = new User();
+			newUser.setId(token);
+			newUser.setToken(token);
+			newUser.setStatus(User.Status.loading);
+			newUser.setAddress(address);
+			newUser.setPort(port);
+			
+			data.getUsers().add(newUser);
+			
+			AddMsg aumsg = new AddMsg();
+			aumsg.setAddress(data.getLocalUser().getAddress());
+			aumsg.setPort(data.getLocalUser().getPort());
+			aumsg.setStatus(data.getLocalUser().getStatus());
+			aumsg.setUsername(data.getLocalUser().getUsername());
+			
+			network.sendMessage(newUser, aumsg);
 
-					setVisible(false);
-				} catch (MessageNotSentException e) {
-					MessageDialog msg = new MessageDialog(client, "couldn't send addUserMsg");
-					msg.setVisible(true);
-				} catch (InvalidParameterException e) {
-					MessageDialog msg = new MessageDialog(client, "invalid address");
-					msg.setVisible(true);
-				}
-			}
-		});
+			client.addUser(newUser);
+			
+			setVisible(false);
+		} catch (MessageNotSentException e) {
+			 JOptionPane.showMessageDialog(client,
+				        "couldn't send addMsg",
+				        "error",
+				        JOptionPane.INFORMATION_MESSAGE);
+		} catch (InvalidParameterException e) {
+			JOptionPane.showMessageDialog(client,
+			        e.getMessage(),
+			        "error",
+			        JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

@@ -45,12 +45,11 @@ public class CreateChatAddUserPanel extends JPanel {
 	}
 	
 	public User getUser() {
-		for (String name : names) {
-			for (User user : users) {
-				if (user.getUsername().equals(name))
-					return user;
-			}
-		}
+		String username = (String) cbxUsers.getSelectedItem();
+
+		for (User user : users)
+			if (user.getUsername().equals(username))
+				return user;
 		
 		return null;
 	}

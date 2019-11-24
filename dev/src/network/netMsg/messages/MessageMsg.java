@@ -1,4 +1,4 @@
-package network.netMsg.messaging;
+package network.netMsg.messages;
 
 import network.netMsg.NetMsg;
 

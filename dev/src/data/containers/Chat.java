@@ -15,6 +15,8 @@ public class Chat implements Serializable {
 	private String id;
 	private Date start;
 	
+	private boolean silenced;
+	
 	private List<User> members;
 	private List<Message> messages;
 	
@@ -59,7 +61,7 @@ public class Chat implements Serializable {
 	}
 	public void setName(String name) throws InvalidParameterException {
 		if (name == null || name.equals(""))
-			throw new InvalidParameterException();
+			throw new InvalidParameterException("invalid chat name");
 		
 		this.name = name;
 	}
@@ -76,6 +78,13 @@ public class Chat implements Serializable {
 	}
 	public void setStart(Date start) {
 		this.start = start;
+	}
+
+	public boolean isSilenced() {
+		return silenced;
+	}
+	public void setSilenced(boolean silenced) {
+		this.silenced = silenced;
 	}
 
 	public List<Message> getMessages() {
