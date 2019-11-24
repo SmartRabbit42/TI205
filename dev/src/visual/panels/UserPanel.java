@@ -82,8 +82,6 @@ public class UserPanel extends JPanel {
 			case User.Status.busy:
 				panStatus.setBackground(Color.orange);
 				break;
-			case User.Status.typing:
-				panStatus.setBackground(Color.yellow);
 		}
 	}
 	

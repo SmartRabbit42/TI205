@@ -2,8 +2,9 @@ package data.containers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import general.Helper;
 import general.exceptions.InvalidParameterException;
 import network.netMsg.NetMsg;
 
@@ -20,7 +21,7 @@ public class User implements Serializable {
 	
 	private byte status;
 	
-	private boolean hidden;
+	private boolean added;
 	
 	private List<Chat> chats;
 	
@@ -32,12 +33,11 @@ public class User implements Serializable {
 		public static final byte offline = 3;
 		public static final byte online = 4;
 		public static final byte busy = 5;
-		public static final byte typing = 6;
 	}
 	
 	public User () {
 		try {
-			setUsername("anon" + (new Date()).getTime());
+			setUsername("anon" + System.currentTimeMillis());
 			setStatus(Status.online);
 			
 			setChats(new ArrayList<Chat>());
@@ -77,7 +77,7 @@ public class User implements Serializable {
 		return username;
 	}
 	public void setUsername(String username) throws InvalidParameterException {
-		if (username.equals(null) || username.equals(""))
+		if (!username.matches(Helper.nameRegex))
 			throw new InvalidParameterException("invalid username");
 		
 		this.username = username;
@@ -117,29 +117,29 @@ public class User implements Serializable {
 	public void setStatus(byte status) {
 		this.status = status;
 	}
-
-	public boolean isHidden() {
-		return hidden;
+	
+	public boolean isAdded() {
+		return added;
 	}
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
+	public void setAdded(boolean added) {
+		this.added = added;
 	}
-
+	
 	public List<Chat> getChats() {
 		return chats;
 	}
 	public void setChats(List<Chat> chats) {
 		this.chats = chats;
 	}
-
-	public String getFullAddress() {
-		return String.format("%s:%d", address, port);
-	}
-
+	
 	public List<NetMsg> getUnsentMessages() {
 		return unsentMessages;
 	}
 	public void setUnsentMessages(List<NetMsg> unsentMessages) {
 		this.unsentMessages = unsentMessages;
+	}
+	
+	public String getFullAddress() {
+		return String.format("%s:%d", address, port);
 	}
 }

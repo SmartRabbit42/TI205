@@ -44,8 +44,6 @@ import visual.panels.*;
 
 /*
  * TODO:
- *   change chat name
- *   admin system in chat
  *   criptograph
  *   status selection
  *   reorganize visual
@@ -124,7 +122,8 @@ public class Client extends JFrame {
             			}
  
             			DisconnectMsg dmsg = new DisconnectMsg();
-            			network.spreadMessage(dmsg, false);
+            			network.spreadMessage(data.getAddedUsers(), dmsg, false);
+            			network.spreadMessage(data.getKnownUsers(), dmsg, false);
             			
             			network.shut();
             		}
@@ -235,7 +234,7 @@ public class Client extends JFrame {
 						for (Message message : chat.getMessages())
 							addMessage(message, chat);
 					}
-					for (User user : data.getUsers())
+					for (User user : data.getAddedUsers())
 						addUser(user);
 					
 					setMinimumSize(new Dimension(816, 638));
@@ -458,9 +457,6 @@ public class Client extends JFrame {
 	}
 
 	public void addUser(User user) {
-		if (user.isHidden())
-			return;
-		
 		UserPanel userPan = new UserPanel(instance, network, data, user);
 		
 		users.add(userPan);
@@ -471,13 +467,10 @@ public class Client extends JFrame {
 	}
 	
 	public void updateUser(User user) {
-		if (user.isHidden())
-			return;
-		
 		for (UserPanel userPan : users)
 			if (userPan.getUser().equals(user)) {
 				userPan.update();
-				return;
+				break;
 			}
 		
 		panUsers.revalidate();
@@ -485,14 +478,11 @@ public class Client extends JFrame {
 	}
 	
 	public void removeUser(User user) {
-		if (user.isHidden())
-			return;
-		
 		for (UserPanel userPan : users)
 			if (userPan.getUser().equals(user)) {
 				panUsers.remove(userPan);
 				users.remove(userPan);
-				return;
+				break;
 			}
 		
 		panUsers.revalidate();
@@ -532,7 +522,7 @@ public class Client extends JFrame {
 		for (FlowPanel flowPan : flows)
 			if (flowPan.getChat().equals(chat)) {
 				flowPan.update();
-				return;
+				break;
 			}
 		panFlows.revalidate();
 		panFlows.repaint();
@@ -552,7 +542,7 @@ public class Client extends JFrame {
 			if (flowPan.getChat().equals(chat)) {
 				panFlows.remove(flowPan);
 				flows.remove(flowPan);
-				return;
+				break;
 			}
 		panFlows.revalidate();
 		panFlows.repaint();

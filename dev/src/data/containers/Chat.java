@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import general.Helper;
 import general.exceptions.InvalidParameterException;
 
 public class Chat implements Serializable {
@@ -22,7 +23,7 @@ public class Chat implements Serializable {
 	
 	public Chat() {
 		try {
-			setName("chat" + (new Date()).getTime());
+			setName(String.format("chat%s", System.currentTimeMillis()));
 			setStart(new Date());
 			setMembers(new ArrayList<User>());
 			setMessages(new ArrayList<Message>());
@@ -60,7 +61,7 @@ public class Chat implements Serializable {
 		return name;
 	}
 	public void setName(String name) throws InvalidParameterException {
-		if (name == null || name.equals(""))
+		if (!name.matches(Helper.nameRegex))
 			throw new InvalidParameterException("invalid chat name");
 		
 		this.name = name;

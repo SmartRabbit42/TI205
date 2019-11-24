@@ -89,7 +89,7 @@ public class ChangeAddressDialog extends JDialog {
 			if (fullAddress.equals(data.getLocalUser().getFullAddress()))
 				throw new InvalidParameterException("trying to add local user");
 			
-			for (User user : data.getUsers())
+			for (User user : data.getAddedUsers())
 				if (fullAddress.equals(user.getFullAddress()))
 					throw new InvalidParameterException("user already added");
 			

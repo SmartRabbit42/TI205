@@ -85,7 +85,7 @@ public class AddUserDialog extends JDialog {
 			if (fullAddress.equals(data.getLocalUser().getFullAddress()))
 				throw new InvalidParameterException("trying to add local user");
 			
-			for (User user : data.getUsers())
+			for (User user : data.getAddedUsers())
 				if (fullAddress.equals(user.getFullAddress()))
 					throw new InvalidParameterException("user already added");
 			
@@ -101,8 +101,9 @@ public class AddUserDialog extends JDialog {
 			newUser.setStatus(User.Status.loading);
 			newUser.setAddress(address);
 			newUser.setPort(port);
-			
-			data.getUsers().add(newUser);
+
+			data.getKnownUsers().remove(newUser);
+			data.getAddedUsers().add(newUser);
 			
 			AddMsg aumsg = new AddMsg();
 			aumsg.setAddress(data.getLocalUser().getAddress());
@@ -117,7 +118,7 @@ public class AddUserDialog extends JDialog {
 			setVisible(false);
 		} catch (MessageNotSentException e) {
 			 JOptionPane.showMessageDialog(client,
-				        "couldn't send addMsg",
+				        e.getMessage(),
 				        "error",
 				        JOptionPane.INFORMATION_MESSAGE);
 		} catch (InvalidParameterException e) {

@@ -9,6 +9,7 @@ import data.Data;
 import data.containers.Chat;
 import data.containers.User;
 import network.Network;
+import network.netMsg.messages.LeaveChatMsg;
 import visual.Client;
 import visual.dialogs.ChangeChatNameDialog;
 
@@ -72,9 +73,15 @@ public class ChatPopup extends JPopupMenu {
 		if(dialogResult == JOptionPane.YES_OPTION){
 			data.getChats().remove(chat);
 			for (User member : chat.getMembers())
-				if (member.isHidden())
-					if(member.getChats().size() == 1)
-						data.getUsers().remove(member);
+				if(member.getChats().size() == 1)
+					data.getKnownUsers().remove(member);
+			
+			LeaveChatMsg lcm = new LeaveChatMsg();
+			lcm.setChatId(chat.getId());
+			
+			network.spreadMessage(chat.getMembers(), lcm, true);
+			
+			client.removeChat(chat);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import javax.swing.*;
 import data.containers.Chat;
 import general.exceptions.InvalidParameterException;
 import network.Network;
+import network.netMsg.messages.ChangeChatNameMsg;
 import visual.Client;
 
 public class ChangeChatNameDialog extends JDialog {
@@ -76,6 +77,12 @@ public class ChangeChatNameDialog extends JDialog {
 	private void btnChangeClick() {
 		try {
 			chat.setName(txtName.getText());
+			
+			ChangeChatNameMsg ccnm = new ChangeChatNameMsg();
+			ccnm.setChatId(chat.getId());
+			ccnm.setChatName(chat.getName());
+			
+			network.spreadMessage(chat.getMembers(), ccnm, true);
 			
 			client.updateChat(chat);
 			

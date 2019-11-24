@@ -23,6 +23,9 @@ public class NetMsg implements Serializable {
 		public static final byte includedOnChat = 7;
 		
 		public static final byte message = 8;
+		
+		public static final byte changeChatName = 9;
+		public static final byte leaveChat = 10;
 	}
 	
 	private String id;

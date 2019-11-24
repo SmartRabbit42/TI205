@@ -102,7 +102,7 @@ public class CreateChatDialog extends JDialog {
 	}
 	
 	private void btnAddUserClick() {
-		CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getUsers());
+		CreateChatAddUserPanel createChatAddUserPanel = new CreateChatAddUserPanel(data.getAddedUsers());
 		panUsers.add(createChatAddUserPanel, createChatAddUserPanels.size());
 		createChatAddUserPanels.add(createChatAddUserPanel);
 		adjust();
@@ -111,7 +111,7 @@ public class CreateChatDialog extends JDialog {
 	private void btnCreateClick() {
 		try {
 			Chat newChat = new Chat(txtName.getText());
-			newChat.setId(Helper.generateChatId(data.getLocalUser().getFullAddress()));
+			newChat.setId(Helper.generateId(data.getLocalUser().getFullAddress()));
 			
 			List<User> members = newChat.getMembers();
 			

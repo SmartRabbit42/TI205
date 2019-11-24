@@ -24,7 +24,6 @@ public class Data {
 	public void init(String username) throws InvalidParameterException {
 		meta = new Meta(username);
 	}
-	
 
 	public void load(File dataFile) throws DataNotLoadedException {
 		try (FileInputStream fis = new FileInputStream(dataFile);
@@ -59,11 +58,18 @@ public class Data {
 		return meta.getLocalUser();
 	}
 	
-	public List<User> getUsers() {
-		return meta.getUsers();
+	public List<User> getAddedUsers() {
+		return meta.getAddedUsers();
+	}
+	public List<User> getKnownUsers(){
+		return meta.getKnownUsers();
 	}
 	public User getUser(String id) {
-		for (User user : meta.getUsers())
+		for (User user : meta.getAddedUsers())
+			if (user.getId().equals(id))
+				return user;
+		
+		for (User user : meta.getKnownUsers())
 			if (user.getId().equals(id))
 				return user;
 		

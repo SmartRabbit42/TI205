@@ -11,13 +11,15 @@ public class Meta implements Serializable {
 	private static final long serialVersionUID = 2650389079311244251L;
 	
 	private User localUser;
-	private List<User> users;
+	private List<User> addedUsers;
+	private List<User> knownUsers;
 	private List<Chat> chats;
 	
 	public Meta(String username) throws InvalidParameterException {
 		setLocalUser(new User(username));
 		setChats(new ArrayList<Chat>());
-		setUsers(new ArrayList<User>());
+		setAddedUsers(new ArrayList<User>());
+		setKnownUsers(new ArrayList<User>());
 	}
 	
 	public User getLocalUser() {
@@ -27,13 +29,20 @@ public class Meta implements Serializable {
 		this.localUser = localUser;
 	}
 	
-	public List<User> getUsers() {
-		return users;
+	public List<User> getAddedUsers() {
+		return addedUsers;
 	}
-	public void setUsers(List<User> users) {
-		this.users = users;
+	public void setAddedUsers(List<User> users) {
+		this.addedUsers = users;
 	}
-	
+
+	public List<User> getKnownUsers() {
+		return knownUsers;
+	}
+	public void setKnownUsers(List<User> knownUsers) {
+		this.knownUsers = knownUsers;
+	}
+
 	public List<Chat> getChats() {
 		return chats;
 	}

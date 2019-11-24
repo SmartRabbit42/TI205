@@ -71,8 +71,10 @@ public class UserPopup extends JPopupMenu {
 				"confirmation",
 				JOptionPane.YES_NO_OPTION);
 		if(dialogResult == JOptionPane.YES_OPTION){
-			user.setHidden(true);
 			client.removeUser(user);
+			
+			data.getAddedUsers().remove(user);
+			data.getKnownUsers().add(user);
 		}
 	}
 }

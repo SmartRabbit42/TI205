@@ -51,11 +51,8 @@ public class Network {
 			localUser.setPort(port);
 			
 			if (localUser.getId() == null)
-				localUser.setId(Helper.generateUserId(localUser.getFullAddress()));
-			
-			for (User user : data.getUsers())
-				user.setStatus(User.Status.loading);
-			
+				localUser.setId(Helper.generateId(localUser.getFullAddress()));
+
 			running = true;
 		
 			updateMessagePump();
@@ -67,7 +64,13 @@ public class Network {
 			cmsg.setAddress(address);
 			cmsg.setPort(port);
 			
-			spreadMessage(cmsg, false);
+			for (User user : data.getAddedUsers())
+				user.setStatus(User.Status.loading);
+			for (User user : data.getKnownUsers())
+				user.setStatus(User.Status.loading);
+			
+			spreadMessage(data.getAddedUsers(), cmsg, false);
+			spreadMessage(data.getKnownUsers(), cmsg, false);
 		} catch (Exception e) {
 			throw new NetworkUnableToStartException();
 		}
@@ -87,14 +90,12 @@ public class Network {
 	
 	public void sendMessage(User user, NetMsg msg) throws MessageNotSentException  {
 		if (user.equals(data.getLocalUser()))
-			return;
+			throw new MessageNotSentException("receiver is local user");
 		if (user.getStatus() == User.Status.offline)
 			throw new MessageNotSentException("offline receiver");
 		
     	try {
-	    	Socket socket;
-			
-	    	socket = new Socket(user.getAddress(), user.getPort());
+    		Socket socket = new Socket(user.getAddress(), user.getPort());
 
 			msg.setId(data.getLocalUser().getId());
 			msg.setToken(user.getToken());
@@ -106,23 +107,8 @@ public class Network {
 			socket.close();
     	} catch (Exception e) {
     		user.setStatus(User.Status.unknown);
-    		throw new MessageNotSentException();
+    		throw new MessageNotSentException(e.getMessage());
     	}
-	}
-	
-	public void spreadMessage(NetMsg msg, boolean store) {
-		new Thread(new Runnable() {
-		    @Override
-		    public void run() {
-		    	for (User user : data.getUsers())
-			    	try {
-						sendMessage(user, msg);
-					} catch (MessageNotSentException e) { 
-						if (store)
-							user.getUnsentMessages().add(msg);
-					}
-		    }
-		}).start();
 	}
 	
 	public void spreadMessage(List<User> users, NetMsg msg, boolean store) {

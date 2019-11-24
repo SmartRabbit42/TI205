@@ -40,7 +40,7 @@ public class MessageHandler implements Runnable {
 			
 			handleMessage((NetMsg) msg);
 		} catch(Exception e) {
-	    	e.printStackTrace();
+	    	throw new RuntimeException();
 	    }
 	}
 
@@ -79,8 +79,16 @@ public class MessageHandler implements Runnable {
 				includedOnChatMsg((IncludedOnChatMsg) msg);
 				break;
 			case NetMsg.MessageType.message:
-				System.out.println("messageMsg message received");
+				System.out.println("message received");
 				messageMsg((MessageMsg) msg);
+				break;
+			case NetMsg.MessageType.changeChatName:
+				System.out.println("changeChatName message received");
+				changeChatNameMsg((ChangeChatNameMsg) msg);
+				break;
+			case NetMsg.MessageType.leaveChat:
+				System.out.println("leaveChat message received");
+				leaveChatMsg((LeaveChatMsg) msg);
 				break;
 		}
 	}
@@ -105,21 +113,23 @@ public class MessageHandler implements Runnable {
 		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
-		try {
-			user.setStatus(msg.getStatus());
-			user.setAddress(msg.getAddress());
-			user.setPort(msg.getPort());
-			
-			OnConnectMsg ocmsg = new OnConnectMsg();
-			ocmsg.setStatus(data.getLocalUser().getStatus());
+		user.setStatus(msg.getStatus());
+		user.setAddress(msg.getAddress());
+		user.setPort(msg.getPort());
+		
+		OnConnectMsg ocmsg = new OnConnectMsg();
+		ocmsg.setStatus(data.getLocalUser().getStatus());
 
+		try {
 			network.sendMessage(user, ocmsg);
 			
 			network.sendUnsentMessages(user);
-			
-			if (!user.isHidden())
-				client.updateUser(user);
-		} catch (MessageNotSentException e) { }
+		} catch (MessageNotSentException e) {
+			user.getUnsentMessages().add(ocmsg);
+		}
+
+		if (user.isAdded())
+			client.updateUser(user);
 	}
 	
 	private void onConnectMsg(OnConnectMsg msg) {
@@ -127,12 +137,13 @@ public class MessageHandler implements Runnable {
 		
 		if (!isMessageLegit(user, msg.getToken()))
 			return;
-
+		
 		user.setStatus(msg.getStatus());
 		
 		network.sendUnsentMessages(user);
 		
-		client.updateUser(user);
+		if (user.isAdded())
+			client.updateUser(user);
 	}
 	
 	private void disconnectMsg(DisconnectMsg msg) {
@@ -143,17 +154,20 @@ public class MessageHandler implements Runnable {
 		
 		user.setStatus(User.Status.offline);
 		
-		client.updateUser(user);
+		if (user.isAdded())
+			client.updateUser(user);
 	}
 	
 	private void statusUpdateMsg(StatusUpdateMsg msg) {		
 		User user = data.getUser(msg.getId());
 		
-		if (user == null || !user.getToken().equals(msg.getToken()))
+		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
 		user.setStatus(msg.getStatus());
-		client.updateUser(user);
+		
+		if (user.isAdded())
+			client.updateUser(user);
 	}
 	
 	private void addMsg(AddMsg msg) {
@@ -168,20 +182,21 @@ public class MessageHandler implements Runnable {
 			
 			if (newUser.equals(data.getLocalUser()))
 				oamsg.setMsgStatus(OnAddMsg.Status.tryingToAddLocalUser);
-			else if (data.getUsers().contains(newUser))
+			else if (data.getAddedUsers().contains(newUser))
 				oamsg.setMsgStatus(OnAddMsg.Status.userAlreadyAdded);
 			else {
 				newUser.setStatus(msg.getStatus());
 				newUser.setUsername(msg.getUsername());
+				newUser.setAdded(true);
 				
-				data.getUsers().add(newUser);
-				client.addUser(newUser);
-				
-				oamsg.setAddress(data.getLocalUser().getAddress());
-				oamsg.setPort(data.getLocalUser().getPort());
+				data.getKnownUsers().remove(newUser);
+				data.getAddedUsers().add(newUser);
+
 				oamsg.setUsername(data.getLocalUser().getUsername());
 				oamsg.setStatus(data.getLocalUser().getStatus());
 				oamsg.setMsgStatus(OnAddMsg.Status.success);
+				
+				client.addUser(newUser);
 			}
 			
 			try {
@@ -204,22 +219,21 @@ public class MessageHandler implements Runnable {
 				if (user.getId() != null)
 					break;
 				
-				data.getUsers().remove(user);
+				data.getAddedUsers().remove(user);
 				client.removeUser(user);
 				break;
 			case OnAddMsg.Status.success:
 				try {
 					user.setId(msg.getId());
-					user.setAddress(msg.getAddress());
-					user.setPort(msg.getPort());
 					user.setUsername(msg.getUsername());
 					user.setStatus(msg.getStatus());
+					user.setAdded(true);
 					
 					client.updateUser(user);
 				} catch (Exception e) {  }		
 				break;
 			case OnAddMsg.Status.tryingToAddLocalUser:
-				data.getUsers().remove(user);
+				data.getAddedUsers().remove(user);
 				client.removeUser(user);
 				break;
 			case OnAddMsg.Status.userAlreadyAdded:
@@ -263,12 +277,11 @@ public class MessageHandler implements Runnable {
 					member.setAddress(address);
 					member.setPort(port);
 					member.setStatus(User.Status.unknown);
-					member.setHidden(true);
 					member.getChats().add(newChat);
 					
 					members.add(member);
 					
-					data.getUsers().add(member);
+					data.getKnownUsers().add(member);
 				} else {
 					member.getChats().add(newChat);
 					members.add(member);
@@ -282,18 +295,15 @@ public class MessageHandler implements Runnable {
 	
 	private void messageMsg(MessageMsg msg) {
 		User user = data.getUser(msg.getId());
-
+		
 		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
 		Chat chat = data.getChat(msg.getChatId());
-
+		
 		if (chat == null)
 			return;
-		
-		if (!chat.getMembers().contains(user))
-			return;
-		
+
 		Message message = new Message();
 		message.setChat(chat);
 		message.setSender(user);
@@ -303,5 +313,42 @@ public class MessageHandler implements Runnable {
 		chat.getMessages().add(message);
 		
 		client.addMessage(message, chat);
+	}
+	
+	private void changeChatNameMsg(ChangeChatNameMsg msg) {
+		User user = data.getUser(msg.getId());
+		
+		if (!isMessageLegit(user, msg.getToken()))
+			return;
+		
+		Chat chat = data.getChat(msg.getChatId());
+		
+		if (chat == null)
+			return;
+		
+		try {
+			chat.setName(msg.getChatName());
+			
+			client.updateChat(chat);
+		} catch (InvalidParameterException e) { }
+	}
+	
+	private void leaveChatMsg(LeaveChatMsg msg) {
+		User user = data.getUser(msg.getId());
+		
+		if (!isMessageLegit(user, msg.getToken()))
+			return;
+		
+		Chat chat = data.getChat(msg.getChatId());
+		
+		if (chat == null)
+			return;
+		
+		chat.getMembers().remove(user);
+		user.getChats().remove(chat);
+		
+		if (!user.isAdded())
+			if (user.getChats().size() == 0)
+				data.getKnownUsers().remove(user);
 	}
 }
