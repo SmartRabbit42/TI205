@@ -5,15 +5,23 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 import data.containers.Chat;
 import general.exceptions.InvalidParameterException;
 import network.Network;
 import network.netMsg.messages.ChangeChatNameMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DButton;
+import visual.components.DDialog;
+import visual.components.DLabel;
+import visual.components.DPanel;
+import visual.components.DTextField;
 
-public class ChangeChatNameDialog extends JDialog {
+public class ChangeChatNameDialog extends DDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
@@ -22,7 +30,7 @@ public class ChangeChatNameDialog extends JDialog {
 	
 	private Chat chat;
 	
-	private JTextField txtName;
+	private DTextField txtName;
 	
 	public ChangeChatNameDialog(Client client, Network network, Chat chat) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
@@ -36,14 +44,16 @@ public class ChangeChatNameDialog extends JDialog {
 	}
 	
 	private void initializeComponent() {
-		JPanel panUpper = new JPanel();
+		setBackground(VisualConstants.backColor);
+		
+		DPanel panUpper = new DPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Change chat name");
+		DLabel lblTitle = new DLabel("Change chat name");
 		
-		JLabel lblName = new JLabel("new name:");
+		DLabel lblName = new DLabel("new name:");
 		
-		txtName = new JTextField();
+		txtName = new DTextField();
 		txtName.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
@@ -52,13 +62,13 @@ public class ChangeChatNameDialog extends JDialog {
 		panUpper.add(txtName);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
-		JPanel panButtons = new JPanel();
+		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
-		JButton btnCancel = new JButton("cancel");
+		DButton btnCancel = new DButton("cancel");
 		btnCancel.addActionListener(e -> setVisible(false));
 		
-		JButton btnChange = new JButton("change");
+		DButton btnChange = new DButton("change");
 		btnChange.addActionListener(e -> btnChangeClick());
 		
 		panButtons.add(Box.createHorizontalGlue());

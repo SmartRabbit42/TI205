@@ -3,17 +3,16 @@ package visual.panels;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import data.Data;
 import data.containers.Message;
-import general.Colors;
 import network.Network;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DLabel;
+import visual.components.DPanel;
 import visual.popups.MessagePopup;
 
-public class MessagePanel extends JPanel {
+public class MessagePanel extends DPanel {
 
 	private static final long serialVersionUID = -5194642801471406001L;
 
@@ -23,10 +22,12 @@ public class MessagePanel extends JPanel {
 	
 	private Message message;
 	
-	private JLabel lblSender;
-	private JLabel lblContent;
+	private DLabel lblSender;
+	private DLabel lblContent;
 	
 	public MessagePanel(Client client, Network network, Data data, Message message) {
+		super(VisualConstants.gamaPanelColor);
+		
 		this.client = client;
 		this.network = network;
 		this.data = data;
@@ -40,7 +41,6 @@ public class MessagePanel extends JPanel {
 
 	private void initializeComponents() {
 		setLayout(null);
-		setBackground(Colors.prefab);
 		
 		Dimension messageDimension = new Dimension(550, 33);
 		
@@ -52,19 +52,18 @@ public class MessagePanel extends JPanel {
 		
 		setComponentPopupMenu(new MessagePopup(client, network, data, message));
 		
-		lblSender = new JLabel();
+		lblSender = new DLabel();
 		lblSender.setAlignmentX(LEFT_ALIGNMENT);
-		lblSender.setForeground(Colors.foreground1);
+		lblSender.setForeground(VisualConstants.alphaForeColor);
 		lblSender.setBounds(0, 0, 550, 15);
 		
-		lblContent = new JLabel();
+		lblContent = new DLabel();
 		lblContent.setAlignmentX(LEFT_ALIGNMENT);
-		lblContent.setForeground(Colors.foreground1);
+		lblContent.setForeground(VisualConstants.betaForeColor);
 		lblContent.setBounds(0, 15, 550, 15);
 		
-		JPanel panSeparator = new JPanel();
+		DPanel panSeparator = new DPanel();
 		panSeparator.setBounds(0, 30, 550, 3);
-		panSeparator.setBackground(Colors.body);
 		
 		add(lblSender);
 		add(lblContent);

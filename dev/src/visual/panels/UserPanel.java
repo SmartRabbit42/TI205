@@ -3,17 +3,16 @@ package visual.panels;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import data.Data;
 import data.containers.User;
-import general.Colors;
 import visual.popups.UserPopup;
 import network.Network;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DLabel;
+import visual.components.DPanel;
 
-public class UserPanel extends JPanel {
+public class UserPanel extends DPanel {
 
 	private static final long serialVersionUID = -5194642801471406001L;
 
@@ -23,11 +22,13 @@ public class UserPanel extends JPanel {
 	
 	private User user;
 	
-	private JLabel lblName;
-	private JLabel lblAddress;
-	private JPanel panStatus;
+	private DLabel lblName;
+	private DLabel lblAddress;
+	private DPanel panStatus;
 	
 	public UserPanel(Client client, Network network, Data data, User user) {
+		super(VisualConstants.epsilonPanelColor);
+		
 		this.client = client;
 		this.network = network;
 		this.data = data;
@@ -41,7 +42,6 @@ public class UserPanel extends JPanel {
 
 	private void initializeComponents() {
 		setLayout(null);
-		setBackground(Colors.prefab);
 		
 		Dimension userDimension = new Dimension(250, 33);
 		
@@ -53,22 +53,22 @@ public class UserPanel extends JPanel {
 		
 		setComponentPopupMenu(new UserPopup(client, network, data, user));
 		
-		lblName = new JLabel();
+		lblName = new DLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
-		lblName.setForeground(Colors.foreground1);
+		lblName.setForeground(VisualConstants.alphaForeColor);
 		lblName.setBounds(0, 0, 250, 15);
 		
-		lblAddress = new JLabel();
+		lblAddress = new DLabel();
 		lblAddress.setAlignmentX(LEFT_ALIGNMENT);
-		lblAddress.setForeground(Colors.foreground1);
+		lblAddress.setForeground(VisualConstants.betaForeColor);
 		lblAddress.setBounds(0, 15, 250, 15);
 		
-		panStatus = new JPanel();
+		panStatus = new DPanel();
 		panStatus.setBounds(220, 5, 20, 20);
 		
-		JPanel panSeparator = new JPanel();
+		DPanel panSeparator = new DPanel();
+		panSeparator.setBackground(VisualConstants.deltaPanelColor);
 		panSeparator.setBounds(0, 30, 250, 3);
-		panSeparator.setBackground(Colors.body);
 		
 		add(lblName);
 		add(lblAddress);
@@ -82,22 +82,22 @@ public class UserPanel extends JPanel {
 		switch (user.getStatus()) {
 			default:
 			case User.Status.unknown:
-				panStatus.setBackground(Colors.statusUnknown);
+				panStatus.setBackground(VisualConstants.statusUnknownColor);
 				break;
 			case User.Status.loading:
-				panStatus.setBackground(Colors.statusLoading);
+				panStatus.setBackground(VisualConstants.statusLoadingColor);
 				break;
 			case User.Status.offline:
-				panStatus.setBackground(Colors.statusOffline);
+				panStatus.setBackground(VisualConstants.statusOfflineColor);
 				break;
 			case User.Status.online:
-				panStatus.setBackground(Colors.statusOnline);
+				panStatus.setBackground(VisualConstants.statusOnlineColor);
 				break;
 			case User.Status.busy:
-				panStatus.setBackground(Colors.statusBusy);
+				panStatus.setBackground(VisualConstants.statusBusyColor);
 				break;
 			case User.Status.black:
-				panStatus.setBackground(Colors.statusBlack);
+				panStatus.setBackground(VisualConstants.statusBlackColor);
 				break;
 		}
 	}

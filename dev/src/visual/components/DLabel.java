@@ -1,20 +1,36 @@
 package visual.components;
 
-import javax.swing.JLabel;
+import java.awt.Font;
 
-import general.Colors;
+import javax.swing.JLabel;
 
 public class DLabel extends JLabel {
 
 	private static final long serialVersionUID = -7938264165072962935L;
 
+	private Font font = new Font("Arial", Font.BOLD, 20);
+	
+	public DLabel() {
+		super();
+		
+		initializeComponent();
+	}
+	
 	public DLabel(String text) {
 		super(text);
 		
 		initializeComponent();
 	}
 	
+	public DLabel(String text, Font font) {
+		super(text);
+		
+		this.font = font;
+		
+		initializeComponent();
+	}
+	
 	private void initializeComponent(){
-		setForeground(Colors.foreground1);
+		setFont(font);
 	}
 }

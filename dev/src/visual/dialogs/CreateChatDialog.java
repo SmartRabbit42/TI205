@@ -8,7 +8,10 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 import data.Data;
 import data.containers.Chat;
@@ -19,8 +22,14 @@ import general.exceptions.InvalidParameterException;
 import network.Network;
 import network.netMsg.messages.IncludedOnChatMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DButton;
+import visual.components.DDialog;
+import visual.components.DLabel;
+import visual.components.DPanel;
+import visual.components.DTextField;
 
-public class CreateChatDialog extends JDialog {
+public class CreateChatDialog extends DDialog {
 	
 	private static final long serialVersionUID = 8544625027506291911L;
 
@@ -30,8 +39,8 @@ public class CreateChatDialog extends JDialog {
 	private Network network;
 	private Data data;
 
-	private JPanel panUsers;
-	private JTextField txtName;
+	private DPanel panUsers;
+	private DTextField txtName;
 	private ArrayList<CreateChatAddUserPanel> createChatAddUserPanels;
 	
 	public CreateChatDialog(Client client, Network network, Data data) {
@@ -47,20 +56,22 @@ public class CreateChatDialog extends JDialog {
 	}
 	
 	private void initializeComponent() {
-		JPanel panList = new JPanel();
+		setBackground(VisualConstants.backColor);
+		
+		DPanel panList = new DPanel();
 		panList.setLayout(new BoxLayout(panList, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Create Chat");
+		DLabel lblTitle = new DLabel("Create Chat");
 		
-		JLabel lblName = new JLabel("chat name:");
+		DLabel lblName = new DLabel("chat name:");
 		
-		txtName = new JTextField();
+		txtName = new DTextField();
 		txtName.setMaximumSize(new Dimension(500, 50));
 
-		panUsers = new JPanel();
+		panUsers = new DPanel();
 		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
-		JButton btnAddUser = new JButton("+");
+		DButton btnAddUser = new DButton("+");
 		btnAddUser.setSize(new Dimension(30, 30));
 		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnAddUser.addActionListener(e -> btnAddUserClick());
@@ -80,13 +91,13 @@ public class CreateChatDialog extends JDialog {
 		panList.add(jspUsers);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));
 
-		JPanel panButtons = new JPanel();
+		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
-		JButton btnCancel = new JButton("cancel");
+		DButton btnCancel = new DButton("cancel");
 		btnCancel.addActionListener(e -> setVisible(false));
 		
-		JButton btnCreate = new JButton("create");
+		DButton btnCreate = new DButton("create");
 		btnCreate.addActionListener(e -> btnCreateClick());
 		
 		panButtons.add(Box.createHorizontalGlue());

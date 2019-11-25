@@ -4,15 +4,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.Chat;
-import general.Colors;
 import visual.popups.ChatPopup;
 import network.Network;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DLabel;
 
 public class ChatPanel extends JButton {
 
@@ -24,7 +24,7 @@ public class ChatPanel extends JButton {
 	
 	private Chat chat;
 	
-	private JLabel lblName;
+	private DLabel lblName;
 	
 	public ChatPanel(Client client, Network network, Data data, Chat chat) {
 		this.client = client;
@@ -40,7 +40,7 @@ public class ChatPanel extends JButton {
 
 	private void initializeComponents() {
 		setLayout(null);
-		setBackground(Colors.prefab);
+		setBackground(VisualConstants.epsilonPanelColor);
 		
 		Dimension chatDimension = new Dimension(250, 33);
 		
@@ -52,14 +52,13 @@ public class ChatPanel extends JButton {
 		
 		setComponentPopupMenu(new ChatPopup(client, network, data, chat));
 		
-		lblName = new JLabel();
+		lblName = new DLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
-		lblName.setForeground(Colors.foreground1);
 		lblName.setBounds(0, 0, 250, 15);
 		
 		JPanel panSeparator = new JPanel();
+		panSeparator.setBackground(VisualConstants.deltaPanelColor);
 		panSeparator.setBounds(0, 30, 250, 3);
-		panSeparator.setBackground(Colors.body);
 		
 		add(lblName);
 		add(panSeparator);		

@@ -5,19 +5,26 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 import data.Data;
 import data.containers.User;
-import general.Colors;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
 import network.Network;
 import network.netMsg.messages.AddMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DButton;
+import visual.components.DDialog;
+import visual.components.DLabel;
+import visual.components.DPanel;
+import visual.components.DTextField;
 
-public class AddUserDialog extends JDialog {
+public class AddUserDialog extends DDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
@@ -25,7 +32,7 @@ public class AddUserDialog extends JDialog {
 	private Data data;
 	private Network network;
 	
-	private JTextField txtUserAddress;
+	private DTextField txtUserAddress;
 	
 	public AddUserDialog(Client client, Network network, Data data) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
@@ -38,18 +45,15 @@ public class AddUserDialog extends JDialog {
 	}
 	
 	private void initializeComponent() {
-		JPanel panUpper = new JPanel();
+		setBackground(VisualConstants.backColor);
+		
+		DPanel panUpper = new DPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
-		panUpper.setBackground(Colors.header);
+		DLabel lblTitle = new DLabel("Add User");
 		
+		DLabel lblUserAddress = new DLabel("user address:");
 		
-		JLabel lblTitle = new JLabel("Add User");
-		lblTitle.setBackground(Colors.foreground1);
-		
-		JLabel lblUserAddress = new JLabel("user address:");
-		lblUserAddress.setBackground(Colors.foreground1);
-		
-		txtUserAddress = new JTextField();
+		txtUserAddress = new DTextField();
 		txtUserAddress.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
@@ -58,13 +62,13 @@ public class AddUserDialog extends JDialog {
 		panUpper.add(txtUserAddress);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
-		JPanel panButtons = new JPanel();
+		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
-		JButton btnCancel = new JButton("cancel");
+		DButton btnCancel = new DButton("cancel");
 		btnCancel.addActionListener(e -> setVisible(false));
 		
-		JButton btnAdd = new JButton("add");
+		DButton btnAdd = new DButton("add");
 		btnAdd.addActionListener(e -> btnAddClick());
 		
 		panButtons.add(Box.createHorizontalGlue());

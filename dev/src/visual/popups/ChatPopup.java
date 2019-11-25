@@ -4,17 +4,17 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JDialog;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.Chat;
 import data.containers.User;
-import general.Colors;
 import network.Network;
 import network.netMsg.messages.LeaveChatMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DMenuItem;
 import visual.dialogs.ChangeChatNameDialog;
 
 public class ChatPopup extends JPopupMenu {
@@ -38,24 +38,18 @@ public class ChatPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
-		JMenuItem info = new JMenuItem("info");
-		info.setBackground(Colors.buttonBackground);
-		info.setForeground(Colors.buttonForeground);
+		setBackground(VisualConstants.backColor);
+		
+		DMenuItem info = new DMenuItem("info");
 		info.addActionListener(e -> infoClick());
 		
-		JMenuItem changeName = new JMenuItem("change name");
-		changeName.setBackground(Colors.buttonBackground);
-		changeName.setForeground(Colors.buttonForeground);
+		DMenuItem changeName = new DMenuItem("change name");
 		changeName.addActionListener(e -> changeNameClick());
 		
-	    JMenuItem silence = new JMenuItem(chat.isSilenced() ? "silence" : "unsilence");
-	    silence.setBackground(Colors.buttonBackground);
-	    silence.setForeground(Colors.buttonForeground);
+		DMenuItem silence = new DMenuItem(chat.isSilenced() ? "silence" : "unsilence");
 	    silence.addActionListener(e -> silenceClick());
 	    
-	    JMenuItem leave = new JMenuItem("leave");
-	    leave.setBackground(Colors.buttonBackground);
-	    leave.setForeground(Colors.buttonForeground);
+	    DMenuItem leave = new DMenuItem("leave");
 	    leave.addActionListener(e -> leaveClick());
 
 	    Dimension separatorDimension = new Dimension(0, 3);

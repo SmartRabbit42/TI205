@@ -2,12 +2,18 @@ package visual.components;
 
 import javax.swing.JTextField;
 
-import general.Colors;
+import visual.VisualConstants;
 
 public class DTextField extends JTextField {
 
 	private static final long serialVersionUID = -1785042376065990403L;
 
+	public DTextField() {
+		super();
+		
+		initializeComponent();
+	}
+	
 	public DTextField(String placeHolder) {
 		super(placeHolder);
 		
@@ -15,7 +21,7 @@ public class DTextField extends JTextField {
 	}
 	
 	private void initializeComponent() {
-		setBackground(Colors.textFieldBackground);
-		setForeground(Colors.textFieldForeground);
+		setBackground(VisualConstants.compBackColor);
+		setForeground(VisualConstants.compForeColor);
 	}
 }

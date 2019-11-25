@@ -4,17 +4,17 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JDialog;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.User;
-import general.Colors;
 import visual.dialogs.ChangeAddressDialog;
 import visual.dialogs.ChangeUsernameDialog;
 import network.Network;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DMenuItem;
 
 public class UserPopup extends JPopupMenu {
 
@@ -37,26 +37,18 @@ public class UserPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
-		setBackground(Colors.background);
+		setBackground(VisualConstants.backColor);
 		
-		JMenuItem info = new JMenuItem("info");
-		info.setBackground(Colors.buttonBackground);
-		info.setForeground(Colors.buttonForeground);
+		DMenuItem info = new DMenuItem("info");
 		info.addActionListener(e -> infoClick());
 		
-		JMenuItem changeUsername = new JMenuItem("change username");
-		changeUsername.setBackground(Colors.buttonBackground);
-		changeUsername.setForeground(Colors.buttonForeground);
+		DMenuItem changeUsername = new DMenuItem("change username");
 		changeUsername.addActionListener(e -> changeUsernameClick());
 		
-	    JMenuItem changeAddress = new JMenuItem("change address");
-	    changeAddress.setBackground(Colors.buttonBackground);
-	    changeAddress.setForeground(Colors.buttonForeground);
+		DMenuItem changeAddress = new DMenuItem("change address");
 	    changeAddress.addActionListener(e -> changeAddressClick());
 	    
-	    JMenuItem delete = new JMenuItem("delete");
-	    delete.setBackground(Colors.buttonBackground);
-	    delete.setForeground(Colors.buttonForeground);
+	    DMenuItem delete = new DMenuItem("delete");
 	    delete.addActionListener(e -> deleteClick());
 
 	    Dimension separatorDimension = new Dimension(0, 3);

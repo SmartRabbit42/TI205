@@ -2,12 +2,18 @@ package visual.components;
 
 import javax.swing.JButton;
 
-import general.Colors;
+import visual.VisualConstants;
 
 public class DButton extends JButton {
 
 	private static final long serialVersionUID = -6366701348171799566L;
 
+	public DButton() {
+		super();
+		
+		initializeComponent();
+	}
+	
 	public DButton(String text) {
 		super(text);
 		
@@ -15,7 +21,7 @@ public class DButton extends JButton {
 	}
 	
 	private void initializeComponent() {
-		setBackground(Colors.buttonBackground);
-		setForeground(Colors.buttonForeground);
+		setBackground(VisualConstants.compBackColor);
+		setForeground(VisualConstants.compForeColor);
 	}
 }

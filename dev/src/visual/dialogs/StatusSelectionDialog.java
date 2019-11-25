@@ -1,18 +1,22 @@
 package visual.dialogs;
 
-import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 
 import data.Data;
 import data.containers.User;
 import network.Network;
 import network.netMsg.messages.StatusUpdateMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DDialog;
+import visual.components.DPanel;
 
-public class StatusSelectionDialog extends JDialog {
+public class StatusSelectionDialog extends DDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
@@ -32,49 +36,50 @@ public class StatusSelectionDialog extends JDialog {
 	
 	private void initializeComponent() {
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		setBackground(VisualConstants.backColor);
 		
-		JPanel panButtons = new JPanel();
+		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		Dimension buttonSize = new Dimension(50, 50);
 		
-		JButton btnUnknown = new JButton("");
-		btnUnknown.setBackground(Color.white);
+		JButton btnUnknown = new JButton();
+		btnUnknown.setBackground(VisualConstants.statusUnknownColor);
 		btnUnknown.setMinimumSize(buttonSize);
 		btnUnknown.setPreferredSize(buttonSize);
 		btnUnknown.setMaximumSize(buttonSize);
 		btnUnknown.addActionListener(e -> selectStatus(User.Status.unknown));
 		
-		JButton btnLoading = new JButton("");
-		btnLoading.setBackground(Color.blue);
+		JButton btnLoading = new JButton();
+		btnLoading.setBackground(VisualConstants.statusLoadingColor);
 		btnLoading.setMinimumSize(buttonSize);
 		btnLoading.setPreferredSize(buttonSize);
 		btnLoading.setMaximumSize(buttonSize);
 		btnLoading.addActionListener(e -> selectStatus(User.Status.loading));
 		
-		JButton btnOffline = new JButton("");
-		btnOffline.setBackground(Color.red);
+		JButton btnOffline = new JButton();
+		btnOffline.setBackground(VisualConstants.statusOfflineColor);
 		btnOffline.setMinimumSize(buttonSize);
 		btnOffline.setPreferredSize(buttonSize);
 		btnOffline.setMaximumSize(buttonSize);
 		btnOffline.addActionListener(e -> selectStatus(User.Status.offline));
 		
-		JButton btnOnline = new JButton("");
-		btnOnline.setBackground(Color.green);
+		JButton btnOnline = new JButton();
+		btnOnline.setBackground(VisualConstants.statusOnlineColor);
 		btnOnline.setMinimumSize(buttonSize);
 		btnOnline.setPreferredSize(buttonSize);
 		btnOnline.setMaximumSize(buttonSize);
 		btnOnline.addActionListener(e -> selectStatus(User.Status.online));
 
-		JButton btnBusy = new JButton("");
-		btnBusy.setBackground(Color.orange);
+		JButton btnBusy = new JButton();
+		btnBusy.setBackground(VisualConstants.statusBusyColor);
 		btnBusy.setMinimumSize(buttonSize);
 		btnBusy.setPreferredSize(buttonSize);
 		btnBusy.setMaximumSize(buttonSize);
 		btnBusy.addActionListener(e -> selectStatus(User.Status.busy));
 
-		JButton btnBlack = new JButton("");
-		btnBlack.setBackground(Color.black);
+		JButton btnBlack = new JButton();
+		btnBlack.setBackground(VisualConstants.statusBlackColor);
 		btnBlack.setMinimumSize(buttonSize);
 		btnBlack.setPreferredSize(buttonSize);
 		btnBlack.setMaximumSize(buttonSize);

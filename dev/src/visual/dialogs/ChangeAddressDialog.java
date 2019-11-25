@@ -5,7 +5,9 @@ import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Dimension;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 import data.Data;
 import data.containers.User;
@@ -15,8 +17,14 @@ import general.exceptions.MessageNotSentException;
 import network.Network;
 import network.netMsg.messages.ConnectMsg;
 import visual.Client;
+import visual.VisualConstants;
+import visual.components.DButton;
+import visual.components.DDialog;
+import visual.components.DLabel;
+import visual.components.DPanel;
+import visual.components.DTextField;
 
-public class ChangeAddressDialog extends JDialog {
+public class ChangeAddressDialog extends DDialog {
 
 	private static final long serialVersionUID = 8514722385911569350L;
 
@@ -26,7 +34,7 @@ public class ChangeAddressDialog extends JDialog {
 	
 	private User user;
 	
-	private JTextField txtUserAddress;
+	private DTextField txtUserAddress;
 	
 	public ChangeAddressDialog(Client client, Network network, Data data, User user) {
 		super(client, Dialog.ModalityType.DOCUMENT_MODAL);
@@ -41,14 +49,16 @@ public class ChangeAddressDialog extends JDialog {
 	}
 	
 	private void initializeComponent() {
-		JPanel panUpper = new JPanel();
+		setBackground(VisualConstants.backColor);
+		
+		DPanel panUpper = new DPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
-		JLabel lblTitle = new JLabel("Change user address");
+		DLabel lblTitle = new DLabel("Change user address");
 		
-		JLabel lblUserAddress = new JLabel("user address:");
+		DLabel lblUserAddress = new DLabel("user address:");
 		
-		txtUserAddress = new JTextField();
+		txtUserAddress = new DTextField();
 		txtUserAddress.setMaximumSize(new Dimension(500, 50));
 		
 		panUpper.add(lblTitle);
@@ -57,13 +67,13 @@ public class ChangeAddressDialog extends JDialog {
 		panUpper.add(txtUserAddress);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
-		JPanel panButtons = new JPanel();
+		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
-		JButton btnCancel = new JButton("cancel");
+		DButton btnCancel = new DButton("cancel");
 		btnCancel.addActionListener(e -> setVisible(false));
 		
-		JButton btnChange = new JButton("change");
+		DButton btnChange = new DButton("change");
 		btnChange.addActionListener(e -> btnChangeClick());
 		
 		panButtons.add(Box.createHorizontalGlue());
