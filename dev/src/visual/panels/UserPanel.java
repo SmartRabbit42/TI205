@@ -42,7 +42,11 @@ public class UserPanel extends JPanel {
 	private void initializeComponents() {
 		setLayout(null);
 		
-		setSize(new Dimension(250, 30));
+		Dimension userDimension = new Dimension(250, 30);
+		
+		setPreferredSize(userDimension);
+		setMaximumSize(userDimension);
+		setMinimumSize(userDimension);
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
@@ -73,6 +77,9 @@ public class UserPanel extends JPanel {
 			case User.Status.unknown:
 				panStatus.setBackground(Color.white);
 				break;
+			case User.Status.loading:
+				panStatus.setBackground(Color.blue);
+				break;
 			case User.Status.offline:
 				panStatus.setBackground(Color.red);
 				break;
@@ -81,6 +88,9 @@ public class UserPanel extends JPanel {
 				break;
 			case User.Status.busy:
 				panStatus.setBackground(Color.orange);
+				break;
+			case User.Status.black:
+				panStatus.setBackground(Color.black);
 				break;
 		}
 	}

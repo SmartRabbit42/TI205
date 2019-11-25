@@ -39,7 +39,11 @@ public class ChatPanel extends JButton {
 	private void initializeComponents() {
 		setLayout(null);
 		
-		setSize(new Dimension(250, 30));
+		Dimension chatDimension = new Dimension(250, 30);
+		
+		setPreferredSize(chatDimension);
+		setMaximumSize(chatDimension);
+		setMinimumSize(chatDimension);
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		

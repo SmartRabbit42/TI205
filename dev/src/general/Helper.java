@@ -1,5 +1,12 @@
 package general;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -27,12 +34,34 @@ public class Helper {
 		return hash;
 	}
 
-	public static byte[] encodeMessage(Serializable obj, String key) {
-		return new byte[1];
+	public static byte[] encodeMessage(Serializable msg, String key) throws IOException {
+		byte[] ret;
+		
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutput out = new ObjectOutputStream(bos)){
+			out.writeObject(msg);
+			out.flush();
+			
+			ret = bos.toByteArray();
+		}
+		
+		// TODO encode
+		
+		return ret;
 	}
 	
-	public static Serializable decodeMessage(Byte[] buffer, String key) {
-		return new byte[1];
+	public static Object decodeMessage(byte[] buffer, String key) throws IOException, ClassNotFoundException {
+		
+		// TODO decode
+		
+		Object msg;
+		
+		try (ByteArrayInputStream bit = new ByteArrayInputStream(buffer);
+				ObjectInput in = new ObjectInputStream(bit)){
+			msg = in.readObject();
+		}
+		
+		return msg;
 	}
 	
 	private static String Sha256(String val) {

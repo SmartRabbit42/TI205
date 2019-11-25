@@ -2,9 +2,13 @@ package data;
 
 import java.io.File;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.ObjectInput;
 import java.util.List;
 
 import data.containers.User;
@@ -26,8 +30,8 @@ public class Data {
 	}
 
 	public void load(File dataFile) throws DataNotLoadedException {
-		try (FileInputStream fis = new FileInputStream(dataFile);
-				ObjectInputStream ois = new ObjectInputStream(fis)) {
+		try (InputStream fis = new FileInputStream(dataFile);
+				ObjectInput ois = new ObjectInputStream(fis)) {
 			Object obj = ois.readObject();
 			
 			if (obj == null)
@@ -43,8 +47,8 @@ public class Data {
 	}
 	
 	public void dump(File dataFile) throws DataNotSavedException {	
-		try (FileOutputStream fos = new FileOutputStream(dataFile);
-				ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+		try (OutputStream fos = new FileOutputStream(dataFile);
+				ObjectOutput oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(meta);
 			
 			oos.close();
@@ -54,6 +58,13 @@ public class Data {
 		}
 	}
 
+	public String getPrivateKey() {
+		return meta.getPrivateKey();
+	}
+	public String getPublicKey() {
+		return meta.getLocalUser().getPublicKey();
+	}
+	
 	public User getLocalUser() {
 		return meta.getLocalUser();
 	}

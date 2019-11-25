@@ -15,6 +15,8 @@ public class Meta implements Serializable {
 	private List<User> knownUsers;
 	private List<Chat> chats;
 	
+	private String privateKey;
+	
 	public Meta(String username) throws InvalidParameterException {
 		setLocalUser(new User(username));
 		setChats(new ArrayList<Chat>());
@@ -48,5 +50,12 @@ public class Meta implements Serializable {
 	}
 	public void setChats(List<Chat> chats) {
 		this.chats = chats;
+	}
+
+	public String getPrivateKey() {
+		return privateKey;
+	}
+	public void setPrivateKey(String privateKey) {
+		this.privateKey = privateKey;
 	}
 }

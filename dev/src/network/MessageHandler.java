@@ -1,6 +1,5 @@
 package network;
 
-import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +8,7 @@ import data.Data;
 import data.containers.Chat;
 import data.containers.Message;
 import data.containers.User;
+import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
 import network.netMsg.NetMsg;
@@ -34,9 +34,14 @@ public class MessageHandler implements Runnable {
 	@Override
 	public void run() {
 		try {
-			ObjectInputStream in = new ObjectInputStream(sender.getInputStream());
-			Object msg = in.readObject();
-			sender.close();
+			byte[] buffer = new byte[Network.bufferMaxSize];
+			
+			int size = sender.getInputStream().read(buffer);
+			
+			if (size > Network.bufferMaxSize)
+				throw new Exception();
+			
+			Object msg = Helper.decodeMessage(buffer, data.getPrivateKey());
 			
 			handleMessage((NetMsg) msg);
 		} catch(Exception e) {

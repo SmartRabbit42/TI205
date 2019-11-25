@@ -6,6 +6,8 @@ public class AddMsg extends NetMsg {
 
 	private static final long serialVersionUID = 440000773731260800L;
 	
+	private String publicKey;
+	
 	private String address;
 	private int port;
 	
@@ -15,6 +17,13 @@ public class AddMsg extends NetMsg {
 	
 	public AddMsg() {
 		setMessageType(MessageType.add);
+	}
+
+	public String getPublicKey() {
+		return publicKey;
+	}
+	public void setPublicKey(String privateKey) {
+		this.publicKey = privateKey;
 	}
 
 	public String getAddress() {

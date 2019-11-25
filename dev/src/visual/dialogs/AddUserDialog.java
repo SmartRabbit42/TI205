@@ -106,6 +106,7 @@ public class AddUserDialog extends JDialog {
 			data.getAddedUsers().add(newUser);
 			
 			AddMsg aumsg = new AddMsg();
+			aumsg.setPublicKey(data.getPublicKey());
 			aumsg.setAddress(data.getLocalUser().getAddress());
 			aumsg.setPort(data.getLocalUser().getPort());
 			aumsg.setStatus(data.getLocalUser().getStatus());

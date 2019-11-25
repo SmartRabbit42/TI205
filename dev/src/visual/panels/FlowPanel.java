@@ -8,13 +8,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import data.Data;
 import data.containers.Chat;
 import data.containers.Message;
+import network.Network;
+import visual.Client;
 
 public class FlowPanel extends JPanel {
 
 	private static final long serialVersionUID = -8959645122177154844L;
 
+	private Client client;
+	private Network network;
+	private Data data;
+	
 	private Chat chat;
 	
 	private List<MessagePanel> messages;
@@ -22,7 +29,11 @@ public class FlowPanel extends JPanel {
 	private JLabel lblName;
 	private JPanel panMessages;
 	
-	public FlowPanel(Chat chat) {
+	public FlowPanel(Client client, Network network, Data data, Chat chat) {
+		this.client = client;
+		this.network = network;
+		this.data = data;
+		
 		this.chat = chat;
 		
 		messages = new ArrayList<MessagePanel>();
@@ -52,7 +63,7 @@ public class FlowPanel extends JPanel {
 	}
 	
 	public void addMessage(Message msg) {
-		MessagePanel newMessagePan = new MessagePanel(msg);
+		MessagePanel newMessagePan = new MessagePanel(client, network, data, msg);
 		messages.add(newMessagePan);
 		
 		panMessages.add(newMessagePan);

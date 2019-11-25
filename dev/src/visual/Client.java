@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -44,8 +45,8 @@ import visual.panels.*;
 
 /*
  * TODO:
+ *   message Popup
  *   criptograph
- *   status selection
  *   reorganize visual
  *   config options
  */
@@ -69,6 +70,7 @@ public class Client extends JFrame {
 	
 	private JLabel lblUsername;
 	private JLabel lblAddress;
+	private JButton btnStatus;
 	
 	private ArrayList<UserPanel> users;
 	private ArrayList<ChatPanel> chats;
@@ -316,11 +318,15 @@ public class Client extends JFrame {
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
 		
 		JButton btnConfigurations = new JButton("");
-		btnConfigurations.setBounds(212, 20, 25, 25);
+		btnConfigurations.setBounds(212, 5, 25, 25);
+		
+		btnStatus = new JButton("");
+		btnStatus.setBounds(212, 35, 25, 25);
 		
 		panHeader.add(lblUsername);
 		panHeader.add(lblAddress);
 		panHeader.add(btnConfigurations);
+		panHeader.add(btnStatus);
 		
 		JPanel panBody = new JPanel();
 		panBody.setLayout(null);
@@ -392,6 +398,19 @@ public class Client extends JFrame {
 		getContentPane().add(panMaster, "master");
 		
 		// Events
+		btnConfigurations.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				
+			}
+		});
+		btnStatus.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				StatusSelectionDialog ssd = new StatusSelectionDialog(instance, data, network);
+				ssd.setVisible(true);
+			}
+		});
 		btnChats.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
@@ -454,12 +473,35 @@ public class Client extends JFrame {
 		
 		lblUsername.setText(localUser.getUsername());
 		lblAddress.setText(localUser.getFullAddress());
+		
+		switch (localUser.getStatus()) {
+			default:
+			case User.Status.unknown:
+				btnStatus.setBackground(Color.white);
+				break;
+			case User.Status.loading:
+				btnStatus.setBackground(Color.blue);
+				break;
+			case User.Status.offline:
+				btnStatus.setBackground(Color.red);
+				break;
+			case User.Status.online:
+				btnStatus.setBackground(Color.green);
+				break;
+			case User.Status.busy:
+				btnStatus.setBackground(Color.orange);
+				break;
+			case User.Status.black:
+				btnStatus.setBackground(Color.black);
+				break;
+		}
 	}
 
 	public void addUser(User user) {
 		UserPanel userPan = new UserPanel(instance, network, data, user);
 		
 		users.add(userPan);
+		panUsers.add(Box.createRigidArea(new Dimension(0, 3)), 0);
 		panUsers.add(userPan, 0);
 		
 		panUsers.revalidate();
@@ -491,7 +533,7 @@ public class Client extends JFrame {
 	
 	public void addChat(Chat chat) {
 		ChatPanel chatPan = new ChatPanel(instance, network, data, chat);
-		FlowPanel flowPan = new FlowPanel(chat);
+		FlowPanel flowPan = new FlowPanel(instance, network, data, chat);
 		
 		chats.add(chatPan);
 		flows.add(flowPan);

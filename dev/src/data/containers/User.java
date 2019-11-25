@@ -12,6 +12,8 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = -8074919554796103339L;
 	
+	private String publicKey;
+	
 	private String username;
 	private String id;
 	private String token;
@@ -30,9 +32,10 @@ public class User implements Serializable {
 	public static class Status {
 		public static final byte unknown = 0;
 		public static final byte loading = 1;
-		public static final byte offline = 3;
-		public static final byte online = 4;
-		public static final byte busy = 5;
+		public static final byte offline = 2;
+		public static final byte online = 3;
+		public static final byte busy = 4;
+		public static final byte black = 5;
 	}
 	
 	public User () {
@@ -42,7 +45,9 @@ public class User implements Serializable {
 			
 			setChats(new ArrayList<Chat>());
 			setUnsentMessages(new ArrayList<NetMsg>());
-		} catch (InvalidParameterException e) { }
+		} catch (InvalidParameterException e) {
+			throw new RuntimeException();
+		}
 	}
 	
 	public User (String username) throws InvalidParameterException {
@@ -73,6 +78,13 @@ public class User implements Serializable {
         return true;
     }
 	
+	public String getPublicKey() {
+		return publicKey;
+	}
+	public void setPublicKey(String publicKey) {
+		this.publicKey = publicKey;
+	}
+
 	public String getUsername() {
 		return username;
 	}
