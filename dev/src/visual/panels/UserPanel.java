@@ -1,6 +1,5 @@
 package visual.panels;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -9,6 +8,7 @@ import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.User;
+import general.Colors;
 import visual.popups.UserPopup;
 import network.Network;
 import visual.Client;
@@ -41,8 +41,9 @@ public class UserPanel extends JPanel {
 
 	private void initializeComponents() {
 		setLayout(null);
+		setBackground(Colors.prefab);
 		
-		Dimension userDimension = new Dimension(250, 30);
+		Dimension userDimension = new Dimension(250, 33);
 		
 		setPreferredSize(userDimension);
 		setMaximumSize(userDimension);
@@ -54,19 +55,25 @@ public class UserPanel extends JPanel {
 		
 		lblName = new JLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
+		lblName.setForeground(Colors.foreground1);
 		lblName.setBounds(0, 0, 250, 15);
 		
 		lblAddress = new JLabel();
 		lblAddress.setAlignmentX(LEFT_ALIGNMENT);
+		lblAddress.setForeground(Colors.foreground1);
 		lblAddress.setBounds(0, 15, 250, 15);
 		
 		panStatus = new JPanel();
 		panStatus.setBounds(220, 5, 20, 20);
-		panStatus.setBackground(new Color(0,0,0));
+		
+		JPanel panSeparator = new JPanel();
+		panSeparator.setBounds(0, 30, 250, 3);
+		panSeparator.setBackground(Colors.body);
 		
 		add(lblName);
 		add(lblAddress);
 		add(panStatus);
+		add(panSeparator);
 	}
 	
 	public void update() {
@@ -75,22 +82,22 @@ public class UserPanel extends JPanel {
 		switch (user.getStatus()) {
 			default:
 			case User.Status.unknown:
-				panStatus.setBackground(Color.white);
+				panStatus.setBackground(Colors.statusUnknown);
 				break;
 			case User.Status.loading:
-				panStatus.setBackground(Color.blue);
+				panStatus.setBackground(Colors.statusLoading);
 				break;
 			case User.Status.offline:
-				panStatus.setBackground(Color.red);
+				panStatus.setBackground(Colors.statusOffline);
 				break;
 			case User.Status.online:
-				panStatus.setBackground(Color.green);
+				panStatus.setBackground(Colors.statusOnline);
 				break;
 			case User.Status.busy:
-				panStatus.setBackground(Color.orange);
+				panStatus.setBackground(Colors.statusBusy);
 				break;
 			case User.Status.black:
-				panStatus.setBackground(Color.black);
+				panStatus.setBackground(Colors.statusBlack);
 				break;
 		}
 	}

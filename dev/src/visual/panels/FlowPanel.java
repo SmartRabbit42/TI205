@@ -1,6 +1,5 @@
 package visual.panels;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import javax.swing.JPanel;
 import data.Data;
 import data.containers.Chat;
 import data.containers.Message;
+import general.Colors;
 import network.Network;
 import visual.Client;
 
@@ -48,15 +48,17 @@ public class FlowPanel extends JPanel {
 		
 		JPanel panHeader = new JPanel();
 		panHeader.setBounds(0, 0, 550, 50);
+		panHeader.setBackground(Colors.header);
 		
 		lblName = new JLabel();
+		lblName.setForeground(Colors.body);
 		
 		panHeader.add(lblName);
 		
 		panMessages = new JPanel();
 		panMessages.setLayout(new BoxLayout(panMessages, BoxLayout.Y_AXIS));
 		panMessages.setBounds(0, 50, 550, 500);
-		panMessages.setBackground(new Color(15, 75, 114, 255));
+		panMessages.setBackground(Colors.body);
 		
 		add(panHeader);
 		add(panMessages);

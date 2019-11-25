@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import data.Data;
 import data.containers.Message;
+import general.Colors;
 import network.Network;
 import visual.Client;
 import visual.popups.MessagePopup;
@@ -39,8 +40,13 @@ public class MessagePanel extends JPanel {
 
 	private void initializeComponents() {
 		setLayout(null);
+		setBackground(Colors.prefab);
 		
-		setSize(new Dimension(550, 30));
+		Dimension messageDimension = new Dimension(550, 33);
+		
+		setMinimumSize(messageDimension);
+		setPreferredSize(messageDimension);
+		setMaximumSize(messageDimension);
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
@@ -48,14 +54,21 @@ public class MessagePanel extends JPanel {
 		
 		lblSender = new JLabel();
 		lblSender.setAlignmentX(LEFT_ALIGNMENT);
+		lblSender.setForeground(Colors.foreground1);
 		lblSender.setBounds(0, 0, 550, 15);
 		
 		lblContent = new JLabel();
 		lblContent.setAlignmentX(LEFT_ALIGNMENT);
+		lblContent.setForeground(Colors.foreground1);
 		lblContent.setBounds(0, 15, 550, 15);
+		
+		JPanel panSeparator = new JPanel();
+		panSeparator.setBounds(0, 30, 550, 3);
+		panSeparator.setBackground(Colors.body);
 		
 		add(lblSender);
 		add(lblContent);
+		add(panSeparator);
 	}
 	
 	public void update() {

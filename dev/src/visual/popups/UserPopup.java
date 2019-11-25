@@ -1,5 +1,8 @@
 package visual.popups;
 
+import java.awt.Dimension;
+
+import javax.swing.Box;
 import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -7,6 +10,7 @@ import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.User;
+import general.Colors;
 import visual.dialogs.ChangeAddressDialog;
 import visual.dialogs.ChangeUsernameDialog;
 import network.Network;
@@ -33,21 +37,36 @@ public class UserPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
+		setBackground(Colors.background);
+		
 		JMenuItem info = new JMenuItem("info");
+		info.setBackground(Colors.buttonBackground);
+		info.setForeground(Colors.buttonForeground);
 		info.addActionListener(e -> infoClick());
 		
 		JMenuItem changeUsername = new JMenuItem("change username");
+		changeUsername.setBackground(Colors.buttonBackground);
+		changeUsername.setForeground(Colors.buttonForeground);
 		changeUsername.addActionListener(e -> changeUsernameClick());
 		
 	    JMenuItem changeAddress = new JMenuItem("change address");
+	    changeAddress.setBackground(Colors.buttonBackground);
+	    changeAddress.setForeground(Colors.buttonForeground);
 	    changeAddress.addActionListener(e -> changeAddressClick());
 	    
 	    JMenuItem delete = new JMenuItem("delete");
+	    delete.setBackground(Colors.buttonBackground);
+	    delete.setForeground(Colors.buttonForeground);
 	    delete.addActionListener(e -> deleteClick());
 
+	    Dimension separatorDimension = new Dimension(0, 3);
+	    
 	    add(info);
+	    add(Box.createRigidArea(separatorDimension));
 	    add(changeUsername);
+	    add(Box.createRigidArea(separatorDimension));
 	    add(changeAddress);
+	    add(Box.createRigidArea(separatorDimension));
 	    add(delete);
 	}
 	

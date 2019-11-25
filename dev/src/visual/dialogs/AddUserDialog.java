@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import data.Data;
 import data.containers.User;
+import general.Colors;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
@@ -39,10 +40,14 @@ public class AddUserDialog extends JDialog {
 	private void initializeComponent() {
 		JPanel panUpper = new JPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
+		panUpper.setBackground(Colors.header);
+		
 		
 		JLabel lblTitle = new JLabel("Add User");
+		lblTitle.setBackground(Colors.foreground1);
 		
 		JLabel lblUserAddress = new JLabel("user address:");
+		lblUserAddress.setBackground(Colors.foreground1);
 		
 		txtUserAddress = new JTextField();
 		txtUserAddress.setMaximumSize(new Dimension(500, 50));
