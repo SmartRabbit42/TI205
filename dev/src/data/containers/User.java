@@ -21,7 +21,7 @@ public class User implements Serializable {
 	private String address;
 	private int port;
 	
-	private byte status;
+	private STATUS status;
 	
 	private boolean added;
 	
@@ -29,19 +29,14 @@ public class User implements Serializable {
 	
 	private List<NetMsg> unsentMessages;
 	
-	public static class Status {
-		public static final byte unknown = 0;
-		public static final byte loading = 1;
-		public static final byte offline = 2;
-		public static final byte online = 3;
-		public static final byte busy = 4;
-		public static final byte black = 5;
+	public static enum STATUS {
+		UNKNOWN, LOADING, OFFLINE, ONLINE, BUSY, BLACK
 	}
 	
 	public User () {
 		try {
 			setUsername("anon" + System.currentTimeMillis());
-			setStatus(Status.online);
+			setStatus(STATUS.ONLINE);
 			
 			setChats(new ArrayList<Chat>());
 			setUnsentMessages(new ArrayList<NetMsg>());
@@ -52,7 +47,7 @@ public class User implements Serializable {
 	
 	public User (String username) throws InvalidParameterException {
 		setUsername(username);
-		setStatus(Status.online);
+		setStatus(STATUS.ONLINE);
 		
 		setChats(new ArrayList<Chat>());
 		setUnsentMessages(new ArrayList<NetMsg>());
@@ -123,11 +118,11 @@ public class User implements Serializable {
 		this.port = port;
 	}
 
-	public byte getStatus() {
+	public STATUS getStatus() {
 		return status;
 	}
-	public void setStatus(byte status) {
-		this.status = status;
+	public void setStatus(STATUS online) {
+		this.status = online;
 	}
 	
 	public boolean isAdded() {

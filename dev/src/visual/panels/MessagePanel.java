@@ -26,7 +26,7 @@ public class MessagePanel extends DPanel {
 	private DLabel lblContent;
 	
 	public MessagePanel(Client client, Network network, Data data, Message message) {
-		super(VisualConstants.gamaPanelColor);
+		super(VisualConstants.DELTA_PANEL_COLOR);
 		
 		this.client = client;
 		this.network = network;
@@ -54,12 +54,12 @@ public class MessagePanel extends DPanel {
 		
 		lblSender = new DLabel();
 		lblSender.setAlignmentX(LEFT_ALIGNMENT);
-		lblSender.setForeground(VisualConstants.alphaForeColor);
+		lblSender.setForeground(VisualConstants.ALPHA_FORE_COLOR);
 		lblSender.setBounds(0, 0, 550, 15);
 		
 		lblContent = new DLabel();
 		lblContent.setAlignmentX(LEFT_ALIGNMENT);
-		lblContent.setForeground(VisualConstants.betaForeColor);
+		lblContent.setForeground(VisualConstants.BETA_FORE_COLOR);
 		lblContent.setBounds(0, 15, 550, 15);
 		
 		DPanel panSeparator = new DPanel();

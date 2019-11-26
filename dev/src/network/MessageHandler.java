@@ -34,11 +34,11 @@ public class MessageHandler implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] buffer = new byte[Network.bufferMaxSize];
+			byte[] buffer = new byte[Network.BUFFER_MAXIMUM_SIZE];
 			
 			int size = sender.getInputStream().read(buffer);
 			
-			if (size > Network.bufferMaxSize)
+			if (size > Network.BUFFER_MAXIMUM_SIZE)
 				throw new Exception();
 			
 			Object msg = Helper.decodeMessage(buffer, data.getPrivateKey());
@@ -157,7 +157,7 @@ public class MessageHandler implements Runnable {
 		if (!isMessageLegit(user, msg.getToken()))
 			return;
 		
-		user.setStatus(User.Status.offline);
+		user.setStatus(User.STATUS.OFFLINE);
 		
 		if (user.isAdded())
 			client.updateUser(user);
@@ -186,9 +186,9 @@ public class MessageHandler implements Runnable {
 			OnAddMsg oamsg = new OnAddMsg();
 			
 			if (newUser.equals(data.getLocalUser()))
-				oamsg.setMsgStatus(OnAddMsg.Status.tryingToAddLocalUser);
+				oamsg.setMsgStatus(OnAddMsg.STATUS.TRYING_TO_ADD_LOCAL_USER);
 			else if (data.getAddedUsers().contains(newUser))
-				oamsg.setMsgStatus(OnAddMsg.Status.userAlreadyAdded);
+				oamsg.setMsgStatus(OnAddMsg.STATUS.USER_ALREADY_ADDED);
 			else {
 				newUser.setStatus(msg.getStatus());
 				newUser.setUsername(msg.getUsername());
@@ -199,7 +199,7 @@ public class MessageHandler implements Runnable {
 
 				oamsg.setUsername(data.getLocalUser().getUsername());
 				oamsg.setStatus(data.getLocalUser().getStatus());
-				oamsg.setMsgStatus(OnAddMsg.Status.success);
+				oamsg.setMsgStatus(OnAddMsg.STATUS.SUCCESS);
 				
 				client.addUser(newUser);
 			}
@@ -220,14 +220,14 @@ public class MessageHandler implements Runnable {
 
 		switch(msg.getMsgStatus()) {
 			default:
-			case OnAddMsg.Status.unknownError:
+			case UNKNOWN_ERROR:
 				if (user.getId() != null)
 					break;
 				
 				data.getAddedUsers().remove(user);
 				client.removeUser(user);
 				break;
-			case OnAddMsg.Status.success:
+			case SUCCESS:
 				try {
 					user.setId(msg.getId());
 					user.setUsername(msg.getUsername());
@@ -237,11 +237,11 @@ public class MessageHandler implements Runnable {
 					client.updateUser(user);
 				} catch (Exception e) {  }		
 				break;
-			case OnAddMsg.Status.tryingToAddLocalUser:
+			case TRYING_TO_ADD_LOCAL_USER:
 				data.getAddedUsers().remove(user);
 				client.removeUser(user);
 				break;
-			case OnAddMsg.Status.userAlreadyAdded:
+			case USER_ALREADY_ADDED:
 				break;
 		}
 	}
@@ -281,7 +281,7 @@ public class MessageHandler implements Runnable {
 					member.setToken(newChat.getId());
 					member.setAddress(address);
 					member.setPort(port);
-					member.setStatus(User.Status.unknown);
+					member.setStatus(User.STATUS.UNKNOWN);
 					member.getChats().add(newChat);
 					
 					members.add(member);

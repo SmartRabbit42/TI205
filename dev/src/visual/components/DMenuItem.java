@@ -21,7 +21,7 @@ public class DMenuItem extends JMenuItem {
 	}
 	
 	private void intializeComponent() {
-		setBackground(VisualConstants.alphaForeColor);
-		setForeground(VisualConstants.compForeColor);
+		setBackground(VisualConstants.ALPHA_PANEL_COLOR);
+		setForeground(VisualConstants.COMP_FORE_COLOR);
 	}
 }

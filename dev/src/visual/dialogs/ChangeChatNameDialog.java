@@ -44,7 +44,7 @@ public class ChangeChatNameDialog extends DDialog {
 	}
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.backColor);
+		setBackground(VisualConstants.BACK_COLOR);
 		
 		DPanel panUpper = new DPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));

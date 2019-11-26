@@ -36,7 +36,7 @@ public class StatusSelectionDialog extends DDialog {
 	
 	private void initializeComponent() {
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		setBackground(VisualConstants.backColor);
+		setBackground(VisualConstants.BACK_COLOR);
 		
 		DPanel panButtons = new DPanel();
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
@@ -44,46 +44,46 @@ public class StatusSelectionDialog extends DDialog {
 		Dimension buttonSize = new Dimension(50, 50);
 		
 		JButton btnUnknown = new JButton();
-		btnUnknown.setBackground(VisualConstants.statusUnknownColor);
+		btnUnknown.setBackground(VisualConstants.STATUS_UNKNOWN_COLOR);
 		btnUnknown.setMinimumSize(buttonSize);
 		btnUnknown.setPreferredSize(buttonSize);
 		btnUnknown.setMaximumSize(buttonSize);
-		btnUnknown.addActionListener(e -> selectStatus(User.Status.unknown));
+		btnUnknown.addActionListener(e -> selectStatus(User.STATUS.UNKNOWN));
 		
 		JButton btnLoading = new JButton();
-		btnLoading.setBackground(VisualConstants.statusLoadingColor);
+		btnLoading.setBackground(VisualConstants.STATUS_LOADING_COLOR);
 		btnLoading.setMinimumSize(buttonSize);
 		btnLoading.setPreferredSize(buttonSize);
 		btnLoading.setMaximumSize(buttonSize);
-		btnLoading.addActionListener(e -> selectStatus(User.Status.loading));
+		btnLoading.addActionListener(e -> selectStatus(User.STATUS.LOADING));
 		
 		JButton btnOffline = new JButton();
-		btnOffline.setBackground(VisualConstants.statusOfflineColor);
+		btnOffline.setBackground(VisualConstants.STATUS_OFFLINE_COLOR);
 		btnOffline.setMinimumSize(buttonSize);
 		btnOffline.setPreferredSize(buttonSize);
 		btnOffline.setMaximumSize(buttonSize);
-		btnOffline.addActionListener(e -> selectStatus(User.Status.offline));
+		btnOffline.addActionListener(e -> selectStatus(User.STATUS.OFFLINE));
 		
 		JButton btnOnline = new JButton();
-		btnOnline.setBackground(VisualConstants.statusOnlineColor);
+		btnOnline.setBackground(VisualConstants.STATUS_ONLINE_COLOR);
 		btnOnline.setMinimumSize(buttonSize);
 		btnOnline.setPreferredSize(buttonSize);
 		btnOnline.setMaximumSize(buttonSize);
-		btnOnline.addActionListener(e -> selectStatus(User.Status.online));
+		btnOnline.addActionListener(e -> selectStatus(User.STATUS.ONLINE));
 
 		JButton btnBusy = new JButton();
-		btnBusy.setBackground(VisualConstants.statusBusyColor);
+		btnBusy.setBackground(VisualConstants.STATUS_BUSY_COLOR);
 		btnBusy.setMinimumSize(buttonSize);
 		btnBusy.setPreferredSize(buttonSize);
 		btnBusy.setMaximumSize(buttonSize);
-		btnBusy.addActionListener(e -> selectStatus(User.Status.busy));
+		btnBusy.addActionListener(e -> selectStatus(User.STATUS.BUSY));
 
 		JButton btnBlack = new JButton();
-		btnBlack.setBackground(VisualConstants.statusBlackColor);
+		btnBlack.setBackground(VisualConstants.STATUS_BLACK_COLOR);
 		btnBlack.setMinimumSize(buttonSize);
 		btnBlack.setPreferredSize(buttonSize);
 		btnBlack.setMaximumSize(buttonSize);
-		btnBlack.addActionListener(e -> selectStatus(User.Status.black));
+		btnBlack.addActionListener(e -> selectStatus(User.STATUS.BLACK));
 		
 		Dimension boxSize = new Dimension(5, 0);
 		
@@ -109,7 +109,7 @@ public class StatusSelectionDialog extends DDialog {
 		setLocationRelativeTo(this.getParent());
 	}
 	
-	private void selectStatus(byte status) {
+	private void selectStatus(User.STATUS status) {
 		StatusUpdateMsg sum = new StatusUpdateMsg();
 		sum.setStatus(status);
 

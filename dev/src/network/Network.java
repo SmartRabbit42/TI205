@@ -18,7 +18,7 @@ import visual.Client;
 
 public class Network {
 	
-	public static final int bufferMaxSize = 2048;
+	public static final int BUFFER_MAXIMUM_SIZE = 2048;
 	
 	private Client client;
 	private Data data;
@@ -65,9 +65,9 @@ public class Network {
 			cmsg.setPort(port);
 			
 			for (User user : data.getAddedUsers())
-				user.setStatus(User.Status.loading);
+				user.setStatus(User.STATUS.LOADING);
 			for (User user : data.getKnownUsers())
-				user.setStatus(User.Status.loading);
+				user.setStatus(User.STATUS.LOADING);
 			
 			spreadMessage(data.getAddedUsers(), cmsg, false);
 			spreadMessage(data.getKnownUsers(), cmsg, false);
@@ -94,7 +94,7 @@ public class Network {
 	public void sendMessage(User user, NetMsg msg) throws MessageNotSentException  {
 		if (user.equals(data.getLocalUser()))
 			throw new MessageNotSentException("receiver is local user");
-		if (user.getStatus() == User.Status.offline)
+		if (user.getStatus() == User.STATUS.OFFLINE)
 			throw new MessageNotSentException("offline receiver");
 		
     	try {
@@ -109,7 +109,7 @@ public class Network {
 			
 			socket.close();
     	} catch (Exception e) {
-    		user.setStatus(User.Status.unknown);
+    		user.setStatus(User.STATUS.UNKNOWN);
     		throw new MessageNotSentException(e.getMessage());
     	}
 	}

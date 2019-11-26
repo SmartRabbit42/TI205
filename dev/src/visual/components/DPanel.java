@@ -10,7 +10,7 @@ public class DPanel extends JPanel {
 
 	private static final long serialVersionUID = 1029166407130479938L;
 	
-	private Color color = VisualConstants.alphaPanelColor;
+	private Color color = VisualConstants.ALPHA_PANEL_COLOR;
 	
 	public DPanel() {
 		super();

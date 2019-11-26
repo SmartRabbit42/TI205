@@ -37,7 +37,7 @@ public class UserPopup extends JPopupMenu {
 	 }
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.backColor);
+		setBackground(VisualConstants.BACK_COLOR);
 		
 		DMenuItem info = new DMenuItem("info");
 		info.addActionListener(e -> infoClick());

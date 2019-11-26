@@ -37,6 +37,7 @@ import network.netMsg.messages.MessageMsg;
 import visual.components.DButton;
 import visual.components.DLabel;
 import visual.components.DPanel;
+import visual.components.DScrollPane;
 import visual.components.DTextField;
 import visual.dialogs.*;
 import visual.panels.*;
@@ -104,7 +105,6 @@ public class Client extends JFrame {
 		setMinimumSize(new Dimension(516, 638));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout());
-		getContentPane().setBackground(VisualConstants.backColor);
 		
 		addWindowListener(new WindowAdapter() {
             @Override
@@ -141,12 +141,12 @@ public class Client extends JFrame {
 	}
 
 	private void initializeEntry() {
-		DPanel panEntry = new DPanel(VisualConstants.alphaPanelColor);
+		DPanel panEntry = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
 		panEntry.setLayout(new BorderLayout(0, 0));
 		
 		Box entryBox = new Box(BoxLayout.Y_AXIS);
 		
-		DPanel panAuthentication = new DPanel(VisualConstants.betaPanelColor);
+		DPanel panAuthentication = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panAuthentication.setPreferredSize(new Dimension(500, 600));
 		panAuthentication.setMaximumSize(new Dimension(500, 600));
 		panAuthentication.setMinimumSize(new Dimension(500, 600));
@@ -243,28 +243,28 @@ public class Client extends JFrame {
 	}
 	
 	private void initializeMaster() {
-		DPanel panMaster = new DPanel(VisualConstants.alphaPanelColor);
+		DPanel panMaster = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
 		panMaster.setLayout(new BorderLayout(0, 0));
 		
 		Box box = new Box(BoxLayout.Y_AXIS);
 		
-		DPanel panMain = new DPanel(VisualConstants.betaPanelColor);
+		DPanel panMain = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panMain.setPreferredSize(new Dimension(800, 600));
 		panMain.setMaximumSize(new Dimension(800, 600));
 		panMain.setMinimumSize(new Dimension(800, 600));
 		panMain.setLayout(null);
 		
-		DPanel panMessages = new DPanel(VisualConstants.betaPanelColor);
+		DPanel panMessages = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panMessages.setBounds(250, 0, 550, 600);
 		panMessages.setLayout(null);
 		
 		flows = new ArrayList<FlowPanel>();
 		
-		panFlows = new DPanel(VisualConstants.betaPanelColor);
+		panFlows = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panFlows.setBounds(0, 0, 550, 550);
 		panFlows.setLayout(new CardLayout());
 		
-		DPanel panSendMessage = new DPanel(VisualConstants.gamaPanelColor);
+		DPanel panSendMessage = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panSendMessage.setBounds(0, 550, 550, 50);
 		panSendMessage.setLayout(null);
 		
@@ -280,23 +280,23 @@ public class Client extends JFrame {
 		panMessages.add(panFlows);
 		panMessages.add(panSendMessage);
 		
-		DPanel panAside = new DPanel(VisualConstants.betaPanelColor);
+		DPanel panAside = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panAside.setBounds(0, 0, 250, 600);
 		panAside.setLayout(null);
 		
-		DPanel panHeader = new DPanel(VisualConstants.gamaPanelColor);
+		DPanel panHeader = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panHeader.setBounds(0, 0, 250, 65);
 		panHeader.setLayout(null);
 		
 		lblUsername = new DLabel();
 		lblUsername.setBounds(10, 5, 200, 40);
-		lblUsername.setForeground(VisualConstants.alphaForeColor);
+		lblUsername.setForeground(VisualConstants.ALPHA_FORE_COLOR);
 		lblUsername.setFont(new Font("Arial", Font.BOLD, 30));
 		lblUsername.setVerticalAlignment(SwingConstants.TOP);
 		
 		lblAddress = new DLabel();
 		lblAddress.setBounds(10, 40, 200, 20);
-		lblAddress.setForeground(VisualConstants.betaForeColor);
+		lblAddress.setForeground(VisualConstants.BETA_FORE_COLOR);
 		lblAddress.setFont(new Font("Arial", Font.ITALIC, 15));
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
 		
@@ -311,16 +311,16 @@ public class Client extends JFrame {
 		panHeader.add(btnConfigurations);
 		panHeader.add(btnStatus);
 		
-		DPanel panBody = new DPanel(VisualConstants.deltaPanelColor);
+		DPanel panBody = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panBody.setLayout(null);
 		panBody.setBounds(0, 65, 250, 535);
 		
-		DPanel panButtons = new DPanel(VisualConstants.deltaPanelColor);
+		DPanel panButtons = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panButtons.setLayout(null);
 		panButtons.setBounds(0, 0, 250, 20);
 		
 		DButton btnChats = new DButton("chats");
-		btnChats.setBackground(VisualConstants.selectedCompBackColor);
+		btnChats.setBackground(VisualConstants.SELECTED_COMP_BACK_COLOR);
 		btnChats.setBounds(0, 0, 125, 20);
 		
 		DButton btnUsers = new DButton("users");
@@ -329,13 +329,13 @@ public class Client extends JFrame {
 		panButtons.add(btnChats);
 		panButtons.add(btnUsers);
 		
-		DPanel panTabs = new DPanel(VisualConstants.deltaPanelColor);
+		DPanel panTabs = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panTabs.setLayout(new CardLayout());
 		panTabs.setBounds(0, 20, 250, 515);
 		
 		chats = new ArrayList<ChatPanel>();
 		
-		panChats = new DPanel(VisualConstants.deltaPanelColor);
+		panChats = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panChats.setLayout(new BoxLayout(panChats, BoxLayout.Y_AXIS));
 		
 		DButton btnCreateChat = new DButton("+");
@@ -345,20 +345,24 @@ public class Client extends JFrame {
 		panChats.add(btnCreateChat);
 		panChats.add(Box.createVerticalGlue());
 		
+		DScrollPane scpChats = new DScrollPane(panChats);
+		
 		users = new ArrayList<UserPanel>();
 		
-		panUsers = new DPanel(VisualConstants.deltaPanelColor);
+		panUsers = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
 		DButton btnAddUser = new DButton("+");
 		btnAddUser.setSize(new Dimension(30, 30));
 		btnAddUser.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
+
 		panUsers.add(btnAddUser);
 		panUsers.add(Box.createVerticalGlue());
 		
-		panTabs.add(panChats, "chats");
-		panTabs.add(panUsers, "users");
+		DScrollPane scpUsers = new DScrollPane(panUsers);
+		
+		panTabs.add(scpChats, "chats");
+		panTabs.add(scpUsers, "users");
 		
 		panBody.add(panButtons);
 		panBody.add(panTabs);
@@ -394,16 +398,16 @@ public class Client extends JFrame {
 		btnChats.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				btnChats.setBackground(VisualConstants.selectedCompBackColor);
-				btnUsers.setBackground(VisualConstants.compBackColor);
+				btnChats.setBackground(VisualConstants.SELECTED_COMP_BACK_COLOR);
+				btnUsers.setBackground(VisualConstants.COMP_BACK_COLOR);
 				((CardLayout) panTabs.getLayout()).show(panTabs, "chats");
 			}
 		});
 		btnUsers.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
-				btnChats.setBackground(VisualConstants.compBackColor);
-				btnUsers.setBackground(VisualConstants.selectedCompBackColor);
+				btnChats.setBackground(VisualConstants.COMP_BACK_COLOR);
+				btnUsers.setBackground(VisualConstants.SELECTED_COMP_BACK_COLOR);
 				((CardLayout) panTabs.getLayout()).show(panTabs, "users");
 			}
 		});
@@ -456,23 +460,23 @@ public class Client extends JFrame {
 		
 		switch (localUser.getStatus()) {
 			default:
-			case User.Status.unknown:
-				btnStatus.setBackground(VisualConstants.statusUnknownColor);
+			case UNKNOWN:
+				btnStatus.setBackground(VisualConstants.STATUS_UNKNOWN_COLOR);
 				break;
-			case User.Status.loading:
-				btnStatus.setBackground(VisualConstants.statusLoadingColor);
+			case LOADING:
+				btnStatus.setBackground(VisualConstants.STATUS_LOADING_COLOR);
 				break;
-			case User.Status.offline:
-				btnStatus.setBackground(VisualConstants.statusOfflineColor);
+			case OFFLINE:
+				btnStatus.setBackground(VisualConstants.STATUS_OFFLINE_COLOR);
 				break;
-			case User.Status.online:
-				btnStatus.setBackground(VisualConstants.statusOnlineColor);
+			case ONLINE:
+				btnStatus.setBackground(VisualConstants.STATUS_ONLINE_COLOR);
 				break;
-			case User.Status.busy:
-				btnStatus.setBackground(VisualConstants.statusBusyColor);
+			case BUSY:
+				btnStatus.setBackground(VisualConstants.STATUS_BUSY_COLOR);
 				break;
-			case User.Status.black:
-				btnStatus.setBackground(VisualConstants.statusBlackColor);
+			case BLACK:
+				btnStatus.setBackground(VisualConstants.STATUS_BLACK_COLOR);
 				break;
 		}
 	}

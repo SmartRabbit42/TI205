@@ -27,7 +27,7 @@ public class UserPanel extends DPanel {
 	private DPanel panStatus;
 	
 	public UserPanel(Client client, Network network, Data data, User user) {
-		super(VisualConstants.epsilonPanelColor);
+		super(VisualConstants.EPSILON_PANEL_COLOR);
 		
 		this.client = client;
 		this.network = network;
@@ -55,19 +55,19 @@ public class UserPanel extends DPanel {
 		
 		lblName = new DLabel();
 		lblName.setAlignmentX(LEFT_ALIGNMENT);
-		lblName.setForeground(VisualConstants.alphaForeColor);
+		lblName.setForeground(VisualConstants.ALPHA_FORE_COLOR);
 		lblName.setBounds(0, 0, 250, 15);
 		
 		lblAddress = new DLabel();
 		lblAddress.setAlignmentX(LEFT_ALIGNMENT);
-		lblAddress.setForeground(VisualConstants.betaForeColor);
+		lblAddress.setForeground(VisualConstants.BETA_FORE_COLOR);
 		lblAddress.setBounds(0, 15, 250, 15);
 		
 		panStatus = new DPanel();
 		panStatus.setBounds(220, 5, 20, 20);
 		
 		DPanel panSeparator = new DPanel();
-		panSeparator.setBackground(VisualConstants.deltaPanelColor);
+		panSeparator.setBackground(VisualConstants.DELTA_PANEL_COLOR);
 		panSeparator.setBounds(0, 30, 250, 3);
 		
 		add(lblName);
@@ -81,23 +81,23 @@ public class UserPanel extends DPanel {
 		lblAddress.setText(user.getFullAddress());
 		switch (user.getStatus()) {
 			default:
-			case User.Status.unknown:
-				panStatus.setBackground(VisualConstants.statusUnknownColor);
+			case UNKNOWN:
+				panStatus.setBackground(VisualConstants.STATUS_UNKNOWN_COLOR);
 				break;
-			case User.Status.loading:
-				panStatus.setBackground(VisualConstants.statusLoadingColor);
+			case LOADING:
+				panStatus.setBackground(VisualConstants.STATUS_LOADING_COLOR);
 				break;
-			case User.Status.offline:
-				panStatus.setBackground(VisualConstants.statusOfflineColor);
+			case OFFLINE:
+				panStatus.setBackground(VisualConstants.STATUS_OFFLINE_COLOR);
 				break;
-			case User.Status.online:
-				panStatus.setBackground(VisualConstants.statusOnlineColor);
+			case ONLINE:
+				panStatus.setBackground(VisualConstants.STATUS_ONLINE_COLOR);
 				break;
-			case User.Status.busy:
-				panStatus.setBackground(VisualConstants.statusBusyColor);
+			case BUSY:
+				panStatus.setBackground(VisualConstants.STATUS_BUSY_COLOR);
 				break;
-			case User.Status.black:
-				panStatus.setBackground(VisualConstants.statusBlackColor);
+			case BLACK:
+				panStatus.setBackground(VisualConstants.STATUS_BLACK_COLOR);
 				break;
 		}
 	}

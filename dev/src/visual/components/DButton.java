@@ -21,7 +21,7 @@ public class DButton extends JButton {
 	}
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.compBackColor);
-		setForeground(VisualConstants.compForeColor);
+		setBackground(VisualConstants.COMP_BACK_COLOR);
+		setForeground(VisualConstants.COMP_FORE_COLOR);
 	}
 }

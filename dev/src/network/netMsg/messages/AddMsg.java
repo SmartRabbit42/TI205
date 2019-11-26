@@ -1,5 +1,6 @@
 package network.netMsg.messages;
 
+import data.containers.User;
 import network.netMsg.NetMsg;
 
 public class AddMsg extends NetMsg {
@@ -13,7 +14,7 @@ public class AddMsg extends NetMsg {
 	
 	private String username;
 	
-	private byte status;
+	private User.STATUS status;
 	
 	public AddMsg() {
 		setMessageType(MessageType.add);
@@ -47,10 +48,10 @@ public class AddMsg extends NetMsg {
 		this.username = username;
 	}
 	
-	public byte getStatus() {
+	public User.STATUS getStatus() {
 		return status;
 	}
-	public void setStatus(byte status) {
+	public void setStatus(User.STATUS status) {
 		this.status = status;
 	}
 }

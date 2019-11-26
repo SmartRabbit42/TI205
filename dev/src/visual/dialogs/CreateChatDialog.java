@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 
 import data.Data;
 import data.containers.Chat;
@@ -27,6 +26,7 @@ import visual.components.DButton;
 import visual.components.DDialog;
 import visual.components.DLabel;
 import visual.components.DPanel;
+import visual.components.DScrollPane;
 import visual.components.DTextField;
 
 public class CreateChatDialog extends DDialog {
@@ -56,7 +56,7 @@ public class CreateChatDialog extends DDialog {
 	}
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.backColor);
+		setBackground(VisualConstants.BACK_COLOR);
 		
 		DPanel panList = new DPanel();
 		panList.setLayout(new BoxLayout(panList, BoxLayout.Y_AXIS));
@@ -78,10 +78,7 @@ public class CreateChatDialog extends DDialog {
 		
 		panUsers.add(btnAddUser);
 		
-		JScrollPane jspUsers = new JScrollPane(panUsers);
-		jspUsers.setAlignmentX(LEFT_ALIGNMENT);
-		jspUsers.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		jspUsers.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		DScrollPane jspUsers = new DScrollPane(panUsers);
 		
 		panList.add(lblTitle);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));

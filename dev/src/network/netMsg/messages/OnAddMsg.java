@@ -1,5 +1,6 @@
 package network.netMsg.messages;
 
+import data.containers.User;
 import network.netMsg.NetMsg;
 
 public class OnAddMsg extends NetMsg {
@@ -8,15 +9,12 @@ public class OnAddMsg extends NetMsg {
 	
 	private String username;
 	
-	private byte status;
+	private User.STATUS status;
 
-	private byte msgStatus;
+	private STATUS msgStatus;
 	
-	public static final class Status {
-		public static final byte unknownError = 0;
-		public static final byte success = 1;
-		public static final byte tryingToAddLocalUser = 2;
-		public static final byte userAlreadyAdded = 3;
+	public static enum STATUS {
+		UNKNOWN_ERROR, SUCCESS, TRYING_TO_ADD_LOCAL_USER, USER_ALREADY_ADDED
 	}
 	
 	public OnAddMsg() {
@@ -30,17 +28,17 @@ public class OnAddMsg extends NetMsg {
 		this.username = username;
 	}
 	
-	public byte getStatus() {
+	public User.STATUS getStatus() {
 		return status;
 	}
-	public void setStatus(byte status) {
+	public void setStatus(User.STATUS status) {
 		this.status = status;
 	}
 	
-	public byte getMsgStatus() {
+	public STATUS getMsgStatus() {
 		return msgStatus;
 	}
-	public void setMsgStatus(byte status) {
+	public void setMsgStatus(STATUS status) {
 		this.msgStatus = status;
 	}
 

@@ -4,11 +4,13 @@ import java.awt.Font;
 
 import javax.swing.JLabel;
 
+import visual.VisualConstants;
+
 public class DLabel extends JLabel {
 
 	private static final long serialVersionUID = -7938264165072962935L;
 
-	private Font font = new Font("Arial", Font.BOLD, 20);
+	private Font font = new Font("Arial", Font.BOLD, 11);
 	
 	public DLabel() {
 		super();
@@ -32,5 +34,6 @@ public class DLabel extends JLabel {
 	
 	private void initializeComponent(){
 		setFont(font);
+		setForeground(VisualConstants.ALPHA_FORE_COLOR);
 	}
 }

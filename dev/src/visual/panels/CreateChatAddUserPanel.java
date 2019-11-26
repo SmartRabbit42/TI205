@@ -8,12 +8,12 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
 
 import data.containers.User;
 import visual.VisualConstants;
+import visual.components.DPanel;
 
-public class CreateChatAddUserPanel extends JPanel {
+public class CreateChatAddUserPanel extends DPanel {
 
 	private static final long serialVersionUID = -4976528431574221806L;
 
@@ -39,12 +39,12 @@ public class CreateChatAddUserPanel extends JPanel {
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		cbxUsers = new JComboBox<String>(names.toArray(new String[names.size()]));
-		cbxUsers.setBackground(VisualConstants.compBackColor);
-		cbxUsers.setForeground(VisualConstants.compForeColor);
+		cbxUsers.setBackground(VisualConstants.COMP_BACK_COLOR);
+		cbxUsers.setForeground(VisualConstants.COMP_FORE_COLOR);
 		
 		add(Box.createRigidArea(new Dimension(5, 0)));
 		add(cbxUsers);
-		add(Box.createHorizontalGlue());
+		add(Box.createRigidArea(new Dimension(5, 0)));
 	}
 	
 	public User getUser() {

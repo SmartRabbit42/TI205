@@ -1,5 +1,6 @@
 package visual.panels;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import visual.Client;
 import visual.VisualConstants;
 import visual.components.DLabel;
 import visual.components.DPanel;
+import visual.components.DScrollPane;
 
 public class FlowPanel extends DPanel {
 
@@ -30,7 +32,7 @@ public class FlowPanel extends DPanel {
 	private DPanel panMessages;
 	
 	public FlowPanel(Client client, Network network, Data data, Chat chat) {
-		super(VisualConstants.betaPanelColor);
+		super(VisualConstants.BETA_PANEL_COLOR);
 		
 		this.client = client;
 		this.network = network;
@@ -48,20 +50,22 @@ public class FlowPanel extends DPanel {
 	private void initializeComponent() {
 		setLayout(null);
 		
-		DPanel panHeader = new DPanel();
+		DPanel panHeader = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panHeader.setBounds(0, 0, 550, 50);
 		
-		lblName = new DLabel();
-		lblName.setForeground(VisualConstants.alphaForeColor);
+		lblName = new DLabel("", new Font("Arial", Font.BOLD, 24));
+		lblName.setForeground(VisualConstants.ALPHA_FORE_COLOR);
 		
 		panHeader.add(lblName);
 		
-		panMessages = new DPanel(VisualConstants.gamaPanelColor);
+		panMessages = new DPanel(VisualConstants.BETA_PANEL_COLOR);
 		panMessages.setLayout(new BoxLayout(panMessages, BoxLayout.Y_AXIS));
-		panMessages.setBounds(0, 50, 550, 500);
+		
+		DScrollPane scpMessages = new DScrollPane(panMessages);
+		scpMessages.setBounds(0, 50, 550, 500);
 		
 		add(panHeader);
-		add(panMessages);
+		add(scpMessages);
 	}
 	
 	public void addMessage(Message msg) {

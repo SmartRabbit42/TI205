@@ -45,7 +45,7 @@ public class AddUserDialog extends DDialog {
 	}
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.backColor);
+		setBackground(VisualConstants.BACK_COLOR);
 		
 		DPanel panUpper = new DPanel();
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
@@ -107,7 +107,7 @@ public class AddUserDialog extends DDialog {
 			User newUser = new User();
 			newUser.setId(token);
 			newUser.setToken(token);
-			newUser.setStatus(User.Status.loading);
+			newUser.setStatus(User.STATUS.LOADING);
 			newUser.setAddress(address);
 			newUser.setPort(port);
 

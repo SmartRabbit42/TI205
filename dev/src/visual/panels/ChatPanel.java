@@ -40,7 +40,7 @@ public class ChatPanel extends JButton {
 
 	private void initializeComponents() {
 		setLayout(null);
-		setBackground(VisualConstants.epsilonPanelColor);
+		setBackground(VisualConstants.EPSILON_PANEL_COLOR);
 		
 		Dimension chatDimension = new Dimension(250, 33);
 		
@@ -57,7 +57,7 @@ public class ChatPanel extends JButton {
 		lblName.setBounds(0, 0, 250, 15);
 		
 		JPanel panSeparator = new JPanel();
-		panSeparator.setBackground(VisualConstants.deltaPanelColor);
+		panSeparator.setBackground(VisualConstants.DELTA_PANEL_COLOR);
 		panSeparator.setBounds(0, 30, 250, 3);
 		
 		add(lblName);
