@@ -2,6 +2,7 @@ package visual.components;
 
 import java.awt.Dimension;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -25,7 +26,8 @@ public class DScrollPane extends JScrollPane {
 		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 		setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
 		setAlignmentX(LEFT_ALIGNMENT);
-
+		setBorder(BorderFactory.createEmptyBorder());
+		
 		JScrollBar bar = new JScrollBar();
 		
 		JButton none = new JButton();

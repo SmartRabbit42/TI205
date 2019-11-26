@@ -3,18 +3,17 @@ package visual.popups;
 import java.awt.Dimension;
 
 import javax.swing.Box;
-import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.Message;
 import network.Network;
 import visual.Client;
-import visual.VisualConstants;
 import visual.components.DMenuItem;
+import visual.components.DPopupMenu;
 
 //TODO
 
-public class MessagePopup extends JPopupMenu {
+public class MessagePopup extends DPopupMenu {
 
 	private static final long serialVersionUID = 3700438134286442845L;
 
@@ -34,9 +33,7 @@ public class MessagePopup extends JPopupMenu {
 		initializeComponent();
 	 }
 	
-	private void initializeComponent() {
-		setBackground(VisualConstants.BACK_COLOR);
-		
+	private void initializeComponent() {		
 		DMenuItem info = new DMenuItem("info");
 		info.addActionListener(e -> infoClick());
 		

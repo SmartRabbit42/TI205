@@ -85,8 +85,7 @@ public class ChangeAddressDialog extends DDialog {
 		contentPane.add(panUpper, BorderLayout.CENTER);
 		contentPane.add(panButtons, BorderLayout.PAGE_END);
 		
-		pack();
-		setLocationRelativeTo(this.getParent());
+		adjust();
 	}
 	
 	private void btnChangeClick() {

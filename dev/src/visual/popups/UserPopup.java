@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.User;
@@ -15,8 +14,9 @@ import network.Network;
 import visual.Client;
 import visual.VisualConstants;
 import visual.components.DMenuItem;
+import visual.components.DPopupMenu;
 
-public class UserPopup extends JPopupMenu {
+public class UserPopup extends DPopupMenu {
 
 	private static final long serialVersionUID = 3700438134286442845L;
 

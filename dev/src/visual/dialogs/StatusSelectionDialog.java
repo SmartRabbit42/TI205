@@ -36,9 +36,8 @@ public class StatusSelectionDialog extends DDialog {
 	
 	private void initializeComponent() {
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		setBackground(VisualConstants.BACK_COLOR);
 		
-		DPanel panButtons = new DPanel();
+		DPanel panButtons = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		Dimension buttonSize = new Dimension(50, 50);
@@ -104,9 +103,8 @@ public class StatusSelectionDialog extends DDialog {
 		add(Box.createRigidArea(new Dimension(0, 5)));
 		add(panButtons);
 		add(Box.createRigidArea(new Dimension(0, 5)));
-		
-		pack();
-		setLocationRelativeTo(this.getParent());
+
+		adjust();
 	}
 	
 	private void selectStatus(User.STATUS status) {

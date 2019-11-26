@@ -161,9 +161,4 @@ public class CreateChatDialog extends DDialog {
 			        JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-	
-	private void adjust() {
-		pack();
-		setLocationRelativeTo(client);
-	}
 }

@@ -268,7 +268,7 @@ public class Client extends JFrame {
 		panSendMessage.setBounds(0, 550, 550, 50);
 		panSendMessage.setLayout(null);
 		
-		DTextField txtMessage = new DTextField();
+		DTextField txtMessage = new DTextField("write message");
 		txtMessage.setBounds(10, 10, 490, 30);
 		
 		DButton btnMessage = new DButton();
@@ -428,7 +428,17 @@ public class Client extends JFrame {
 		btnMessage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
+				if (activeChat == null)
+					return;
+				
+				if (txtMessage.isPlaceholderShown())
+					return; 
+				
 				String content = txtMessage.getText();
+				
+				if (content.isEmpty())
+					return;
+				
 				Date now = new Date();
 				
 				Message message = new Message();
@@ -441,6 +451,8 @@ public class Client extends JFrame {
 				mm.setChatId(activeChat.getId());
 				mm.setTime(now.getTime());
 				mm.setContent(content);
+				
+				txtMessage.setText("");
 				
 				network.spreadMessage(activeChat.getMembers(), mm, true);
 				
@@ -582,6 +594,21 @@ public class Client extends JFrame {
 	}
 	
 	private void changeActiveChat(Chat chat) {
+		for (ChatPanel chatPan : chats) 
+			if (chatPan.getChat().equals(activeChat)) {
+				chatPan.setBackground(VisualConstants.EPSILON_PANEL_COLOR);
+				break;
+			}
+		
+		for (ChatPanel chatPan : chats) 
+			if (chatPan.getChat().equals(chat)) {
+				chatPan.setBackground(VisualConstants.SELECTED_COMP_BACK_COLOR);
+				break;
+			}
+		
+		panChats.revalidate();
+		panChats.repaint();
+		
 		activeChat = chat;
 		((CardLayout) panFlows.getLayout()).show(panFlows, chat.getId());
 		

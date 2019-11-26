@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
 
 import data.Data;
 import data.containers.Chat;
@@ -15,9 +14,10 @@ import network.netMsg.messages.LeaveChatMsg;
 import visual.Client;
 import visual.VisualConstants;
 import visual.components.DMenuItem;
+import visual.components.DPopupMenu;
 import visual.dialogs.ChangeChatNameDialog;
 
-public class ChatPopup extends JPopupMenu {
+public class ChatPopup extends DPopupMenu {
 
 	private static final long serialVersionUID = 3700438134286442845L;
 

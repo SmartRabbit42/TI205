@@ -3,18 +3,18 @@ package visual;
 import java.awt.Color;
 
 public class VisualConstants {
-	// COLORS
 	public static final Color BACK_COLOR = new Color(0, 0, 0);
 	
 	public static final Color ALPHA_PANEL_COLOR = new Color(12, 12, 12);
 	public static final Color BETA_PANEL_COLOR = new Color(24, 24, 24);
 	public static final Color GAMA_PANEL_COLOR = new Color(36, 36, 36);
 	public static final Color DELTA_PANEL_COLOR = new Color(48, 48, 48);
-	public static final Color EPSILON_PANEL_COLOR = new Color(64, 64, 64);
+	public static final Color EPSILON_PANEL_COLOR = new Color(60, 60, 60);
 	
 	public static final Color COMP_BACK_COLOR = new Color(0, 0, 0);
 	public static final Color COMP_FORE_COLOR = new Color(240, 210, 80);
-	public static final Color SELECTED_COMP_BACK_COLOR = new Color(90, 90, 90);
+	public static final Color COMP_PLACEHOLDER_COLOR = new Color(240, 210, 80);
+	public static final Color SELECTED_COMP_BACK_COLOR = new Color(84, 84, 84);
 	
 	public static final Color ALPHA_FORE_COLOR = new Color(240, 210, 80);
 	public static final Color BETA_FORE_COLOR = new Color(240, 210, 80);
