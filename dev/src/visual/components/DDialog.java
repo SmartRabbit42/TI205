@@ -18,7 +18,7 @@ public class DDialog extends JDialog {
 	}
 	
 	private void initializeComponent() {
-		setBackground(VisualConstants.BACK_COLOR);
+		getContentPane().setBackground(VisualConstants.BACK_COLOR);
 		setResizable(false);
 	}
 	

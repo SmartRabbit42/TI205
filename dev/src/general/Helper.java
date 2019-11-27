@@ -45,15 +45,10 @@ public class Helper {
 			ret = bos.toByteArray();
 		}
 		
-		// TODO encode
-		
 		return ret;
 	}
 	
 	public static Object decodeMessage(byte[] buffer, String key) throws IOException, ClassNotFoundException {
-		
-		// TODO decode
-		
 		Object msg;
 		
 		try (ByteArrayInputStream bit = new ByteArrayInputStream(buffer);

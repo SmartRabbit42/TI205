@@ -11,6 +11,7 @@ import data.containers.User;
 import general.Helper;
 import general.exceptions.InvalidParameterException;
 import general.exceptions.MessageNotSentException;
+import general.exceptions.TooBigMessageException;
 import network.netMsg.NetMsg;
 import network.netMsg.messages.*;
 import visual.Client;
@@ -23,6 +24,8 @@ public class MessageHandler implements Runnable {
 	private Network network;
 	private Data data;
 	
+	private String log;
+	
 	public MessageHandler(Socket sender, Client client, Network network, Data data) {
 		this.sender = sender;
 		
@@ -34,80 +37,102 @@ public class MessageHandler implements Runnable {
 	@Override
 	public void run() {
 		try {
-			byte[] buffer = new byte[Network.BUFFER_MAXIMUM_SIZE];
+			byte[] buffer = new byte[Network.BUFFER_SIZE];
 			
 			int size = sender.getInputStream().read(buffer);
 			
-			if (size > Network.BUFFER_MAXIMUM_SIZE)
-				throw new Exception();
+			log = String.format("> %d bytes received from %s:%d\n", size,
+					sender.getInetAddress().getHostAddress(), sender.getPort());
 			
+			sender.close();
+					
+			if (size > Network.BUFFER_SIZE)
+				throw new TooBigMessageException();
+
 			Object msg = Helper.decodeMessage(buffer, data.getPrivateKey());
 			
 			handleMessage((NetMsg) msg);
 		} catch(Exception e) {
-	    	throw new RuntimeException();
+	    	throw new RuntimeException(e);
 	    }
 	}
 
 	private void handleMessage(NetMsg msg) throws Exception {
+		log += "decoded bytes into ";
+		
 		switch (msg.getMessageType()) {
 			default:
 			case NetMsg.MessageType.none:
-				System.out.println("none message received");
+				log += "nothing\n";
 				break;
 			case NetMsg.MessageType.connect:
-				System.out.println("connect message received");
+				log += "connectMsg\n";
 				connectMsg((ConnectMsg) msg);
 				break;
 			case NetMsg.MessageType.onConnect:
-				System.out.println("onconnect message received");
+				log += "onConnectMsg\n";
 				onConnectMsg((OnConnectMsg) msg);
 				break;
 			case NetMsg.MessageType.disconnect:
-				System.out.println("disconnect message received");
+				log += "disconnectMsg\n";
 				disconnectMsg((DisconnectMsg) msg);
 				break;
 			case NetMsg.MessageType.statusUpdate:
-				System.out.println("statusupdate message received");
+				log += "statusUpdateMsg\n";
 				statusUpdateMsg((StatusUpdateMsg) msg);
 				break;
 			case NetMsg.MessageType.add:
-				System.out.println("add message received");
+				log += "addMsg\n";
 				addMsg((AddMsg) msg);
 				break;
 			case NetMsg.MessageType.onAdd:
-				System.out.println("onadd message received");
+				log += "onAddMsg\n";
 				onAddMsg((OnAddMsg) msg);
 				break;
 			case NetMsg.MessageType.includedOnChat:
-				System.out.println("includedOnChat message received");
+				log += "includedOnChatMsg\n";
 				includedOnChatMsg((IncludedOnChatMsg) msg);
 				break;
 			case NetMsg.MessageType.message:
-				System.out.println("message received");
+				log += "messageMsg\n";
 				messageMsg((MessageMsg) msg);
 				break;
 			case NetMsg.MessageType.changeChatName:
-				System.out.println("changeChatName message received");
+				log += "changeChatNameMsg\n";
 				changeChatNameMsg((ChangeChatNameMsg) msg);
 				break;
 			case NetMsg.MessageType.leaveChat:
-				System.out.println("leaveChat message received");
+				log += "leaveChatMsg\n";
 				leaveChatMsg((LeaveChatMsg) msg);
 				break;
 		}
+		
+		log += "\n\n";
+		
+		System.out.print(log);
+		System.out.flush();
 	}
 	
 	private boolean isMessageLegit(User sender, String msgToken) {
-		if (sender == null)
+		if (sender == null) {
+			log += "error: inexistent sender";
 			return false;
+		}
+			
 		
-		if (sender.equals(data.getLocalUser()))
+		if (sender.equals(data.getLocalUser())) {
+			log += "error: sender is local user";
 			return false;
+		}
+			
 		
-		if (!sender.getToken().equals(msgToken))
+		if (!sender.getToken().equals(msgToken)) {
+			log += "error: incorrect token";
 			return false;
+		}
+			
 		
+		log += "message verified";
 		return true;
 	}
 	
@@ -133,8 +158,7 @@ public class MessageHandler implements Runnable {
 			user.getUnsentMessages().add(ocmsg);
 		}
 
-		if (user.isAdded())
-			client.updateUser(user);
+		client.updateUser(user);
 	}
 	
 	private void onConnectMsg(OnConnectMsg msg) {
@@ -147,8 +171,7 @@ public class MessageHandler implements Runnable {
 		
 		network.sendUnsentMessages(user);
 		
-		if (user.isAdded())
-			client.updateUser(user);
+		client.updateUser(user);
 	}
 	
 	private void disconnectMsg(DisconnectMsg msg) {
@@ -159,8 +182,7 @@ public class MessageHandler implements Runnable {
 		
 		user.setStatus(User.STATUS.OFFLINE);
 		
-		if (user.isAdded())
-			client.updateUser(user);
+		client.updateUser(user);
 	}
 	
 	private void statusUpdateMsg(StatusUpdateMsg msg) {		
@@ -171,8 +193,7 @@ public class MessageHandler implements Runnable {
 		
 		user.setStatus(msg.getStatus());
 		
-		if (user.isAdded())
-			client.updateUser(user);
+		client.updateUser(user);
 	}
 	
 	private void addMsg(AddMsg msg) {
@@ -317,7 +338,7 @@ public class MessageHandler implements Runnable {
 		
 		chat.getMessages().add(message);
 		
-		client.addMessage(message, chat);
+		client.addMessage(message);
 	}
 	
 	private void changeChatNameMsg(ChangeChatNameMsg msg) {

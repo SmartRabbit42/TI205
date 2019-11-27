@@ -58,7 +58,7 @@ public class CreateChatDialog extends DDialog {
 	private void initializeComponent() {
 		setBackground(VisualConstants.BACK_COLOR);
 		
-		DPanel panList = new DPanel();
+		DPanel panList = new DPanel(VisualConstants.BACK_COLOR);
 		panList.setLayout(new BoxLayout(panList, BoxLayout.Y_AXIS));
 		
 		DLabel lblTitle = new DLabel("Create Chat");
@@ -68,7 +68,7 @@ public class CreateChatDialog extends DDialog {
 		txtName = new DTextField();
 		txtName.setMaximumSize(new Dimension(500, 50));
 
-		panUsers = new DPanel();
+		panUsers = new DPanel(VisualConstants.BACK_COLOR);
 		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
 		DButton btnAddUser = new DButton("+");
@@ -88,7 +88,7 @@ public class CreateChatDialog extends DDialog {
 		panList.add(jspUsers);
 		panList.add(Box.createRigidArea(new Dimension(0,5)));
 
-		DPanel panButtons = new DPanel();
+		DPanel panButtons = new DPanel(VisualConstants.BACK_COLOR);
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		DButton btnCancel = new DButton("cancel");

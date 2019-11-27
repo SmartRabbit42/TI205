@@ -6,10 +6,8 @@ import java.util.List;
 
 import javax.swing.BoxLayout;
 
-import data.Data;
 import data.containers.Chat;
 import data.containers.Message;
-import network.Network;
 import visual.Client;
 import visual.VisualConstants;
 import visual.components.DLabel;
@@ -21,8 +19,6 @@ public class FlowPanel extends DPanel {
 	private static final long serialVersionUID = -8959645122177154844L;
 
 	private Client client;
-	private Network network;
-	private Data data;
 	
 	private Chat chat;
 	
@@ -31,12 +27,10 @@ public class FlowPanel extends DPanel {
 	private DLabel lblName;
 	private DPanel panMessages;
 	
-	public FlowPanel(Client client, Network network, Data data, Chat chat) {
-		super(VisualConstants.BETA_PANEL_COLOR);
+	public FlowPanel(Client client, Chat chat) {
+		super(VisualConstants.ALPHA_PANEL_COLOR);
 		
 		this.client = client;
-		this.network = network;
-		this.data = data;
 		
 		this.chat = chat;
 		
@@ -50,7 +44,7 @@ public class FlowPanel extends DPanel {
 	private void initializeComponent() {
 		setLayout(null);
 		
-		DPanel panHeader = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
+		DPanel panHeader = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
 		panHeader.setBounds(0, 0, 550, 50);
 		
 		lblName = new DLabel("", new Font("Arial", Font.BOLD, 24));
@@ -65,14 +59,28 @@ public class FlowPanel extends DPanel {
 		scpMessages.setBounds(0, 50, 550, 500);
 		
 		add(panHeader);
-		add(scpMessages);
+		add(scpMessages); 
 	}
 	
 	public void addMessage(Message msg) {
-		MessagePanel newMessagePan = new MessagePanel(client, network, data, msg);
+		MessagePanel newMessagePan = new MessagePanel(client, msg);
 		messages.add(newMessagePan);
 		
 		panMessages.add(newMessagePan);
+		
+		revalidate();
+		repaint();
+	}
+	
+	public void removeMessage(Message msg) {
+		for (int i = 0; i < messages.size(); i++) {
+			MessagePanel message = messages.get(i);
+			if (message.getMessage().equals(msg)) {
+				messages.remove(message);
+				panMessages.remove(i);
+				break;
+			}
+		}
 		
 		revalidate();
 		repaint();

@@ -50,7 +50,7 @@ public class Data {
 		try (OutputStream fos = new FileOutputStream(dataFile);
 				ObjectOutput oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(meta);
-			
+
 			oos.close();
 			fos.close();
 		} catch (Exception e) {

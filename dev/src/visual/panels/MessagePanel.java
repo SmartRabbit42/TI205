@@ -3,9 +3,7 @@ package visual.panels;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import data.Data;
 import data.containers.Message;
-import network.Network;
 import visual.Client;
 import visual.VisualConstants;
 import visual.components.DLabel;
@@ -17,20 +15,16 @@ public class MessagePanel extends DPanel {
 	private static final long serialVersionUID = -5194642801471406001L;
 
 	private Client client;
-	private Network network;
-	private Data data;
 	
 	private Message message;
 	
 	private DLabel lblSender;
 	private DLabel lblContent;
 	
-	public MessagePanel(Client client, Network network, Data data, Message message) {
-		super(VisualConstants.DELTA_PANEL_COLOR);
+	public MessagePanel(Client client, Message message) {
+		super(VisualConstants.EPSILON_PANEL_COLOR);
 		
 		this.client = client;
-		this.network = network;
-		this.data = data;
 		
 		this.message = message;
 		
@@ -50,7 +44,7 @@ public class MessagePanel extends DPanel {
 		
 		setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		setComponentPopupMenu(new MessagePopup(client, network, data, message));
+		setComponentPopupMenu(new MessagePopup(client, message));
 		
 		lblSender = new DLabel();
 		lblSender.setAlignmentX(LEFT_ALIGNMENT);

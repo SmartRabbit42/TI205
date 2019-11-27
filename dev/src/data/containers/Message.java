@@ -14,6 +14,13 @@ public class Message implements Serializable {
 	
 	public Message() { }
 
+	public boolean equals(Object obj) {
+		if (obj == this)
+			return true;
+		
+		return false;
+	}
+	
 	public User getSender() {
 		return sender;
 	}

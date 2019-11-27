@@ -1,32 +1,27 @@
 package visual.popups;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 
 import javax.swing.Box;
 
-import data.Data;
 import data.containers.Message;
-import network.Network;
 import visual.Client;
 import visual.components.DMenuItem;
 import visual.components.DPopupMenu;
-
-//TODO
 
 public class MessagePopup extends DPopupMenu {
 
 	private static final long serialVersionUID = 3700438134286442845L;
 
 	private Client client;
-	private Network network;
-	private Data data;
 	
 	private Message message;
 	
-	public MessagePopup(Client client, Network network, Data data, Message message) {
+	public MessagePopup(Client client, Message message) {
 		this.client = client;
-		this.network = network;
-		this.data = data;
 		
 		this.message = message;
 		
@@ -34,41 +29,37 @@ public class MessagePopup extends DPopupMenu {
 	 }
 	
 	private void initializeComponent() {		
-		DMenuItem info = new DMenuItem("info");
-		info.addActionListener(e -> infoClick());
+		DMenuItem copy = new DMenuItem("copy");
+		copy.addActionListener(e -> copyClick());
 		
-		DMenuItem changeName = new DMenuItem("change name");
-		changeName.addActionListener(e -> changeNameClick());
+		DMenuItem viewSender = new DMenuItem("view message sender");
+		viewSender.addActionListener(e -> viewSenderClick());
 		
-		DMenuItem silence = new DMenuItem("unsilence");
-	    silence.addActionListener(e -> silenceClick());
-	    
-	    DMenuItem leave = new DMenuItem("leave");
-	    leave.addActionListener(e -> leaveClick());
+		DMenuItem delete = new DMenuItem("delete");
+		delete.addActionListener(e -> deleteClick());
 
 	    Dimension separatorDimension = new Dimension(0, 3);
 	    
-	    add(info);
+	    add(copy);
 	    add(Box.createRigidArea(separatorDimension));
-	    add(changeName);
+	    add(viewSender);
 	    add(Box.createRigidArea(separatorDimension));
-	    add(silence);
-	    add(Box.createRigidArea(separatorDimension));
-	    add(leave);
+	    add(delete);
 	}
 	
-	private void infoClick() {
+	private void copyClick() {
+		StringSelection data = new StringSelection(message.getContent());
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(data, data);
+	}
+	
+	private void viewSenderClick() {
+		// TODO
+	}
+	
+	private void deleteClick() {
+		message.getChat().getMessages().remove(message);
 		
-	}
-	
-	private void changeNameClick() {
-		
-	}
-	
-	private void silenceClick() {
-		
-	}
-	
-	private void leaveClick() {
+		client.removeMessage(message);
 	}
 }

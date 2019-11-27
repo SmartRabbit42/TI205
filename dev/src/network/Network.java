@@ -18,7 +18,7 @@ import visual.Client;
 
 public class Network {
 	
-	public static final int BUFFER_MAXIMUM_SIZE = 2048;
+	public static final int BUFFER_SIZE = 2048;
 	
 	private Client client;
 	private Data data;
@@ -54,11 +54,9 @@ public class Network {
 				localUser.setId(Helper.generateId(localUser.getFullAddress()));
 
 			running = true;
-		
+
 			updateMessagePump();
-			
-			System.out.println(String.format("network running on port %d", port));
-			
+
 			ConnectMsg cmsg = new ConnectMsg();
 			cmsg.setStatus(localUser.getStatus());
 			cmsg.setAddress(address);
@@ -71,23 +69,26 @@ public class Network {
 			
 			spreadMessage(data.getAddedUsers(), cmsg, false);
 			spreadMessage(data.getKnownUsers(), cmsg, false);
+			
+			System.out.println(String.format("> network running on port %d\n", port));
+			System.out.flush();
 		} catch (Exception e) {
-			throw new NetworkUnableToStartException();
+			throw new NetworkUnableToStartException(e);
 		}
 	}
 	
 	public void shut() throws NetworkUnableToShutException {
 		if (!running)
-			return;
+			return; 
 		
 		try {
 			running = false;
 			
 			serverSocket.close();
 			
-			System.out.println("network no longer running");
+			System.out.println("> network no longer running");
 		} catch (Exception e) {
-			throw new NetworkUnableToShutException();
+			throw new NetworkUnableToShutException(e);
 		}
 	}
 	

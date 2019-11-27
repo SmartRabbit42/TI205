@@ -12,13 +12,12 @@ public class VisualConstants {
 	public static final Color EPSILON_PANEL_COLOR = new Color(60, 60, 60);
 	
 	public static final Color COMP_BACK_COLOR = new Color(0, 0, 0);
-	public static final Color COMP_FORE_COLOR = new Color(240, 210, 80);
-	public static final Color COMP_PLACEHOLDER_COLOR = new Color(240, 210, 80);
+	public static final Color COMP_FORE_COLOR = new Color(255,215,0);
+	public static final Color COMP_PLACEHOLDER_COLOR = new Color(230,190,138);
 	public static final Color SELECTED_COMP_BACK_COLOR = new Color(84, 84, 84);
 	
-	public static final Color ALPHA_FORE_COLOR = new Color(240, 210, 80);
-	public static final Color BETA_FORE_COLOR = new Color(240, 210, 80);
-	public static final Color GAMA_FORE_COLOR = new Color(240, 210, 80);
+	public static final Color ALPHA_FORE_COLOR = new Color(255,215,0);
+	public static final Color BETA_FORE_COLOR = new Color(230, 210, 80);
 	
 	public static final Color STATUS_UNKNOWN_COLOR = Color.WHITE;
 	public static final Color STATUS_LOADING_COLOR = Color.BLUE;

@@ -51,7 +51,7 @@ public class ChangeAddressDialog extends DDialog {
 	private void initializeComponent() {
 		setBackground(VisualConstants.BACK_COLOR);
 		
-		DPanel panUpper = new DPanel();
+		DPanel panUpper = new DPanel(VisualConstants.BACK_COLOR);
 		panUpper.setLayout(new BoxLayout(panUpper, BoxLayout.Y_AXIS));
 		
 		DLabel lblTitle = new DLabel("Change user address");
@@ -67,7 +67,7 @@ public class ChangeAddressDialog extends DDialog {
 		panUpper.add(txtUserAddress);
 		panUpper.add(Box.createRigidArea(new Dimension(0,5)));
 		
-		DPanel panButtons = new DPanel();
+		DPanel panButtons = new DPanel(VisualConstants.BACK_COLOR);
 		panButtons.setLayout(new BoxLayout(panButtons, BoxLayout.X_AXIS));
 		
 		DButton btnCancel = new DButton("cancel");

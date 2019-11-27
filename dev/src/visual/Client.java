@@ -16,8 +16,11 @@ import java.awt.CardLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -44,10 +47,11 @@ import visual.panels.*;
 
 /*
  * TODO:
- *   message Popup
- *   criptograph
- *   reorganize visual
- *   config options
+ *   criptography
+ *   chat and user info
+ *   toolbar
+ *   complete visual
+ *   message time order
  */
 
 public class Client extends JFrame {
@@ -78,17 +82,12 @@ public class Client extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					Client frmDolphin = new Client();
-					frmDolphin.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				Client frmDolphin = new Client();
+				frmDolphin.setVisible(true);
 			}
 		});
 	}
-	
-	// Initialization
+
 	public Client() {
 		instance = this;
 		data = new Data();
@@ -102,7 +101,7 @@ public class Client extends JFrame {
 	private void initializeForm() {
 		setTitle("dolphin");
 		setBounds(100, 100, 500, 600);
-		setMinimumSize(new Dimension(516, 638));
+		setMinimumSize(new Dimension(816, 638));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout());
 		
@@ -129,72 +128,77 @@ public class Client extends JFrame {
             			network.shut();
             		}
 				} catch (NetworkUnableToShutException e1) {
-					// TODO
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(instance,
+					        e1.getMessage(),
+					        "error",
+					        JOptionPane.INFORMATION_MESSAGE);
+					throw new RuntimeException(e1);
 				} catch (DataNotSavedException e1) {
-					// TODO
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(instance,
+					        e1.getMessage(),
+					        "error",
+					        JOptionPane.INFORMATION_MESSAGE);
+					throw new RuntimeException(e1);	
 				}
-            	System.exit(0);
             }
         });
 	}
 
 	private void initializeEntry() {
-		DPanel panEntry = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
-		panEntry.setLayout(new BorderLayout(0, 0));
+		DPanel panMaster = new DPanel(VisualConstants.BACK_COLOR);
+		panMaster.setLayout(new BorderLayout(0, 0));
 		
-		Box entryBox = new Box(BoxLayout.Y_AXIS);
+		Box box = new Box(BoxLayout.Y_AXIS);
 		
-		DPanel panAuthentication = new DPanel(VisualConstants.BETA_PANEL_COLOR);
-		panAuthentication.setPreferredSize(new Dimension(500, 600));
-		panAuthentication.setMaximumSize(new Dimension(500, 600));
-		panAuthentication.setMinimumSize(new Dimension(500, 600));
-		panAuthentication.setLayout(null);
-		
-		DLabel lblDolphin = new DLabel("Dolphin", new Font("Arial", Font.BOLD, 40));
-		lblDolphin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDolphin.setBounds(0, 15, 500, 70);
-		
-		DLabel lblUsername = new DLabel("username", new Font("Arial", Font.BOLD, 20));
-		lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUsername.setBounds(0, 120, 500, 30);
-		
-		DTextField txtUsername = new DTextField();
-		txtUsername.setBounds(100, 160, 300, 30);
-		
-		DLabel lblDataFile = new DLabel("data file");
-		lblDataFile.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDataFile.setBounds(0, 220, 500, 30);
-		
-		DButton btnDataFile = new DButton("select data file");
-		btnDataFile.setFont(new Font("Arial", Font.BOLD, 15));
-		btnDataFile.setBounds(150, 260, 200, 30);
+		DPanel panEntry = new DPanel(VisualConstants.BETA_PANEL_COLOR);
+		panEntry.setPreferredSize(new Dimension(800, 600));
+		panEntry.setMaximumSize(new Dimension(800, 600));
+		panEntry.setMinimumSize(new Dimension(800, 600));
+		panEntry.setLayout(null);
 
-		DLabel lblSelectedFile = new DLabel("none");
-		lblSelectedFile.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSelectedFile.setFont(new Font("Arial", Font.PLAIN, 12));
-		lblSelectedFile.setBounds(150, 300, 200, 20);
-		
-		DButton btnAuthentication = new DButton("authenticate");
-		btnAuthentication.setFont(new Font("Arial", Font.BOLD, 40));
-		btnAuthentication.setBounds(100, 400, 300, 100);
+		DButton btnDataFile = new DButton("   select data file   ");
+		btnDataFile.setFont(new Font("Arial", Font.PLAIN, 16));
+		btnDataFile.setBounds(300, 180, 200, 40);
 
-		panAuthentication.add(lblDolphin);
-		panAuthentication.add(lblUsername);
-		panAuthentication.add(txtUsername);
-		panAuthentication.add(lblDataFile);
-		panAuthentication.add(btnDataFile);
-		panAuthentication.add(lblSelectedFile);
-		panAuthentication.add(btnAuthentication);
+		DLabel lblSelectedFile = new DLabel("none", new Font("Arial", Font.ITALIC, 12));
+		lblSelectedFile.setBounds(505, 200, 200, 20);
 		
-		entryBox.add(Box.createVerticalGlue());
-		entryBox.add(panAuthentication);
-		entryBox.add(Box.createVerticalGlue());
+		DLabel lblOr = new DLabel("or", new Font("Arial", Font.BOLD, 18));
+		lblOr.setVerticalAlignment(JLabel.CENTER);
+		lblOr.setHorizontalAlignment(JLabel.CENTER);
+		lblOr.setBounds(385,255,30,30);
 		
-		panEntry.add(entryBox);
+		JPanel panLine1 = new JPanel();
+		panLine1.setBounds(140, 270, 230, 2);
+		panLine1.setBackground(VisualConstants.ALPHA_FORE_COLOR);
 		
-		getContentPane().add(panEntry, "entry");
+		JPanel panLine2 = new JPanel();
+		panLine2.setBounds(430, 270, 230, 2);
+		panLine2.setBackground(VisualConstants.ALPHA_FORE_COLOR);
+		
+		DTextField txtUsername = new DTextField(new Font("Arial", Font.PLAIN, 16), "choose username");
+		txtUsername.setHorizontalAlignment(JTextField.CENTER);
+		txtUsername.setBounds(200, 320, 400, 35);
+		
+		DButton btnGo = new DButton("GO");
+		btnGo.setFont(new Font("Arial", Font.BOLD, 40));
+		btnGo.setBounds(670, 510, 120, 80);
+
+		panEntry.add(btnDataFile);
+		panEntry.add(lblSelectedFile);
+		panEntry.add(panLine1);
+		panEntry.add(lblOr);
+		panEntry.add(panLine2);
+		panEntry.add(txtUsername);
+		panEntry.add(btnGo);
+		
+		box.add(Box.createVerticalGlue());
+		box.add(panEntry);
+		box.add(Box.createVerticalGlue());
+		
+		panMaster.add(box);
+		
+		getContentPane().add(panMaster, "entry");
 
 		btnDataFile.addMouseListener(new MouseAdapter() {
 			@Override
@@ -204,11 +208,10 @@ public class Client extends JFrame {
 					lblSelectedFile.setText(dataFile.getName());
 			}
 		});
-		btnAuthentication.addMouseListener(new MouseAdapter() {
+		btnGo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {	
 				try {
-					// TODO
 					if (dataFile != null)
 						data.load(dataFile);
 					else {
@@ -221,40 +224,39 @@ public class Client extends JFrame {
 					for (Chat chat : data.getChats()) {
 						addChat(chat);
 						for (Message message : chat.getMessages())
-							addMessage(message, chat);
+							addMessage(message);
 					}
 					for (User user : data.getAddedUsers())
 						addUser(user);
 					
-					setMinimumSize(new Dimension(816, 638));
-					((CardLayout) getContentPane().getLayout()).show(getContentPane(), "master");
+					((CardLayout) getContentPane().getLayout()).show(getContentPane(), "main");
 				} catch (InvalidParameterException e) {
-					// TODO
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(instance,
+					        e.getMessage(),
+					        "error",
+					        JOptionPane.INFORMATION_MESSAGE);
 				} catch (NetworkUnableToStartException e) {
-					// TODO
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				} catch (DataNotLoadedException e) {
-					// TODO
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
 		});
 	}
 	
 	private void initializeMaster() {
-		DPanel panMaster = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
+		DPanel panMaster = new DPanel(VisualConstants.BACK_COLOR);
 		panMaster.setLayout(new BorderLayout(0, 0));
 		
 		Box box = new Box(BoxLayout.Y_AXIS);
 		
-		DPanel panMain = new DPanel(VisualConstants.BETA_PANEL_COLOR);
+		DPanel panMain = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
 		panMain.setPreferredSize(new Dimension(800, 600));
 		panMain.setMaximumSize(new Dimension(800, 600));
 		panMain.setMinimumSize(new Dimension(800, 600));
 		panMain.setLayout(null);
 		
-		DPanel panMessages = new DPanel(VisualConstants.BETA_PANEL_COLOR);
+		DPanel panMessages = new DPanel(VisualConstants.ALPHA_PANEL_COLOR);
 		panMessages.setBounds(250, 0, 550, 600);
 		panMessages.setLayout(null);
 		
@@ -264,7 +266,7 @@ public class Client extends JFrame {
 		panFlows.setBounds(0, 0, 550, 550);
 		panFlows.setLayout(new CardLayout());
 		
-		DPanel panSendMessage = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		DPanel panSendMessage = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panSendMessage.setBounds(0, 550, 550, 50);
 		panSendMessage.setLayout(null);
 		
@@ -300,22 +302,19 @@ public class Client extends JFrame {
 		lblAddress.setFont(new Font("Arial", Font.ITALIC, 15));
 		lblAddress.setVerticalAlignment(SwingConstants.TOP);
 		
-		DButton btnConfigurations = new DButton("");
-		btnConfigurations.setBounds(212, 5, 25, 25);
 		
 		btnStatus = new DButton("");
-		btnStatus.setBounds(212, 35, 25, 25);
+		btnStatus.setBounds(212, 20, 25, 25);
 		
 		panHeader.add(lblUsername);
 		panHeader.add(lblAddress);
-		panHeader.add(btnConfigurations);
 		panHeader.add(btnStatus);
 		
-		DPanel panBody = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		DPanel panBody = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panBody.setLayout(null);
 		panBody.setBounds(0, 65, 250, 535);
 		
-		DPanel panButtons = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		DPanel panButtons = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panButtons.setLayout(null);
 		panButtons.setBounds(0, 0, 250, 20);
 		
@@ -329,13 +328,13 @@ public class Client extends JFrame {
 		panButtons.add(btnChats);
 		panButtons.add(btnUsers);
 		
-		DPanel panTabs = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		DPanel panTabs = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panTabs.setLayout(new CardLayout());
 		panTabs.setBounds(0, 20, 250, 515);
 		
 		chats = new ArrayList<ChatPanel>();
 		
-		panChats = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		panChats = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panChats.setLayout(new BoxLayout(panChats, BoxLayout.Y_AXIS));
 		
 		DButton btnCreateChat = new DButton("+");
@@ -349,7 +348,7 @@ public class Client extends JFrame {
 		
 		users = new ArrayList<UserPanel>();
 		
-		panUsers = new DPanel(VisualConstants.DELTA_PANEL_COLOR);
+		panUsers = new DPanel(VisualConstants.GAMA_PANEL_COLOR);
 		panUsers.setLayout(new BoxLayout(panUsers, BoxLayout.Y_AXIS));
 		
 		DButton btnAddUser = new DButton("+");
@@ -379,15 +378,9 @@ public class Client extends JFrame {
 		
 		panMaster.add(box);
 		    
-		getContentPane().add(panMaster, "master");
+		getContentPane().add(panMaster, "main");
 		
 		// Events
-		btnConfigurations.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				
-			}
-		});
 		btnStatus.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
@@ -452,13 +445,13 @@ public class Client extends JFrame {
 				mm.setTime(now.getTime());
 				mm.setContent(content);
 				
-				txtMessage.setText("");
+				txtMessage.setText(null);
 				
 				network.spreadMessage(activeChat.getMembers(), mm, true);
 				
 				activeChat.getMessages().add(message);
 				
-				addMessage(message, activeChat);
+				addMessage(message);
 			}
 		});
 	}
@@ -528,12 +521,12 @@ public class Client extends JFrame {
 	
 	public void addChat(Chat chat) {
 		ChatPanel chatPan = new ChatPanel(instance, network, data, chat);
-		FlowPanel flowPan = new FlowPanel(instance, network, data, chat);
+		FlowPanel flowPan = new FlowPanel(instance, chat);
 		
 		chats.add(chatPan);
 		flows.add(flowPan);
 
-		panChats.add(chatPan, 0);
+		panChats.add(chatPan, 0);	
 		panFlows.add(flowPan, chat.getId());
 		
 		if(activeChat == null)
@@ -585,10 +578,17 @@ public class Client extends JFrame {
 		panFlows.repaint();
 	}
 	
-	public void addMessage(Message msg, Chat chat) {
+	public void addMessage(Message msg) {
 		for (FlowPanel flowPan : flows)
-			if (flowPan.getChat().equals(chat)) {
+			if (flowPan.getChat().equals(msg.getChat())) {
 				flowPan.addMessage(msg);
+				return;
+			}
+	}
+	public void removeMessage(Message msg) {
+		for (FlowPanel flowPan : flows)
+			if (flowPan.getChat().equals(msg.getChat())) {
+				flowPan.removeMessage(msg);
 				return;
 			}
 	}
