@@ -1,3 +1,3 @@
 # dolphin
 
-privacy oriented peer to peer chat.
+Privacy oriented peer to peer chat.
